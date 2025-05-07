@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Rol {
+  id          String       @id @default(uuid())
+  nombre      String
+  descripcion String
+  createAt    DateTime     @default(now())
+  updateAt    DateTime     @updatedAt
+  activo      Boolean
+  permisos    RolPermiso[]
+  Usuario     Usuario[]
+}
+
+model Permiso {
+  id          String       @id @default(uuid())
+  nombre      String
+  descripcion String
+  createAt    DateTime     @default(now())
+  updateAt    DateTime     @updatedAt
+  activo      Boolean
+  roles       RolPermiso[]
+}
+
+model RolPermiso {
+  id        String   @id @default(uuid())
+  rolId     String
+  permisoId String
+  createAt  DateTime @default(now())
+  permiso   Permiso  @relation(fields: [permisoId], references: [id])
+  rol       Rol      @relation(fields: [rolId], references: [id])
+
+  @@unique([rolId, permisoId])
+  @@index([permisoId], map: "RolPermiso_permisoId_fkey")
+}
+
+model Usuario {
+  id          String   @id @default(uuid())
+  nombre      String
+  email       String   @unique
+  password    String
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  activo      Boolean
+  rolId       String
+  DebeCambiar Boolean
+  rol         Rol      @relation(fields: [rolId], references: [id])
+
+  @@index([rolId], map: "Usuario_rolId_fkey")
+}
