@@ -17,7 +17,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { getSession, login } from "../../../auth";
-import { schemaSignIn, type TSchemaSignIn } from "../../../libs/shemas";
+import { schemaSignIn, type TSchemaSignIn } from "../../../lib/shemas";
 
 export default function Login() {
   const router = useRouter();

@@ -2,8 +2,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input"; // Componente Input de ShadCN
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PermisosRol } from "@/lib/Types";
 import { useState } from "react";
+import { PermisosRol } from "../type";
 
 export const CheckboxPermisos = ({
   permisos,
@@ -41,7 +41,7 @@ export const CheckboxPermisos = ({
         />
       </div>
 
-      <ScrollArea className="h-[300px]">
+      <ScrollArea className="h-auto max-h-96">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {filteredPermisos.map((permiso) => (
             <Label

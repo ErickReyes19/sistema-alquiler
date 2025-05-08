@@ -1,9 +1,10 @@
 "use server";
 
-import { prisma } from "@/libs/prisma";
+import { prisma } from "@/lib/prisma";
 import { Usuario, UsuarioCreate, UsuarioUpdate } from "./type";
 import { Rol } from "@/app/generated/prisma";
 import bcrypt from 'bcryptjs';
+import { randomUUID } from "crypto";
 
 // Utilidad para mapear el objeto de Prisma al tipo Usuario que tú usas
 function mapUsuario(data: { 
@@ -47,14 +48,15 @@ export async function getUsuarios(): Promise<Usuario[]> {
   }
 }
 export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Promise<Usuario> {
+
   try {
-    // Encriptar la contraseña antes de guardarla
-    const saltRounds = 10; // Número de rondas para generar el salt
-    const hashedPassword = await bcrypt.hash(usuario.password!, saltRounds);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash("password.123", saltRounds);
 
     // Crear el usuario con la contraseña encriptada
     const newUsuario = await prisma.usuario.create({
       data: {
+        id: randomUUID(), // Generar un ID único si no se proporciona
         nombre: usuario.usuario,  // mapeo de usuario a nombre
         rolId: usuario.rol_id,    // mapeo de rol_id
         activo: true,              // Por defecto, lo creamos activo
@@ -63,9 +65,10 @@ export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Prom
         DebeCambiar: true,        // Cambiar por un valor por defecto si no lo pasas
       },
       include: {
-        rol: true, // Incluir los datos del rol para mapearlo correctamente
+        rol: true, 
       },
     });
+    console.log("🚀 ~ postUsuario ~ newUsuario:", newUsuario)
 
     // Mapeamos el nuevo usuario a nuestro tipo Usuario
     return mapUsuario(newUsuario);
@@ -83,6 +86,7 @@ export async function putUsuario({ usuario }: { usuario: UsuarioUpdate }): Promi
       data: {
         nombre: usuario.usuario,
         rolId: usuario.rol_id,
+        email: usuario.email,
         activo: usuario.activo,
       },
       include: {

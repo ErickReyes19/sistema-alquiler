@@ -108,11 +108,11 @@ export function Formulario({
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Usuario</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa el nombre de usuario" {...field} />
+                <Input placeholder="Ingresa el email de usuario" {...field} />
               </FormControl>
-              <FormDescription>Por favor ingresa el nombre de usuario.</FormDescription>
+              <FormDescription>Por favor ingresa el email de usuario.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

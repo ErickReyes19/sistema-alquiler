@@ -4,9 +4,10 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { TSchemaResetPassword, schemaResetPassword } from "./app/(public)/reset-password/schema";
-import { TSchemaSignIn, schemaSignIn } from "./libs/shemas";   // ajusta ruta si hace falta
+import { TSchemaSignIn, schemaSignIn } from "./lib/shemas";   // ajusta ruta si hace falta
 import { Prisma, } from '@/app/generated/prisma';
-import { prisma } from '@/libs/prisma';
+import { prisma } from '@/lib/prisma';
+import bcrypt from "bcryptjs";
 const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 
 // 1) Extendemos JWTPayload para nuestro payload
@@ -169,9 +170,12 @@ export async function getADAuthentication(
         include: usuarioWithRolArgs.include,
     });
 
-    if (!user || user.password !== password) {
+    if (
+        !user ||
+        !(await bcrypt.compare(password, user.password))
+      ) {
         return null;
-    }
+      }
 
     const permisos = user.rol.permisos.map(rp => rp.permiso.nombre);
 
@@ -208,12 +212,16 @@ export async function changePassword(
     }
 
     // 2) Actualizar usando el id
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  
+    // 3) Actualizar usando el id
     const updated = await prisma.usuario.update({
-        where: { id: existing.id },
-        data: {
-            password: newPassword,
-            DebeCambiar: false,
-        },
+      where: { id: existing.id },
+      data: {
+        password: hashedPassword,
+        DebeCambiar: false,
+      },
     });
 
     // 3) (Opcional) Reconstruye y devuelve un token nuevo

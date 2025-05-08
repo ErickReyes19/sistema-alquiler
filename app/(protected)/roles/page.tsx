@@ -11,10 +11,10 @@ export default async function EstadoServicio() {
 
 
 
-  // const permisos = await getSessionPermisos();
-  // if (!permisos?.includes("ver_roles")) {
-  //   return <NoAcceso />;
-  // }
+  const permisos = await getSessionPermisos();
+  if (!permisos?.includes("ver_roles")) {
+    return <NoAcceso />;
+  }
 
   const data = await getRolesPermisos();
   return (

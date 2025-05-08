@@ -1,89 +1,191 @@
 
 "use server";
-import { prisma } from "@/libs/prisma"; // Asegúrate de importar correctamente tu cliente de Prisma
-import { PermisosRol, Rol } from "./type";
+import { prisma } from "@/lib/prisma"; // Asegúrate de importar correctamente tu cliente de Prisma
+import { Rol as RolDTO, PermisosRol } from "./type";
+import { randomUUID } from "crypto";
 
-
-export async function getRolesPermisos() {
+export async function getRolesPermisos(): Promise<RolDTO[]> {
   try {
     const roles = await prisma.rol.findMany({
       include: {
-        permisos: true, // Asegúrate de que "permisos" sea el nombre correcto de la relación en tu modelo de Prisma
+        permisos: {
+          include: {
+            permiso: true,
+          },
+        },
       },
     });
-    return roles;
+
+    // Mapear al DTO
+    return roles.map((r) => ({
+      id: r.id,
+      nombre: r.nombre,
+      descripcion: r.descripcion,
+      activo: r.activo,
+      permisos: r.permisos.map((rp): PermisosRol => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    }));
   } catch (error) {
     console.error("Error al obtener los roles y permisos:", error);
     return [];
   }
 }
 
-export async function getRolsActivos() {
+export async function getRolesPermisosActivos(): Promise<RolDTO[]> {
   try {
-    const rolesActivos = await prisma.rol.findMany({
-      where: {
-        activo: true, // Asegúrate de que "activo" sea el campo correcto en tu modelo
+    const roles = await prisma.rol.findMany({
+      include: {
+        permisos: {
+          include: {
+            permiso: true,
+          },
+        },
       },
     });
-    return rolesActivos;
+
+    // Mapear al DTO
+    return roles.map((r) => ({
+      id: r.id,
+      nombre: r.nombre,
+      descripcion: r.descripcion,
+      activo: r.activo,
+      permisos: r.permisos.map((rp): PermisosRol => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    }));
   } catch (error) {
-    console.error("Error al obtener los roles activos:", error);
+    console.error("Error al obtener los roles y permisos:", error);
     return [];
   }
 }
 
-export async function putRol({ rol }: { rol: Rol }) {
-  const permisosIds = rol.permisos.map((permiso: PermisosRol) => ({ id: permiso.id }));
+export async function putRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
+  // Preparamos los nuevos permisos para crear las filas intermedias
+  const permisosCreate = rol.permisos.map((p: PermisosRol) => ({
+    permiso: { connect: { id: p.id } },
+  }));
 
   try {
-    const updatedRol = await prisma.rol.update({
-      where: { id: rol.id },
+    const updated = await prisma.rol.update({
+      where: { id: rol.id! },
       data: {
-        ...rol,
+        nombre: rol.nombre,
+        descripcion: rol.descripcion,
+        activo: rol.activo ?? true,
         permisos: {
-          set: permisosIds,
+          // 1) Eliminamos todas las filas RolPermiso existentes
+          deleteMany: {},
+          // 2) Creamos las nuevas relaciones
+          create: permisosCreate,
+        },
+      },
+      include: {
+        permisos: {
+          include: {
+            permiso: true,
+          },
         },
       },
     });
-    return updatedRol;
+
+    // Mapear la respuesta de Prisma a tu DTO
+    return {
+      id: updated.id,
+      nombre: updated.nombre,
+      descripcion: updated.descripcion,
+      activo: updated.activo,
+      permisos: updated.permisos.map((rp) => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    };
   } catch (error) {
     console.error("Error al actualizar el rol:", error);
     return null;
   }
 }
 
-export async function getRolsPermisoById(id: string) {
+
+
+export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
   try {
     const rol = await prisma.rol.findUnique({
       where: { id },
       include: {
-        permisos: true, // Incluye los permisos relacionados
+        permisos: {
+          include: {
+            permiso: true,
+          },
+        },
       },
     });
-    return rol;
+
+    if (!rol) {
+      return null;
+    }
+
+    return {
+      id: rol.id,
+      nombre: rol.nombre,
+      descripcion: rol.descripcion,
+      activo: rol.activo,
+      permisos: rol.permisos.map((rp): PermisosRol => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    };
   } catch (error) {
     console.error("Error al obtener el rol por ID:", error);
     return null;
   }
 }
 
-export async function postRol({ rol }: { rol: Rol }) {
-  const permisosIds = rol.permisos.map((permiso: PermisosRol) => ({ id: permiso.id }));
 
+export async function postRol({
+  rol,
+}: {
+  rol: RolDTO;
+}): Promise<RolDTO | null> {
   try {
-    const newRol = await prisma.rol.create({
+    const created = await prisma.rol.create({
       data: {
+        // Generamos un UUID para el rol
+        id: randomUUID(),
         nombre: rol.nombre,
         descripcion: rol.descripcion,
-        activo: rol.activo ?? true, // Asegura un valor booleano, por defecto true
+        activo: rol.activo ?? true,
         permisos: {
-          connect: permisosIds, // Conecta los permisos existentes
+          create: rol.permisos.map((p: PermisosRol) => ({
+            id: p.id,
+            permiso: { connect: { id: p.id } },
+          })),
+        },
+      },
+      include: {
+        permisos: {
+          include: {
+            permiso: true,
+          },
         },
       },
     });
-    return newRol;
+
+    // Mapeamos a tu DTO RolDTO
+    return {
+      id: created.id,
+      nombre: created.nombre,
+      descripcion: created.descripcion,
+      activo: created.activo,
+      permisos: created.permisos.map((rp) => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    };
   } catch (error) {
     console.error("Error al crear el rol:", error);
-    throw error;
+    return null;
   }
 }

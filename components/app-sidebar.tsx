@@ -41,41 +41,10 @@ const mantenimientoItems = [
     url: "/usuarios",
     icon: UserIcon,
     permiso: "ver_usuarios",
-  },
-  {
-    title: "Empleados",
-    url: "/empleados",
-    icon: UsersIcon,
-    permiso: "ver_empleados",
-  },
-  {
-    title: "Puestos",
-    url: "/puestos",
-    icon: UserRoundCheck,
-    permiso: "ver_puestos",
-  },
-  {
-    title: "Configuración",
-    url: "/configuracion-permisos",
-    icon: Settings,
-    permiso: "ver_usuarios",
-  },
+  }
 ];
 
-const DiseñoGraficoItem = [
-  {
-    title: "Tipos de Sección",
-    url: "/tipo-seccion",
-    icon: ListOrderedIcon,
-    permiso: "ver_tipo_seccion",
-  },
-  {
-    title: "Reporte Diseño",
-    url: "/reporte-diseno",
-    icon: LucideFilePen,
-    permiso: "ver_reporte_diseno",
-  },
-]
+
 
 
 // Menu items con permisos necesarios (sin los items de mantenimiento)
@@ -115,13 +84,10 @@ export async function AppSidebar() {
   const filteredMantenimientoItems = mantenimientoItems.filter(item =>
     permisosUsuario.includes(item.permiso)
   );
-  const filteredDiseñoItems = DiseñoGraficoItem.filter(item =>
-    permisosUsuario.includes(item.permiso)
-  );
+
 
   // Solo mostrar la sección de mantenimiento si hay al menos un ítem con permiso
   const showMantenimiento = filteredMantenimientoItems.length > 0;
-  const showDiseño = filteredDiseñoItems.length > 0;
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -173,33 +139,6 @@ export async function AppSidebar() {
                 </Collapsible>
               )}
 
-              {showDiseño && (
-                <Collapsible className="group/collapsible">
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild >
-                      <SidebarMenuButton>
-                        <FileCheck2 size={16} className="p-0" />
-                        <span>Reportes Diseño</span>
-                        <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                        <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {DiseñoGraficoItem.map((item) => (
-                          <SidebarMenuSubItem key={item.title}>
-                            <SidebarMenuSubButton asChild>
-                              <Link href={item.url}>
-                                {item.title}
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

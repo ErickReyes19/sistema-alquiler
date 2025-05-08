@@ -2,9 +2,9 @@
 
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Permiso } from "@/lib/Types";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { Permiso } from "../type";
 
 interface PermissionListProps {
   permisos: Permiso[];

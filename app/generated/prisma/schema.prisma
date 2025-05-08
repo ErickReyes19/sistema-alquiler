@@ -10,7 +10,7 @@ datasource db {
 
 model Rol {
   id          String       @id @default(uuid())
-  nombre      String
+  nombre      String       @unique
   descripcion String
   createAt    DateTime     @default(now())
   updateAt    DateTime     @updatedAt
@@ -21,7 +21,7 @@ model Rol {
 
 model Permiso {
   id          String       @id @default(uuid())
-  nombre      String
+  nombre      String       @unique
   descripcion String
   createAt    DateTime     @default(now())
   updateAt    DateTime     @updatedAt

@@ -1,6 +1,6 @@
 // /pages/usuarios/[id]/editar/page.tsx
 
-import { getRolsActivos } from "@/app/(protected)/roles/actions";
+import { getRolesPermisosActivos } from "@/app/(protected)/roles/actions";
 import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
 import NoAcceso from "@/components/noAccess";
@@ -20,7 +20,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
   }
 
   const usuario = await getUsuarioById(params.id);
-  const roles = await getRolsActivos();
+  const roles = await getRolesPermisosActivos();
 
 
   if (!usuario) {

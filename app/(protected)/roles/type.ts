@@ -12,18 +12,5 @@ export type PermisosRol = {
     nombre: string;
 };
 
-export function mapRol(rolPrisma: {
-    id: string;
-    nombre: string;
-    descripcion: string;
-    activo: boolean;
-    permisos: { id: string; nombre: string }[];
-  }): Rol {
-    return {
-      id: rolPrisma.id,
-      nombre: rolPrisma.nombre,
-      descripcion: rolPrisma.descripcion,
-      activo: rolPrisma.activo
-    };
-  }
+
   

@@ -1,9 +1,11 @@
-import { getSessionPermisos } from "@/auth";
+// import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
-import NoAcceso from "@/components/noAccess";
+// import NoAcceso from "@/components/noAccess";
 import { PlusCircle } from "lucide-react";
-import { getRolsActivos } from "../../roles/actions";
+import { getRolesPermisosActivos } from "../../roles/actions";
 import { Formulario } from "../components/Form";
+import { getSessionPermisos } from "@/auth";
+import NoAcceso from "@/components/noAccess";
 
 export default async function Create() {
 
@@ -17,11 +19,11 @@ export default async function Create() {
   const initialData = {
     usuario: "",
     contrasena: "",
-    empleado_id: "",
     rol_id: "",
     activo: true,
+    email: "",
   };
-  const roles = await getRolsActivos();
+  const roles = await getRolesPermisosActivos();
 
   return (
     <div>
@@ -30,7 +32,7 @@ export default async function Create() {
         description="En este apartado podrás crear un nuevo usuario"
         screenName="Usuarios"
       />
-      <Formulario isUpdate={false} initialData={initialData} empleados={empleados} roles={roles} />
+      <Formulario isUpdate={false} initialData={initialData} roles={roles} />
     </div>
   );
 }

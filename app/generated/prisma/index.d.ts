@@ -5208,17 +5208,17 @@ export namespace Prisma {
 
   export type RolWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    nombre?: string
     AND?: RolWhereInput | RolWhereInput[]
     OR?: RolWhereInput[]
     NOT?: RolWhereInput | RolWhereInput[]
-    nombre?: StringFilter<"Rol"> | string
     descripcion?: StringFilter<"Rol"> | string
     createAt?: DateTimeFilter<"Rol"> | Date | string
     updateAt?: DateTimeFilter<"Rol"> | Date | string
     activo?: BoolFilter<"Rol"> | boolean
     permisos?: RolPermisoListRelationFilter
     Usuario?: UsuarioListRelationFilter
-  }, "id">
+  }, "id" | "nombre">
 
   export type RolOrderByWithAggregationInput = {
     id?: SortOrder
@@ -5270,16 +5270,16 @@ export namespace Prisma {
 
   export type PermisoWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    nombre?: string
     AND?: PermisoWhereInput | PermisoWhereInput[]
     OR?: PermisoWhereInput[]
     NOT?: PermisoWhereInput | PermisoWhereInput[]
-    nombre?: StringFilter<"Permiso"> | string
     descripcion?: StringFilter<"Permiso"> | string
     createAt?: DateTimeFilter<"Permiso"> | Date | string
     updateAt?: DateTimeFilter<"Permiso"> | Date | string
     activo?: BoolFilter<"Permiso"> | boolean
     roles?: RolPermisoListRelationFilter
-  }, "id">
+  }, "id" | "nombre">
 
   export type PermisoOrderByWithAggregationInput = {
     id?: SortOrder

@@ -6,16 +6,18 @@ import { getUsuarios } from "./actions";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import UserListMobile from "./components/usuario-list-mobile";
+import NoAcceso from "@/components/noAccess";
+import { getSessionPermisos } from "@/auth";
 
 export default async function UsuariosPage() {
 
 
 
-  // const permisos = await getSessionPermisos();
+  const permisos = await getSessionPermisos();
 
-  // if (!permisos?.includes("ver_usuarios")) {
-  //   return <NoAcceso />;
-  // }
+  if (!permisos?.includes("ver_usuarios")) {
+    return <NoAcceso />;
+  }
 
   const data = await getUsuarios();
   return (

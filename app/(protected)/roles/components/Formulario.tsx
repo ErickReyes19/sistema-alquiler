@@ -25,9 +25,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PermisosRol } from "@/lib/Types";
 import { CheckboxPermisos } from "./checkboxForm";
 import { Loader2 } from "lucide-react";
+import { PermisosRol } from "../type";
 
 export function FormularioRol({
   isUpdate,

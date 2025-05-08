@@ -1,3 +1,15 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",          // Desactiva la regla para variables no utilizadas
+    "@typescript-eslint/no-require-imports": "off",      // Desactiva la regla para `require()` en lugar de `import`
+    "no-unused-vars": "off",                             // Desactiva la regla estándar de variables no utilizadas
+    "no-require-imports": "off"                          // Desactiva la regla estándar de `require()`
+  },
+  "ignorePatterns": [
+    "app/generated/prisma/*"                             // Ignora los archivos generados por Prisma
+  ]
 }
