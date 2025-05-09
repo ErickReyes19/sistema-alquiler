@@ -19,6 +19,135 @@ model Rol {
   Usuario     Usuario[]
 }
 
+model Inquilino {
+  id              String         @id @default(uuid())
+  nombreCompleto  String
+  dni             String
+  numero          String
+  correo          String
+  fechaNacimiento DateTime
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
+  activo          Boolean
+  Acompañante    Acompañante[]
+  Contratos       Contratos[]
+}
+
+model Acompañante {
+  id              String    @id @default(uuid())
+  nombreCompleto  String
+  inquilinoId     String
+  Parentesco      String
+  createAt        DateTime  @default(now())
+  updateAt        DateTime  @updatedAt
+  activo          Boolean
+  inquilino       Inquilino @relation(fields: [inquilinoId], references: [id])
+}
+
+model Apartamento {
+  id                   Int                    @id @default(autoincrement())
+  numero               String                 @unique
+  direccion            String?
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
+  disponible           Boolean                @default(true)
+  apartamento          Habitaciones[]
+  ApartamentoServicios ApartamentoServicios[]
+  Contratos            Contratos[]
+}
+
+model TiposHabitacion {
+  id          Int            @id @default(autoincrement())
+  nombre      String         @unique
+  createAt    DateTime       @default(now())
+  updateAt    DateTime       @updatedAt
+  apartamento Habitaciones[]
+}
+
+model Habitaciones {
+  id               Int             @id @default(autoincrement())
+  apartamentoId    Int
+  tipoHabitacionId Int
+  cantidad         Int             @default(1)
+  apartamento      Apartamento     @relation(fields: [apartamentoId], references: [id])
+  tipoHabitacion   TiposHabitacion @relation(fields: [tipoHabitacionId], references: [id])
+  createAt         DateTime        @default(now())
+  updateAt         DateTime        @updatedAt
+
+  @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
+  @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
+}
+
+model Servicios {
+  id                   Int                    @id @default(autoincrement())
+  nombre               String                 @unique
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
+  activo               Boolean
+  ApartamentoServicios ApartamentoServicios[]
+}
+
+model ApartamentoServicios {
+  id             Int         @id @default(autoincrement())
+  apartamentoId  Int
+  servicioId     Int
+  incluido       Boolean     @default(true)
+  costoAdicional Decimal     @default(0.00)
+  apartamento    Apartamento @relation(fields: [apartamentoId], references: [id])
+  servicio       Servicios   @relation(fields: [servicioId], references: [id])
+  createAt       DateTime    @default(now())
+  updateAt       DateTime    @updatedAt
+
+  @@index([apartamentoId], map: "ApartamentoServicios_apartamentoId_fkey")
+  @@index([servicioId], map: "ApartamentoServicios_servicioId_fkey")
+}
+
+model Contratos {
+  id            Int         @id @default(autoincrement())
+  inquilinoId   String
+  apartamentoId Int
+  fechaInicio   DateTime
+  fechaFin      DateTime?
+  createAt      DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  montoMensual  Decimal     @default(0.00)
+  activo        Boolean     @default(true)
+  inquilino     Inquilino   @relation(fields: [inquilinoId], references: [id])
+  apartamento   Apartamento @relation(fields: [apartamentoId], references: [id])
+  recibos       Recibos[]
+
+  @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
+  @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
+}
+
+
+
+
+model Recibos {
+  id         Int              @id @default(autoincrement())
+  contratoId Int
+  fechaPago  DateTime
+  total      Decimal          @default(0.00)
+  createAt   DateTime         @default(now())
+  updateAt   DateTime         @updatedAt
+  contrato   Contratos        @relation(fields: [contratoId], references: [id])
+  detalles   ReciboDetalles[]
+
+  @@index([contratoId], map: "Recibos_contratoId_fkey")
+}
+
+model ReciboDetalles {
+  id          Int      @id @default(autoincrement())
+  reciboId    Int
+  descripcion String
+  monto       Decimal  @default(0.00)
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  recibo      Recibos  @relation(fields: [reciboId], references: [id])
+
+  @@index([reciboId], map: "ReciboDetalles_reciboId_fkey")
+}
+
 model Permiso {
   id          String       @id @default(uuid())
   nombre      String       @unique

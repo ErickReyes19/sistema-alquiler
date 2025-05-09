@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form"; // Importamos useForm
 import { zodResolver } from "@hookform/resolvers/zod"; // Usamos el resolutor de Zod
 import { z } from "zod";
-import { RolSchema } from "../schema"; // Tu esquema de Zod
+import { Rol, RolSchema } from "../schema"; // Tu esquema de Zod
 import { postRol, putRol } from "../actions"; // Funciones para enviar datos
 import {
   Form,
@@ -35,7 +35,7 @@ export function FormularioRol({
   permisos,
 }: {
   isUpdate: boolean;
-  initialData?: z.infer<typeof RolSchema>;
+  initialData?: Rol;
   permisos: PermisosRol[]; // Lista de permisos
 }) {
   const { toast } = useToast();
