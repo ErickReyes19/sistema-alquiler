@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form"; // Importamos useForm
-import { zodResolver } from "@hookform/resolvers/zod"; // Usamos el resolutor de Zod
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Rol, RolSchema } from "../schema"; // Tu esquema de Zod
-import { postRol, putRol } from "../actions"; // Funciones para enviar datos
+import { Rol, RolSchema } from "../schema";
+import { postRol, putRol } from "../actions";
 import {
   Form,
   FormControl,
@@ -18,13 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch"; // Importamos Switch
 import { CheckboxPermisos } from "./checkboxForm";
 import { Loader2 } from "lucide-react";
 import { PermisosRol } from "../type";
@@ -36,15 +30,14 @@ export function FormularioRol({
 }: {
   isUpdate: boolean;
   initialData?: Rol;
-  permisos: PermisosRol[]; // Lista de permisos
+  permisos: PermisosRol[];
 }) {
   const { toast } = useToast();
   const router = useRouter();
 
- 
   const form = useForm<z.infer<typeof RolSchema>>({
-    resolver: zodResolver(RolSchema), 
-    defaultValues: initialData || { permisos: [] },
+    resolver: zodResolver(RolSchema),
+    defaultValues: initialData || { permisos: [], activo: true },
   });
 
   async function onSubmit(data: z.infer<typeof RolSchema>) {
@@ -56,12 +49,10 @@ export function FormularioRol({
     try {
       if (isUpdate) {
         await putRol(rolData);
-
       } else {
         await postRol(rolData);
       }
 
-      // Notificación de éxito
       toast({
         title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
         description: isUpdate
@@ -69,14 +60,15 @@ export function FormularioRol({
           : "El rol ha sido creado.",
       });
 
-      router.push("/roles"); // Redirige después de la acción
+      router.push("/roles");
       router.refresh();
     } catch (error) {
-      // Manejo de error
       console.error("Error en la operación:", error);
       toast({
         title: "Error",
-        description: `Hubo un problema:`,
+        description: `Hubo un problema: ${
+          error instanceof Error ? error.message : "Error desconocido"
+        }`,
       });
     }
   }
@@ -85,8 +77,26 @@ export function FormularioRol({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 border rounded-md p-4"
+        className="space-y-8 border rounded-md p-4 relative"
       >
+        {/* Switch Activo */}
+        <div className="absolute top-4 right-4">
+          <FormField
+            control={form.control}
+            name="activo"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+
         {/* Nombre del Rol */}
         <FormField
           control={form.control}
@@ -132,16 +142,15 @@ export function FormularioRol({
               <FormLabel>Permisos del Rol</FormLabel>
               <FormControl>
                 <CheckboxPermisos
-                  permisos={permisos} // Pasa todos los permisos
+                  permisos={permisos}
                   selectedPermisos={
                     field.value?.map((permiso: PermisosRol) => permiso.id) || []
-                  } // Solo pasamos los IDs de los permisos
+                  }
                   onChange={(selected) => {
-                    // Convertimos los IDs seleccionados a un array de objetos PermisosRol
                     const selectedPermisosRol = permisos.filter((permiso) =>
                       selected.includes(permiso.id)
                     );
-                    field.onChange(selectedPermisosRol); // Pasamos los permisos completos al formulario
+                    field.onChange(selectedPermisosRol);
                   }}
                 />
               </FormControl>
@@ -153,40 +162,9 @@ export function FormularioRol({
           )}
         />
 
-        {/* Estado Activo (solo si es actualización) */}
-        {isUpdate && (
-          <FormField
-            control={form.control}
-            name="activo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Estado</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={(value) => field.onChange(value === "true")}
-                    defaultValue={field.value ? "true" : "false"}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona el estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="true">Activo</SelectItem>
-                      <SelectItem value="false">Inactivo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormDescription>
-                  Define si el rol está activo o inactivo.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        {/* Enviar */}
+        {/* Botón de Enviar */}
         <div className="flex justify-end">
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

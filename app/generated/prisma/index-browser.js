@@ -141,19 +141,41 @@ exports.Prisma.InquilinoScalarFieldEnum = {
   activo: 'activo'
 };
 
+exports.Prisma.AcompañanteScalarFieldEnum = {
+  id: 'id',
+  nombreCompleto: 'nombreCompleto',
+  inquilinoId: 'inquilinoId',
+  Parentesco: 'Parentesco',
+  createAt: 'createAt',
+  updateAt: 'updateAt',
+  activo: 'activo'
+};
+
 exports.Prisma.ApartamentoScalarFieldEnum = {
   id: 'id',
   numero: 'numero',
   direccion: 'direccion',
   createAt: 'createAt',
   updateAt: 'updateAt',
-  disponible: 'disponible'
+  disponible: 'disponible',
+  activo: 'activo'
 };
 
 exports.Prisma.TiposHabitacionScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   createAt: 'createAt',
+  updateAt: 'updateAt',
+  activo: 'activo'
+};
+
+exports.Prisma.HabitacionesScalarFieldEnum = {
+  id: 'id',
+  apartamentoId: 'apartamentoId',
+  tipoHabitacionId: 'tipoHabitacionId',
+  cantidad: 'cantidad',
+  createAt: 'createAt',
+  activo: 'activo',
   updateAt: 'updateAt'
 };
 
@@ -184,25 +206,6 @@ exports.Prisma.ContratosScalarFieldEnum = {
   createAt: 'createAt',
   updateAt: 'updateAt',
   montoMensual: 'montoMensual',
-  activo: 'activo'
-};
-
-exports.Prisma.HabitacionesScalarFieldEnum = {
-  id: 'id',
-  apartamentoId: 'apartamentoId',
-  tipoHabitacionId: 'tipoHabitacionId',
-  cantidad: 'cantidad',
-  createAt: 'createAt',
-  updateAt: 'updateAt'
-};
-
-exports.Prisma.AcompañanteScalarFieldEnum = {
-  id: 'id',
-  nombreCompleto: 'nombreCompleto',
-  inquilinoId: 'inquilinoId',
-  Parentesco: 'Parentesco',
-  createAt: 'createAt',
-  updateAt: 'updateAt',
   activo: 'activo'
 };
 
@@ -271,28 +274,6 @@ exports.Prisma.InquilinoOrderByRelevanceFieldEnum = {
   correo: 'correo'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
-exports.Prisma.ApartamentoOrderByRelevanceFieldEnum = {
-  numero: 'numero',
-  direccion: 'direccion'
-};
-
-exports.Prisma.TiposHabitacionOrderByRelevanceFieldEnum = {
-  nombre: 'nombre'
-};
-
-exports.Prisma.ServiciosOrderByRelevanceFieldEnum = {
-  nombre: 'nombre'
-};
-
-exports.Prisma.ContratosOrderByRelevanceFieldEnum = {
-  inquilinoId: 'inquilinoId'
-};
-
 exports.Prisma.AcompañanteOrderByRelevanceFieldEnum = {
   id: 'id',
   nombreCompleto: 'nombreCompleto',
@@ -300,7 +281,53 @@ exports.Prisma.AcompañanteOrderByRelevanceFieldEnum = {
   Parentesco: 'Parentesco'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
+exports.Prisma.ApartamentoOrderByRelevanceFieldEnum = {
+  id: 'id',
+  numero: 'numero',
+  direccion: 'direccion'
+};
+
+exports.Prisma.TiposHabitacionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nombre: 'nombre'
+};
+
+exports.Prisma.HabitacionesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  apartamentoId: 'apartamentoId',
+  tipoHabitacionId: 'tipoHabitacionId'
+};
+
+exports.Prisma.ServiciosOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nombre: 'nombre'
+};
+
+exports.Prisma.ApartamentoServiciosOrderByRelevanceFieldEnum = {
+  id: 'id',
+  apartamentoId: 'apartamentoId',
+  servicioId: 'servicioId'
+};
+
+exports.Prisma.ContratosOrderByRelevanceFieldEnum = {
+  id: 'id',
+  inquilinoId: 'inquilinoId',
+  apartamentoId: 'apartamentoId'
+};
+
+exports.Prisma.RecibosOrderByRelevanceFieldEnum = {
+  id: 'id',
+  contratoId: 'contratoId'
+};
+
 exports.Prisma.ReciboDetallesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  reciboId: 'reciboId',
   descripcion: 'descripcion'
 };
 
@@ -328,13 +355,13 @@ exports.Prisma.UsuarioOrderByRelevanceFieldEnum = {
 exports.Prisma.ModelName = {
   Rol: 'Rol',
   Inquilino: 'Inquilino',
+  Acompañante: 'Acompañante',
   Apartamento: 'Apartamento',
   TiposHabitacion: 'TiposHabitacion',
+  Habitaciones: 'Habitaciones',
   Servicios: 'Servicios',
   ApartamentoServicios: 'ApartamentoServicios',
   Contratos: 'Contratos',
-  Habitaciones: 'Habitaciones',
-  Acompañante: 'Acompañante',
   Recibos: 'Recibos',
   ReciboDetalles: 'ReciboDetalles',
   Permiso: 'Permiso',

@@ -24,6 +24,11 @@ export type Rol = $Result.DefaultSelection<Prisma.$RolPayload>
  */
 export type Inquilino = $Result.DefaultSelection<Prisma.$InquilinoPayload>
 /**
+ * Model Acompañante
+ * 
+ */
+export type Acompañante = $Result.DefaultSelection<Prisma.$AcompañantePayload>
+/**
  * Model Apartamento
  * 
  */
@@ -33,6 +38,11 @@ export type Apartamento = $Result.DefaultSelection<Prisma.$ApartamentoPayload>
  * 
  */
 export type TiposHabitacion = $Result.DefaultSelection<Prisma.$TiposHabitacionPayload>
+/**
+ * Model Habitaciones
+ * 
+ */
+export type Habitaciones = $Result.DefaultSelection<Prisma.$HabitacionesPayload>
 /**
  * Model Servicios
  * 
@@ -48,16 +58,6 @@ export type ApartamentoServicios = $Result.DefaultSelection<Prisma.$ApartamentoS
  * 
  */
 export type Contratos = $Result.DefaultSelection<Prisma.$ContratosPayload>
-/**
- * Model Habitaciones
- * 
- */
-export type Habitaciones = $Result.DefaultSelection<Prisma.$HabitacionesPayload>
-/**
- * Model Acompañante
- * 
- */
-export type Acompañante = $Result.DefaultSelection<Prisma.$AcompañantePayload>
 /**
  * Model Recibos
  * 
@@ -230,6 +230,16 @@ export class PrismaClient<
   get inquilino(): Prisma.InquilinoDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.acompañante`: Exposes CRUD operations for the **Acompañante** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Acompañantes
+    * const acompañantes = await prisma.acompañante.findMany()
+    * ```
+    */
+  get acompañante(): Prisma.AcompañanteDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.apartamento`: Exposes CRUD operations for the **Apartamento** model.
     * Example usage:
     * ```ts
@@ -248,6 +258,16 @@ export class PrismaClient<
     * ```
     */
   get tiposHabitacion(): Prisma.TiposHabitacionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.habitaciones`: Exposes CRUD operations for the **Habitaciones** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Habitaciones
+    * const habitaciones = await prisma.habitaciones.findMany()
+    * ```
+    */
+  get habitaciones(): Prisma.HabitacionesDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.servicios`: Exposes CRUD operations for the **Servicios** model.
@@ -278,26 +298,6 @@ export class PrismaClient<
     * ```
     */
   get contratos(): Prisma.ContratosDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.habitaciones`: Exposes CRUD operations for the **Habitaciones** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Habitaciones
-    * const habitaciones = await prisma.habitaciones.findMany()
-    * ```
-    */
-  get habitaciones(): Prisma.HabitacionesDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.acompañante`: Exposes CRUD operations for the **Acompañante** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Acompañantes
-    * const acompañantes = await prisma.acompañante.findMany()
-    * ```
-    */
-  get acompañante(): Prisma.AcompañanteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.recibos`: Exposes CRUD operations for the **Recibos** model.
@@ -790,13 +790,13 @@ export namespace Prisma {
   export const ModelName: {
     Rol: 'Rol',
     Inquilino: 'Inquilino',
+    Acompañante: 'Acompañante',
     Apartamento: 'Apartamento',
     TiposHabitacion: 'TiposHabitacion',
+    Habitaciones: 'Habitaciones',
     Servicios: 'Servicios',
     ApartamentoServicios: 'ApartamentoServicios',
     Contratos: 'Contratos',
-    Habitaciones: 'Habitaciones',
-    Acompañante: 'Acompañante',
     Recibos: 'Recibos',
     ReciboDetalles: 'ReciboDetalles',
     Permiso: 'Permiso',
@@ -820,7 +820,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "rol" | "inquilino" | "apartamento" | "tiposHabitacion" | "servicios" | "apartamentoServicios" | "contratos" | "habitaciones" | "acompañante" | "recibos" | "reciboDetalles" | "permiso" | "rolPermiso" | "usuario"
+      modelProps: "rol" | "inquilino" | "acompañante" | "apartamento" | "tiposHabitacion" | "habitaciones" | "servicios" | "apartamentoServicios" | "contratos" | "recibos" | "reciboDetalles" | "permiso" | "rolPermiso" | "usuario"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -956,6 +956,72 @@ export namespace Prisma {
           }
         }
       }
+      Acompañante: {
+        payload: Prisma.$AcompañantePayload<ExtArgs>
+        fields: Prisma.AcompañanteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AcompañanteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AcompañanteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          findFirst: {
+            args: Prisma.AcompañanteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AcompañanteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          findMany: {
+            args: Prisma.AcompañanteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>[]
+          }
+          create: {
+            args: Prisma.AcompañanteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          createMany: {
+            args: Prisma.AcompañanteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.AcompañanteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          update: {
+            args: Prisma.AcompañanteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          deleteMany: {
+            args: Prisma.AcompañanteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AcompañanteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AcompañanteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
+          }
+          aggregate: {
+            args: Prisma.AcompañanteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAcompañante>
+          }
+          groupBy: {
+            args: Prisma.AcompañanteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AcompañanteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AcompañanteCountArgs<ExtArgs>
+            result: $Utils.Optional<AcompañanteCountAggregateOutputType> | number
+          }
+        }
+      }
       Apartamento: {
         payload: Prisma.$ApartamentoPayload<ExtArgs>
         fields: Prisma.ApartamentoFieldRefs
@@ -1085,6 +1151,72 @@ export namespace Prisma {
           count: {
             args: Prisma.TiposHabitacionCountArgs<ExtArgs>
             result: $Utils.Optional<TiposHabitacionCountAggregateOutputType> | number
+          }
+        }
+      }
+      Habitaciones: {
+        payload: Prisma.$HabitacionesPayload<ExtArgs>
+        fields: Prisma.HabitacionesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HabitacionesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HabitacionesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          findFirst: {
+            args: Prisma.HabitacionesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HabitacionesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          findMany: {
+            args: Prisma.HabitacionesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>[]
+          }
+          create: {
+            args: Prisma.HabitacionesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          createMany: {
+            args: Prisma.HabitacionesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.HabitacionesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          update: {
+            args: Prisma.HabitacionesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          deleteMany: {
+            args: Prisma.HabitacionesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HabitacionesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.HabitacionesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
+          }
+          aggregate: {
+            args: Prisma.HabitacionesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHabitaciones>
+          }
+          groupBy: {
+            args: Prisma.HabitacionesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HabitacionesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HabitacionesCountArgs<ExtArgs>
+            result: $Utils.Optional<HabitacionesCountAggregateOutputType> | number
           }
         }
       }
@@ -1283,138 +1415,6 @@ export namespace Prisma {
           count: {
             args: Prisma.ContratosCountArgs<ExtArgs>
             result: $Utils.Optional<ContratosCountAggregateOutputType> | number
-          }
-        }
-      }
-      Habitaciones: {
-        payload: Prisma.$HabitacionesPayload<ExtArgs>
-        fields: Prisma.HabitacionesFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.HabitacionesFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.HabitacionesFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          findFirst: {
-            args: Prisma.HabitacionesFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.HabitacionesFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          findMany: {
-            args: Prisma.HabitacionesFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>[]
-          }
-          create: {
-            args: Prisma.HabitacionesCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          createMany: {
-            args: Prisma.HabitacionesCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.HabitacionesDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          update: {
-            args: Prisma.HabitacionesUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          deleteMany: {
-            args: Prisma.HabitacionesDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.HabitacionesUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.HabitacionesUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HabitacionesPayload>
-          }
-          aggregate: {
-            args: Prisma.HabitacionesAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateHabitaciones>
-          }
-          groupBy: {
-            args: Prisma.HabitacionesGroupByArgs<ExtArgs>
-            result: $Utils.Optional<HabitacionesGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.HabitacionesCountArgs<ExtArgs>
-            result: $Utils.Optional<HabitacionesCountAggregateOutputType> | number
-          }
-        }
-      }
-      Acompañante: {
-        payload: Prisma.$AcompañantePayload<ExtArgs>
-        fields: Prisma.AcompañanteFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.AcompañanteFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.AcompañanteFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          findFirst: {
-            args: Prisma.AcompañanteFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.AcompañanteFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          findMany: {
-            args: Prisma.AcompañanteFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>[]
-          }
-          create: {
-            args: Prisma.AcompañanteCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          createMany: {
-            args: Prisma.AcompañanteCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.AcompañanteDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          update: {
-            args: Prisma.AcompañanteUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          deleteMany: {
-            args: Prisma.AcompañanteDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.AcompañanteUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.AcompañanteUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AcompañantePayload>
-          }
-          aggregate: {
-            args: Prisma.AcompañanteAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAcompañante>
-          }
-          groupBy: {
-            args: Prisma.AcompañanteGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AcompañanteGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.AcompañanteCountArgs<ExtArgs>
-            result: $Utils.Optional<AcompañanteCountAggregateOutputType> | number
           }
         }
       }
@@ -1834,13 +1834,13 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     rol?: RolOmit
     inquilino?: InquilinoOmit
+    acompañante?: AcompañanteOmit
     apartamento?: ApartamentoOmit
     tiposHabitacion?: TiposHabitacionOmit
+    habitaciones?: HabitacionesOmit
     servicios?: ServiciosOmit
     apartamentoServicios?: ApartamentoServiciosOmit
     contratos?: ContratosOmit
-    habitaciones?: HabitacionesOmit
-    acompañante?: AcompañanteOmit
     recibos?: RecibosOmit
     reciboDetalles?: ReciboDetallesOmit
     permiso?: PermisoOmit
@@ -4245,6069 +4245,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Apartamento
-   */
-
-  export type AggregateApartamento = {
-    _count: ApartamentoCountAggregateOutputType | null
-    _avg: ApartamentoAvgAggregateOutputType | null
-    _sum: ApartamentoSumAggregateOutputType | null
-    _min: ApartamentoMinAggregateOutputType | null
-    _max: ApartamentoMaxAggregateOutputType | null
-  }
-
-  export type ApartamentoAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type ApartamentoSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type ApartamentoMinAggregateOutputType = {
-    id: number | null
-    numero: string | null
-    direccion: string | null
-    createAt: Date | null
-    updateAt: Date | null
-    disponible: boolean | null
-  }
-
-  export type ApartamentoMaxAggregateOutputType = {
-    id: number | null
-    numero: string | null
-    direccion: string | null
-    createAt: Date | null
-    updateAt: Date | null
-    disponible: boolean | null
-  }
-
-  export type ApartamentoCountAggregateOutputType = {
-    id: number
-    numero: number
-    direccion: number
-    createAt: number
-    updateAt: number
-    disponible: number
-    _all: number
-  }
-
-
-  export type ApartamentoAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type ApartamentoSumAggregateInputType = {
-    id?: true
-  }
-
-  export type ApartamentoMinAggregateInputType = {
-    id?: true
-    numero?: true
-    direccion?: true
-    createAt?: true
-    updateAt?: true
-    disponible?: true
-  }
-
-  export type ApartamentoMaxAggregateInputType = {
-    id?: true
-    numero?: true
-    direccion?: true
-    createAt?: true
-    updateAt?: true
-    disponible?: true
-  }
-
-  export type ApartamentoCountAggregateInputType = {
-    id?: true
-    numero?: true
-    direccion?: true
-    createAt?: true
-    updateAt?: true
-    disponible?: true
-    _all?: true
-  }
-
-  export type ApartamentoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Apartamento to aggregate.
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Apartamentos to fetch.
-     */
-    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ApartamentoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Apartamentos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Apartamentos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Apartamentos
-    **/
-    _count?: true | ApartamentoCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ApartamentoAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ApartamentoSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ApartamentoMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ApartamentoMaxAggregateInputType
-  }
-
-  export type GetApartamentoAggregateType<T extends ApartamentoAggregateArgs> = {
-        [P in keyof T & keyof AggregateApartamento]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateApartamento[P]>
-      : GetScalarType<T[P], AggregateApartamento[P]>
-  }
-
-
-
-
-  export type ApartamentoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ApartamentoWhereInput
-    orderBy?: ApartamentoOrderByWithAggregationInput | ApartamentoOrderByWithAggregationInput[]
-    by: ApartamentoScalarFieldEnum[] | ApartamentoScalarFieldEnum
-    having?: ApartamentoScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ApartamentoCountAggregateInputType | true
-    _avg?: ApartamentoAvgAggregateInputType
-    _sum?: ApartamentoSumAggregateInputType
-    _min?: ApartamentoMinAggregateInputType
-    _max?: ApartamentoMaxAggregateInputType
-  }
-
-  export type ApartamentoGroupByOutputType = {
-    id: number
-    numero: string
-    direccion: string | null
-    createAt: Date
-    updateAt: Date
-    disponible: boolean
-    _count: ApartamentoCountAggregateOutputType | null
-    _avg: ApartamentoAvgAggregateOutputType | null
-    _sum: ApartamentoSumAggregateOutputType | null
-    _min: ApartamentoMinAggregateOutputType | null
-    _max: ApartamentoMaxAggregateOutputType | null
-  }
-
-  type GetApartamentoGroupByPayload<T extends ApartamentoGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ApartamentoGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ApartamentoGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ApartamentoGroupByOutputType[P]>
-            : GetScalarType<T[P], ApartamentoGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ApartamentoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    numero?: boolean
-    direccion?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    disponible?: boolean
-    apartamento?: boolean | Apartamento$apartamentoArgs<ExtArgs>
-    ApartamentoServicios?: boolean | Apartamento$ApartamentoServiciosArgs<ExtArgs>
-    Contratos?: boolean | Apartamento$ContratosArgs<ExtArgs>
-    _count?: boolean | ApartamentoCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["apartamento"]>
-
-
-
-  export type ApartamentoSelectScalar = {
-    id?: boolean
-    numero?: boolean
-    direccion?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    disponible?: boolean
-  }
-
-  export type ApartamentoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "numero" | "direccion" | "createAt" | "updateAt" | "disponible", ExtArgs["result"]["apartamento"]>
-  export type ApartamentoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    apartamento?: boolean | Apartamento$apartamentoArgs<ExtArgs>
-    ApartamentoServicios?: boolean | Apartamento$ApartamentoServiciosArgs<ExtArgs>
-    Contratos?: boolean | Apartamento$ContratosArgs<ExtArgs>
-    _count?: boolean | ApartamentoCountOutputTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $ApartamentoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Apartamento"
-    objects: {
-      apartamento: Prisma.$HabitacionesPayload<ExtArgs>[]
-      ApartamentoServicios: Prisma.$ApartamentoServiciosPayload<ExtArgs>[]
-      Contratos: Prisma.$ContratosPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      numero: string
-      direccion: string | null
-      createAt: Date
-      updateAt: Date
-      disponible: boolean
-    }, ExtArgs["result"]["apartamento"]>
-    composites: {}
-  }
-
-  type ApartamentoGetPayload<S extends boolean | null | undefined | ApartamentoDefaultArgs> = $Result.GetResult<Prisma.$ApartamentoPayload, S>
-
-  type ApartamentoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ApartamentoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ApartamentoCountAggregateInputType | true
-    }
-
-  export interface ApartamentoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Apartamento'], meta: { name: 'Apartamento' } }
-    /**
-     * Find zero or one Apartamento that matches the filter.
-     * @param {ApartamentoFindUniqueArgs} args - Arguments to find a Apartamento
-     * @example
-     * // Get one Apartamento
-     * const apartamento = await prisma.apartamento.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ApartamentoFindUniqueArgs>(args: SelectSubset<T, ApartamentoFindUniqueArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Apartamento that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ApartamentoFindUniqueOrThrowArgs} args - Arguments to find a Apartamento
-     * @example
-     * // Get one Apartamento
-     * const apartamento = await prisma.apartamento.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ApartamentoFindUniqueOrThrowArgs>(args: SelectSubset<T, ApartamentoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Apartamento that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoFindFirstArgs} args - Arguments to find a Apartamento
-     * @example
-     * // Get one Apartamento
-     * const apartamento = await prisma.apartamento.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ApartamentoFindFirstArgs>(args?: SelectSubset<T, ApartamentoFindFirstArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Apartamento that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoFindFirstOrThrowArgs} args - Arguments to find a Apartamento
-     * @example
-     * // Get one Apartamento
-     * const apartamento = await prisma.apartamento.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ApartamentoFindFirstOrThrowArgs>(args?: SelectSubset<T, ApartamentoFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Apartamentos that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Apartamentos
-     * const apartamentos = await prisma.apartamento.findMany()
-     * 
-     * // Get first 10 Apartamentos
-     * const apartamentos = await prisma.apartamento.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const apartamentoWithIdOnly = await prisma.apartamento.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ApartamentoFindManyArgs>(args?: SelectSubset<T, ApartamentoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Apartamento.
-     * @param {ApartamentoCreateArgs} args - Arguments to create a Apartamento.
-     * @example
-     * // Create one Apartamento
-     * const Apartamento = await prisma.apartamento.create({
-     *   data: {
-     *     // ... data to create a Apartamento
-     *   }
-     * })
-     * 
-     */
-    create<T extends ApartamentoCreateArgs>(args: SelectSubset<T, ApartamentoCreateArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Apartamentos.
-     * @param {ApartamentoCreateManyArgs} args - Arguments to create many Apartamentos.
-     * @example
-     * // Create many Apartamentos
-     * const apartamento = await prisma.apartamento.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ApartamentoCreateManyArgs>(args?: SelectSubset<T, ApartamentoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Apartamento.
-     * @param {ApartamentoDeleteArgs} args - Arguments to delete one Apartamento.
-     * @example
-     * // Delete one Apartamento
-     * const Apartamento = await prisma.apartamento.delete({
-     *   where: {
-     *     // ... filter to delete one Apartamento
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ApartamentoDeleteArgs>(args: SelectSubset<T, ApartamentoDeleteArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Apartamento.
-     * @param {ApartamentoUpdateArgs} args - Arguments to update one Apartamento.
-     * @example
-     * // Update one Apartamento
-     * const apartamento = await prisma.apartamento.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ApartamentoUpdateArgs>(args: SelectSubset<T, ApartamentoUpdateArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Apartamentos.
-     * @param {ApartamentoDeleteManyArgs} args - Arguments to filter Apartamentos to delete.
-     * @example
-     * // Delete a few Apartamentos
-     * const { count } = await prisma.apartamento.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ApartamentoDeleteManyArgs>(args?: SelectSubset<T, ApartamentoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Apartamentos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Apartamentos
-     * const apartamento = await prisma.apartamento.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ApartamentoUpdateManyArgs>(args: SelectSubset<T, ApartamentoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Apartamento.
-     * @param {ApartamentoUpsertArgs} args - Arguments to update or create a Apartamento.
-     * @example
-     * // Update or create a Apartamento
-     * const apartamento = await prisma.apartamento.upsert({
-     *   create: {
-     *     // ... data to create a Apartamento
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Apartamento we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ApartamentoUpsertArgs>(args: SelectSubset<T, ApartamentoUpsertArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Apartamentos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoCountArgs} args - Arguments to filter Apartamentos to count.
-     * @example
-     * // Count the number of Apartamentos
-     * const count = await prisma.apartamento.count({
-     *   where: {
-     *     // ... the filter for the Apartamentos we want to count
-     *   }
-     * })
-    **/
-    count<T extends ApartamentoCountArgs>(
-      args?: Subset<T, ApartamentoCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ApartamentoCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Apartamento.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ApartamentoAggregateArgs>(args: Subset<T, ApartamentoAggregateArgs>): Prisma.PrismaPromise<GetApartamentoAggregateType<T>>
-
-    /**
-     * Group by Apartamento.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ApartamentoGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ApartamentoGroupByArgs['orderBy'] }
-        : { orderBy?: ApartamentoGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ApartamentoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApartamentoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Apartamento model
-   */
-  readonly fields: ApartamentoFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Apartamento.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ApartamentoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    apartamento<T extends Apartamento$apartamentoArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$apartamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    ApartamentoServicios<T extends Apartamento$ApartamentoServiciosArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$ApartamentoServiciosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Contratos<T extends Apartamento$ContratosArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$ContratosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Apartamento model
-   */
-  interface ApartamentoFieldRefs {
-    readonly id: FieldRef<"Apartamento", 'Int'>
-    readonly numero: FieldRef<"Apartamento", 'String'>
-    readonly direccion: FieldRef<"Apartamento", 'String'>
-    readonly createAt: FieldRef<"Apartamento", 'DateTime'>
-    readonly updateAt: FieldRef<"Apartamento", 'DateTime'>
-    readonly disponible: FieldRef<"Apartamento", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Apartamento findUnique
-   */
-  export type ApartamentoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter, which Apartamento to fetch.
-     */
-    where: ApartamentoWhereUniqueInput
-  }
-
-  /**
-   * Apartamento findUniqueOrThrow
-   */
-  export type ApartamentoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter, which Apartamento to fetch.
-     */
-    where: ApartamentoWhereUniqueInput
-  }
-
-  /**
-   * Apartamento findFirst
-   */
-  export type ApartamentoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter, which Apartamento to fetch.
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Apartamentos to fetch.
-     */
-    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Apartamentos.
-     */
-    cursor?: ApartamentoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Apartamentos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Apartamentos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Apartamentos.
-     */
-    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento findFirstOrThrow
-   */
-  export type ApartamentoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter, which Apartamento to fetch.
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Apartamentos to fetch.
-     */
-    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Apartamentos.
-     */
-    cursor?: ApartamentoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Apartamentos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Apartamentos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Apartamentos.
-     */
-    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento findMany
-   */
-  export type ApartamentoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter, which Apartamentos to fetch.
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Apartamentos to fetch.
-     */
-    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Apartamentos.
-     */
-    cursor?: ApartamentoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Apartamentos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Apartamentos.
-     */
-    skip?: number
-    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento create
-   */
-  export type ApartamentoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Apartamento.
-     */
-    data: XOR<ApartamentoCreateInput, ApartamentoUncheckedCreateInput>
-  }
-
-  /**
-   * Apartamento createMany
-   */
-  export type ApartamentoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Apartamentos.
-     */
-    data: ApartamentoCreateManyInput | ApartamentoCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Apartamento update
-   */
-  export type ApartamentoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Apartamento.
-     */
-    data: XOR<ApartamentoUpdateInput, ApartamentoUncheckedUpdateInput>
-    /**
-     * Choose, which Apartamento to update.
-     */
-    where: ApartamentoWhereUniqueInput
-  }
-
-  /**
-   * Apartamento updateMany
-   */
-  export type ApartamentoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Apartamentos.
-     */
-    data: XOR<ApartamentoUpdateManyMutationInput, ApartamentoUncheckedUpdateManyInput>
-    /**
-     * Filter which Apartamentos to update
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * Limit how many Apartamentos to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Apartamento upsert
-   */
-  export type ApartamentoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Apartamento to update in case it exists.
-     */
-    where: ApartamentoWhereUniqueInput
-    /**
-     * In case the Apartamento found by the `where` argument doesn't exist, create a new Apartamento with this data.
-     */
-    create: XOR<ApartamentoCreateInput, ApartamentoUncheckedCreateInput>
-    /**
-     * In case the Apartamento was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ApartamentoUpdateInput, ApartamentoUncheckedUpdateInput>
-  }
-
-  /**
-   * Apartamento delete
-   */
-  export type ApartamentoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-    /**
-     * Filter which Apartamento to delete.
-     */
-    where: ApartamentoWhereUniqueInput
-  }
-
-  /**
-   * Apartamento deleteMany
-   */
-  export type ApartamentoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Apartamentos to delete
-     */
-    where?: ApartamentoWhereInput
-    /**
-     * Limit how many Apartamentos to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Apartamento.apartamento
-   */
-  export type Apartamento$apartamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    where?: HabitacionesWhereInput
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    cursor?: HabitacionesWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento.ApartamentoServicios
-   */
-  export type Apartamento$ApartamentoServiciosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    where?: ApartamentoServiciosWhereInput
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento.Contratos
-   */
-  export type Apartamento$ContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    where?: ContratosWhereInput
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    cursor?: ContratosWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
-  }
-
-  /**
-   * Apartamento without action
-   */
-  export type ApartamentoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Apartamento
-     */
-    select?: ApartamentoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Apartamento
-     */
-    omit?: ApartamentoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model TiposHabitacion
-   */
-
-  export type AggregateTiposHabitacion = {
-    _count: TiposHabitacionCountAggregateOutputType | null
-    _avg: TiposHabitacionAvgAggregateOutputType | null
-    _sum: TiposHabitacionSumAggregateOutputType | null
-    _min: TiposHabitacionMinAggregateOutputType | null
-    _max: TiposHabitacionMaxAggregateOutputType | null
-  }
-
-  export type TiposHabitacionAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type TiposHabitacionSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type TiposHabitacionMinAggregateOutputType = {
-    id: number | null
-    nombre: string | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type TiposHabitacionMaxAggregateOutputType = {
-    id: number | null
-    nombre: string | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type TiposHabitacionCountAggregateOutputType = {
-    id: number
-    nombre: number
-    createAt: number
-    updateAt: number
-    _all: number
-  }
-
-
-  export type TiposHabitacionAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type TiposHabitacionSumAggregateInputType = {
-    id?: true
-  }
-
-  export type TiposHabitacionMinAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type TiposHabitacionMaxAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type TiposHabitacionCountAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-    _all?: true
-  }
-
-  export type TiposHabitacionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which TiposHabitacion to aggregate.
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TiposHabitacions to fetch.
-     */
-    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: TiposHabitacionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TiposHabitacions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TiposHabitacions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned TiposHabitacions
-    **/
-    _count?: true | TiposHabitacionCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: TiposHabitacionAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: TiposHabitacionSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: TiposHabitacionMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: TiposHabitacionMaxAggregateInputType
-  }
-
-  export type GetTiposHabitacionAggregateType<T extends TiposHabitacionAggregateArgs> = {
-        [P in keyof T & keyof AggregateTiposHabitacion]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateTiposHabitacion[P]>
-      : GetScalarType<T[P], AggregateTiposHabitacion[P]>
-  }
-
-
-
-
-  export type TiposHabitacionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TiposHabitacionWhereInput
-    orderBy?: TiposHabitacionOrderByWithAggregationInput | TiposHabitacionOrderByWithAggregationInput[]
-    by: TiposHabitacionScalarFieldEnum[] | TiposHabitacionScalarFieldEnum
-    having?: TiposHabitacionScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: TiposHabitacionCountAggregateInputType | true
-    _avg?: TiposHabitacionAvgAggregateInputType
-    _sum?: TiposHabitacionSumAggregateInputType
-    _min?: TiposHabitacionMinAggregateInputType
-    _max?: TiposHabitacionMaxAggregateInputType
-  }
-
-  export type TiposHabitacionGroupByOutputType = {
-    id: number
-    nombre: string
-    createAt: Date
-    updateAt: Date
-    _count: TiposHabitacionCountAggregateOutputType | null
-    _avg: TiposHabitacionAvgAggregateOutputType | null
-    _sum: TiposHabitacionSumAggregateOutputType | null
-    _min: TiposHabitacionMinAggregateOutputType | null
-    _max: TiposHabitacionMaxAggregateOutputType | null
-  }
-
-  type GetTiposHabitacionGroupByPayload<T extends TiposHabitacionGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<TiposHabitacionGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof TiposHabitacionGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], TiposHabitacionGroupByOutputType[P]>
-            : GetScalarType<T[P], TiposHabitacionGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type TiposHabitacionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nombre?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    apartamento?: boolean | TiposHabitacion$apartamentoArgs<ExtArgs>
-    _count?: boolean | TiposHabitacionCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["tiposHabitacion"]>
-
-
-
-  export type TiposHabitacionSelectScalar = {
-    id?: boolean
-    nombre?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-  }
-
-  export type TiposHabitacionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "createAt" | "updateAt", ExtArgs["result"]["tiposHabitacion"]>
-  export type TiposHabitacionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    apartamento?: boolean | TiposHabitacion$apartamentoArgs<ExtArgs>
-    _count?: boolean | TiposHabitacionCountOutputTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $TiposHabitacionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "TiposHabitacion"
-    objects: {
-      apartamento: Prisma.$HabitacionesPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      nombre: string
-      createAt: Date
-      updateAt: Date
-    }, ExtArgs["result"]["tiposHabitacion"]>
-    composites: {}
-  }
-
-  type TiposHabitacionGetPayload<S extends boolean | null | undefined | TiposHabitacionDefaultArgs> = $Result.GetResult<Prisma.$TiposHabitacionPayload, S>
-
-  type TiposHabitacionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<TiposHabitacionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: TiposHabitacionCountAggregateInputType | true
-    }
-
-  export interface TiposHabitacionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TiposHabitacion'], meta: { name: 'TiposHabitacion' } }
-    /**
-     * Find zero or one TiposHabitacion that matches the filter.
-     * @param {TiposHabitacionFindUniqueArgs} args - Arguments to find a TiposHabitacion
-     * @example
-     * // Get one TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends TiposHabitacionFindUniqueArgs>(args: SelectSubset<T, TiposHabitacionFindUniqueArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one TiposHabitacion that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {TiposHabitacionFindUniqueOrThrowArgs} args - Arguments to find a TiposHabitacion
-     * @example
-     * // Get one TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends TiposHabitacionFindUniqueOrThrowArgs>(args: SelectSubset<T, TiposHabitacionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first TiposHabitacion that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionFindFirstArgs} args - Arguments to find a TiposHabitacion
-     * @example
-     * // Get one TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends TiposHabitacionFindFirstArgs>(args?: SelectSubset<T, TiposHabitacionFindFirstArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first TiposHabitacion that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionFindFirstOrThrowArgs} args - Arguments to find a TiposHabitacion
-     * @example
-     * // Get one TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends TiposHabitacionFindFirstOrThrowArgs>(args?: SelectSubset<T, TiposHabitacionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more TiposHabitacions that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all TiposHabitacions
-     * const tiposHabitacions = await prisma.tiposHabitacion.findMany()
-     * 
-     * // Get first 10 TiposHabitacions
-     * const tiposHabitacions = await prisma.tiposHabitacion.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const tiposHabitacionWithIdOnly = await prisma.tiposHabitacion.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends TiposHabitacionFindManyArgs>(args?: SelectSubset<T, TiposHabitacionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a TiposHabitacion.
-     * @param {TiposHabitacionCreateArgs} args - Arguments to create a TiposHabitacion.
-     * @example
-     * // Create one TiposHabitacion
-     * const TiposHabitacion = await prisma.tiposHabitacion.create({
-     *   data: {
-     *     // ... data to create a TiposHabitacion
-     *   }
-     * })
-     * 
-     */
-    create<T extends TiposHabitacionCreateArgs>(args: SelectSubset<T, TiposHabitacionCreateArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many TiposHabitacions.
-     * @param {TiposHabitacionCreateManyArgs} args - Arguments to create many TiposHabitacions.
-     * @example
-     * // Create many TiposHabitacions
-     * const tiposHabitacion = await prisma.tiposHabitacion.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends TiposHabitacionCreateManyArgs>(args?: SelectSubset<T, TiposHabitacionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a TiposHabitacion.
-     * @param {TiposHabitacionDeleteArgs} args - Arguments to delete one TiposHabitacion.
-     * @example
-     * // Delete one TiposHabitacion
-     * const TiposHabitacion = await prisma.tiposHabitacion.delete({
-     *   where: {
-     *     // ... filter to delete one TiposHabitacion
-     *   }
-     * })
-     * 
-     */
-    delete<T extends TiposHabitacionDeleteArgs>(args: SelectSubset<T, TiposHabitacionDeleteArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one TiposHabitacion.
-     * @param {TiposHabitacionUpdateArgs} args - Arguments to update one TiposHabitacion.
-     * @example
-     * // Update one TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends TiposHabitacionUpdateArgs>(args: SelectSubset<T, TiposHabitacionUpdateArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more TiposHabitacions.
-     * @param {TiposHabitacionDeleteManyArgs} args - Arguments to filter TiposHabitacions to delete.
-     * @example
-     * // Delete a few TiposHabitacions
-     * const { count } = await prisma.tiposHabitacion.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends TiposHabitacionDeleteManyArgs>(args?: SelectSubset<T, TiposHabitacionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more TiposHabitacions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many TiposHabitacions
-     * const tiposHabitacion = await prisma.tiposHabitacion.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends TiposHabitacionUpdateManyArgs>(args: SelectSubset<T, TiposHabitacionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one TiposHabitacion.
-     * @param {TiposHabitacionUpsertArgs} args - Arguments to update or create a TiposHabitacion.
-     * @example
-     * // Update or create a TiposHabitacion
-     * const tiposHabitacion = await prisma.tiposHabitacion.upsert({
-     *   create: {
-     *     // ... data to create a TiposHabitacion
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the TiposHabitacion we want to update
-     *   }
-     * })
-     */
-    upsert<T extends TiposHabitacionUpsertArgs>(args: SelectSubset<T, TiposHabitacionUpsertArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of TiposHabitacions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionCountArgs} args - Arguments to filter TiposHabitacions to count.
-     * @example
-     * // Count the number of TiposHabitacions
-     * const count = await prisma.tiposHabitacion.count({
-     *   where: {
-     *     // ... the filter for the TiposHabitacions we want to count
-     *   }
-     * })
-    **/
-    count<T extends TiposHabitacionCountArgs>(
-      args?: Subset<T, TiposHabitacionCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], TiposHabitacionCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a TiposHabitacion.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends TiposHabitacionAggregateArgs>(args: Subset<T, TiposHabitacionAggregateArgs>): Prisma.PrismaPromise<GetTiposHabitacionAggregateType<T>>
-
-    /**
-     * Group by TiposHabitacion.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TiposHabitacionGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends TiposHabitacionGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: TiposHabitacionGroupByArgs['orderBy'] }
-        : { orderBy?: TiposHabitacionGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, TiposHabitacionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTiposHabitacionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the TiposHabitacion model
-   */
-  readonly fields: TiposHabitacionFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for TiposHabitacion.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__TiposHabitacionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    apartamento<T extends TiposHabitacion$apartamentoArgs<ExtArgs> = {}>(args?: Subset<T, TiposHabitacion$apartamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the TiposHabitacion model
-   */
-  interface TiposHabitacionFieldRefs {
-    readonly id: FieldRef<"TiposHabitacion", 'Int'>
-    readonly nombre: FieldRef<"TiposHabitacion", 'String'>
-    readonly createAt: FieldRef<"TiposHabitacion", 'DateTime'>
-    readonly updateAt: FieldRef<"TiposHabitacion", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * TiposHabitacion findUnique
-   */
-  export type TiposHabitacionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter, which TiposHabitacion to fetch.
-     */
-    where: TiposHabitacionWhereUniqueInput
-  }
-
-  /**
-   * TiposHabitacion findUniqueOrThrow
-   */
-  export type TiposHabitacionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter, which TiposHabitacion to fetch.
-     */
-    where: TiposHabitacionWhereUniqueInput
-  }
-
-  /**
-   * TiposHabitacion findFirst
-   */
-  export type TiposHabitacionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter, which TiposHabitacion to fetch.
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TiposHabitacions to fetch.
-     */
-    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for TiposHabitacions.
-     */
-    cursor?: TiposHabitacionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TiposHabitacions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TiposHabitacions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of TiposHabitacions.
-     */
-    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
-  }
-
-  /**
-   * TiposHabitacion findFirstOrThrow
-   */
-  export type TiposHabitacionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter, which TiposHabitacion to fetch.
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TiposHabitacions to fetch.
-     */
-    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for TiposHabitacions.
-     */
-    cursor?: TiposHabitacionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TiposHabitacions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TiposHabitacions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of TiposHabitacions.
-     */
-    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
-  }
-
-  /**
-   * TiposHabitacion findMany
-   */
-  export type TiposHabitacionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter, which TiposHabitacions to fetch.
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of TiposHabitacions to fetch.
-     */
-    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing TiposHabitacions.
-     */
-    cursor?: TiposHabitacionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` TiposHabitacions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` TiposHabitacions.
-     */
-    skip?: number
-    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
-  }
-
-  /**
-   * TiposHabitacion create
-   */
-  export type TiposHabitacionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * The data needed to create a TiposHabitacion.
-     */
-    data: XOR<TiposHabitacionCreateInput, TiposHabitacionUncheckedCreateInput>
-  }
-
-  /**
-   * TiposHabitacion createMany
-   */
-  export type TiposHabitacionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many TiposHabitacions.
-     */
-    data: TiposHabitacionCreateManyInput | TiposHabitacionCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * TiposHabitacion update
-   */
-  export type TiposHabitacionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * The data needed to update a TiposHabitacion.
-     */
-    data: XOR<TiposHabitacionUpdateInput, TiposHabitacionUncheckedUpdateInput>
-    /**
-     * Choose, which TiposHabitacion to update.
-     */
-    where: TiposHabitacionWhereUniqueInput
-  }
-
-  /**
-   * TiposHabitacion updateMany
-   */
-  export type TiposHabitacionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update TiposHabitacions.
-     */
-    data: XOR<TiposHabitacionUpdateManyMutationInput, TiposHabitacionUncheckedUpdateManyInput>
-    /**
-     * Filter which TiposHabitacions to update
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * Limit how many TiposHabitacions to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * TiposHabitacion upsert
-   */
-  export type TiposHabitacionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * The filter to search for the TiposHabitacion to update in case it exists.
-     */
-    where: TiposHabitacionWhereUniqueInput
-    /**
-     * In case the TiposHabitacion found by the `where` argument doesn't exist, create a new TiposHabitacion with this data.
-     */
-    create: XOR<TiposHabitacionCreateInput, TiposHabitacionUncheckedCreateInput>
-    /**
-     * In case the TiposHabitacion was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<TiposHabitacionUpdateInput, TiposHabitacionUncheckedUpdateInput>
-  }
-
-  /**
-   * TiposHabitacion delete
-   */
-  export type TiposHabitacionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-    /**
-     * Filter which TiposHabitacion to delete.
-     */
-    where: TiposHabitacionWhereUniqueInput
-  }
-
-  /**
-   * TiposHabitacion deleteMany
-   */
-  export type TiposHabitacionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which TiposHabitacions to delete
-     */
-    where?: TiposHabitacionWhereInput
-    /**
-     * Limit how many TiposHabitacions to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * TiposHabitacion.apartamento
-   */
-  export type TiposHabitacion$apartamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    where?: HabitacionesWhereInput
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    cursor?: HabitacionesWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
-  }
-
-  /**
-   * TiposHabitacion without action
-   */
-  export type TiposHabitacionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the TiposHabitacion
-     */
-    select?: TiposHabitacionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the TiposHabitacion
-     */
-    omit?: TiposHabitacionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TiposHabitacionInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Servicios
-   */
-
-  export type AggregateServicios = {
-    _count: ServiciosCountAggregateOutputType | null
-    _avg: ServiciosAvgAggregateOutputType | null
-    _sum: ServiciosSumAggregateOutputType | null
-    _min: ServiciosMinAggregateOutputType | null
-    _max: ServiciosMaxAggregateOutputType | null
-  }
-
-  export type ServiciosAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type ServiciosSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type ServiciosMinAggregateOutputType = {
-    id: number | null
-    nombre: string | null
-    createAt: Date | null
-    updateAt: Date | null
-    activo: boolean | null
-  }
-
-  export type ServiciosMaxAggregateOutputType = {
-    id: number | null
-    nombre: string | null
-    createAt: Date | null
-    updateAt: Date | null
-    activo: boolean | null
-  }
-
-  export type ServiciosCountAggregateOutputType = {
-    id: number
-    nombre: number
-    createAt: number
-    updateAt: number
-    activo: number
-    _all: number
-  }
-
-
-  export type ServiciosAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type ServiciosSumAggregateInputType = {
-    id?: true
-  }
-
-  export type ServiciosMinAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-  }
-
-  export type ServiciosMaxAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-  }
-
-  export type ServiciosCountAggregateInputType = {
-    id?: true
-    nombre?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-    _all?: true
-  }
-
-  export type ServiciosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Servicios to aggregate.
-     */
-    where?: ServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Servicios to fetch.
-     */
-    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Servicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Servicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Servicios
-    **/
-    _count?: true | ServiciosCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ServiciosAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ServiciosSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ServiciosMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ServiciosMaxAggregateInputType
-  }
-
-  export type GetServiciosAggregateType<T extends ServiciosAggregateArgs> = {
-        [P in keyof T & keyof AggregateServicios]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateServicios[P]>
-      : GetScalarType<T[P], AggregateServicios[P]>
-  }
-
-
-
-
-  export type ServiciosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ServiciosWhereInput
-    orderBy?: ServiciosOrderByWithAggregationInput | ServiciosOrderByWithAggregationInput[]
-    by: ServiciosScalarFieldEnum[] | ServiciosScalarFieldEnum
-    having?: ServiciosScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ServiciosCountAggregateInputType | true
-    _avg?: ServiciosAvgAggregateInputType
-    _sum?: ServiciosSumAggregateInputType
-    _min?: ServiciosMinAggregateInputType
-    _max?: ServiciosMaxAggregateInputType
-  }
-
-  export type ServiciosGroupByOutputType = {
-    id: number
-    nombre: string
-    createAt: Date
-    updateAt: Date
-    activo: boolean
-    _count: ServiciosCountAggregateOutputType | null
-    _avg: ServiciosAvgAggregateOutputType | null
-    _sum: ServiciosSumAggregateOutputType | null
-    _min: ServiciosMinAggregateOutputType | null
-    _max: ServiciosMaxAggregateOutputType | null
-  }
-
-  type GetServiciosGroupByPayload<T extends ServiciosGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ServiciosGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ServiciosGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ServiciosGroupByOutputType[P]>
-            : GetScalarType<T[P], ServiciosGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ServiciosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nombre?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    activo?: boolean
-    ApartamentoServicios?: boolean | Servicios$ApartamentoServiciosArgs<ExtArgs>
-    _count?: boolean | ServiciosCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["servicios"]>
-
-
-
-  export type ServiciosSelectScalar = {
-    id?: boolean
-    nombre?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    activo?: boolean
-  }
-
-  export type ServiciosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "createAt" | "updateAt" | "activo", ExtArgs["result"]["servicios"]>
-  export type ServiciosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ApartamentoServicios?: boolean | Servicios$ApartamentoServiciosArgs<ExtArgs>
-    _count?: boolean | ServiciosCountOutputTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $ServiciosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Servicios"
-    objects: {
-      ApartamentoServicios: Prisma.$ApartamentoServiciosPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      nombre: string
-      createAt: Date
-      updateAt: Date
-      activo: boolean
-    }, ExtArgs["result"]["servicios"]>
-    composites: {}
-  }
-
-  type ServiciosGetPayload<S extends boolean | null | undefined | ServiciosDefaultArgs> = $Result.GetResult<Prisma.$ServiciosPayload, S>
-
-  type ServiciosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ServiciosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ServiciosCountAggregateInputType | true
-    }
-
-  export interface ServiciosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Servicios'], meta: { name: 'Servicios' } }
-    /**
-     * Find zero or one Servicios that matches the filter.
-     * @param {ServiciosFindUniqueArgs} args - Arguments to find a Servicios
-     * @example
-     * // Get one Servicios
-     * const servicios = await prisma.servicios.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ServiciosFindUniqueArgs>(args: SelectSubset<T, ServiciosFindUniqueArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Servicios that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ServiciosFindUniqueOrThrowArgs} args - Arguments to find a Servicios
-     * @example
-     * // Get one Servicios
-     * const servicios = await prisma.servicios.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ServiciosFindUniqueOrThrowArgs>(args: SelectSubset<T, ServiciosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Servicios that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosFindFirstArgs} args - Arguments to find a Servicios
-     * @example
-     * // Get one Servicios
-     * const servicios = await prisma.servicios.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ServiciosFindFirstArgs>(args?: SelectSubset<T, ServiciosFindFirstArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Servicios that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosFindFirstOrThrowArgs} args - Arguments to find a Servicios
-     * @example
-     * // Get one Servicios
-     * const servicios = await prisma.servicios.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ServiciosFindFirstOrThrowArgs>(args?: SelectSubset<T, ServiciosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Servicios that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Servicios
-     * const servicios = await prisma.servicios.findMany()
-     * 
-     * // Get first 10 Servicios
-     * const servicios = await prisma.servicios.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const serviciosWithIdOnly = await prisma.servicios.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ServiciosFindManyArgs>(args?: SelectSubset<T, ServiciosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Servicios.
-     * @param {ServiciosCreateArgs} args - Arguments to create a Servicios.
-     * @example
-     * // Create one Servicios
-     * const Servicios = await prisma.servicios.create({
-     *   data: {
-     *     // ... data to create a Servicios
-     *   }
-     * })
-     * 
-     */
-    create<T extends ServiciosCreateArgs>(args: SelectSubset<T, ServiciosCreateArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Servicios.
-     * @param {ServiciosCreateManyArgs} args - Arguments to create many Servicios.
-     * @example
-     * // Create many Servicios
-     * const servicios = await prisma.servicios.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ServiciosCreateManyArgs>(args?: SelectSubset<T, ServiciosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Servicios.
-     * @param {ServiciosDeleteArgs} args - Arguments to delete one Servicios.
-     * @example
-     * // Delete one Servicios
-     * const Servicios = await prisma.servicios.delete({
-     *   where: {
-     *     // ... filter to delete one Servicios
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ServiciosDeleteArgs>(args: SelectSubset<T, ServiciosDeleteArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Servicios.
-     * @param {ServiciosUpdateArgs} args - Arguments to update one Servicios.
-     * @example
-     * // Update one Servicios
-     * const servicios = await prisma.servicios.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ServiciosUpdateArgs>(args: SelectSubset<T, ServiciosUpdateArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Servicios.
-     * @param {ServiciosDeleteManyArgs} args - Arguments to filter Servicios to delete.
-     * @example
-     * // Delete a few Servicios
-     * const { count } = await prisma.servicios.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ServiciosDeleteManyArgs>(args?: SelectSubset<T, ServiciosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Servicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Servicios
-     * const servicios = await prisma.servicios.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ServiciosUpdateManyArgs>(args: SelectSubset<T, ServiciosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Servicios.
-     * @param {ServiciosUpsertArgs} args - Arguments to update or create a Servicios.
-     * @example
-     * // Update or create a Servicios
-     * const servicios = await prisma.servicios.upsert({
-     *   create: {
-     *     // ... data to create a Servicios
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Servicios we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ServiciosUpsertArgs>(args: SelectSubset<T, ServiciosUpsertArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Servicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosCountArgs} args - Arguments to filter Servicios to count.
-     * @example
-     * // Count the number of Servicios
-     * const count = await prisma.servicios.count({
-     *   where: {
-     *     // ... the filter for the Servicios we want to count
-     *   }
-     * })
-    **/
-    count<T extends ServiciosCountArgs>(
-      args?: Subset<T, ServiciosCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ServiciosCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Servicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ServiciosAggregateArgs>(args: Subset<T, ServiciosAggregateArgs>): Prisma.PrismaPromise<GetServiciosAggregateType<T>>
-
-    /**
-     * Group by Servicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ServiciosGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ServiciosGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ServiciosGroupByArgs['orderBy'] }
-        : { orderBy?: ServiciosGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ServiciosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServiciosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Servicios model
-   */
-  readonly fields: ServiciosFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Servicios.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ServiciosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    ApartamentoServicios<T extends Servicios$ApartamentoServiciosArgs<ExtArgs> = {}>(args?: Subset<T, Servicios$ApartamentoServiciosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Servicios model
-   */
-  interface ServiciosFieldRefs {
-    readonly id: FieldRef<"Servicios", 'Int'>
-    readonly nombre: FieldRef<"Servicios", 'String'>
-    readonly createAt: FieldRef<"Servicios", 'DateTime'>
-    readonly updateAt: FieldRef<"Servicios", 'DateTime'>
-    readonly activo: FieldRef<"Servicios", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Servicios findUnique
-   */
-  export type ServiciosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which Servicios to fetch.
-     */
-    where: ServiciosWhereUniqueInput
-  }
-
-  /**
-   * Servicios findUniqueOrThrow
-   */
-  export type ServiciosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which Servicios to fetch.
-     */
-    where: ServiciosWhereUniqueInput
-  }
-
-  /**
-   * Servicios findFirst
-   */
-  export type ServiciosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which Servicios to fetch.
-     */
-    where?: ServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Servicios to fetch.
-     */
-    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Servicios.
-     */
-    cursor?: ServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Servicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Servicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Servicios.
-     */
-    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * Servicios findFirstOrThrow
-   */
-  export type ServiciosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which Servicios to fetch.
-     */
-    where?: ServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Servicios to fetch.
-     */
-    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Servicios.
-     */
-    cursor?: ServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Servicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Servicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Servicios.
-     */
-    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * Servicios findMany
-   */
-  export type ServiciosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which Servicios to fetch.
-     */
-    where?: ServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Servicios to fetch.
-     */
-    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Servicios.
-     */
-    cursor?: ServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Servicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Servicios.
-     */
-    skip?: number
-    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * Servicios create
-   */
-  export type ServiciosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Servicios.
-     */
-    data: XOR<ServiciosCreateInput, ServiciosUncheckedCreateInput>
-  }
-
-  /**
-   * Servicios createMany
-   */
-  export type ServiciosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Servicios.
-     */
-    data: ServiciosCreateManyInput | ServiciosCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Servicios update
-   */
-  export type ServiciosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Servicios.
-     */
-    data: XOR<ServiciosUpdateInput, ServiciosUncheckedUpdateInput>
-    /**
-     * Choose, which Servicios to update.
-     */
-    where: ServiciosWhereUniqueInput
-  }
-
-  /**
-   * Servicios updateMany
-   */
-  export type ServiciosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Servicios.
-     */
-    data: XOR<ServiciosUpdateManyMutationInput, ServiciosUncheckedUpdateManyInput>
-    /**
-     * Filter which Servicios to update
-     */
-    where?: ServiciosWhereInput
-    /**
-     * Limit how many Servicios to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Servicios upsert
-   */
-  export type ServiciosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Servicios to update in case it exists.
-     */
-    where: ServiciosWhereUniqueInput
-    /**
-     * In case the Servicios found by the `where` argument doesn't exist, create a new Servicios with this data.
-     */
-    create: XOR<ServiciosCreateInput, ServiciosUncheckedCreateInput>
-    /**
-     * In case the Servicios was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ServiciosUpdateInput, ServiciosUncheckedUpdateInput>
-  }
-
-  /**
-   * Servicios delete
-   */
-  export type ServiciosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-    /**
-     * Filter which Servicios to delete.
-     */
-    where: ServiciosWhereUniqueInput
-  }
-
-  /**
-   * Servicios deleteMany
-   */
-  export type ServiciosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Servicios to delete
-     */
-    where?: ServiciosWhereInput
-    /**
-     * Limit how many Servicios to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Servicios.ApartamentoServicios
-   */
-  export type Servicios$ApartamentoServiciosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    where?: ApartamentoServiciosWhereInput
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * Servicios without action
-   */
-  export type ServiciosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Servicios
-     */
-    select?: ServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Servicios
-     */
-    omit?: ServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ServiciosInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model ApartamentoServicios
-   */
-
-  export type AggregateApartamentoServicios = {
-    _count: ApartamentoServiciosCountAggregateOutputType | null
-    _avg: ApartamentoServiciosAvgAggregateOutputType | null
-    _sum: ApartamentoServiciosSumAggregateOutputType | null
-    _min: ApartamentoServiciosMinAggregateOutputType | null
-    _max: ApartamentoServiciosMaxAggregateOutputType | null
-  }
-
-  export type ApartamentoServiciosAvgAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    servicioId: number | null
-    costoAdicional: Decimal | null
-  }
-
-  export type ApartamentoServiciosSumAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    servicioId: number | null
-    costoAdicional: Decimal | null
-  }
-
-  export type ApartamentoServiciosMinAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    servicioId: number | null
-    incluido: boolean | null
-    costoAdicional: Decimal | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type ApartamentoServiciosMaxAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    servicioId: number | null
-    incluido: boolean | null
-    costoAdicional: Decimal | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type ApartamentoServiciosCountAggregateOutputType = {
-    id: number
-    apartamentoId: number
-    servicioId: number
-    incluido: number
-    costoAdicional: number
-    createAt: number
-    updateAt: number
-    _all: number
-  }
-
-
-  export type ApartamentoServiciosAvgAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    servicioId?: true
-    costoAdicional?: true
-  }
-
-  export type ApartamentoServiciosSumAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    servicioId?: true
-    costoAdicional?: true
-  }
-
-  export type ApartamentoServiciosMinAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    servicioId?: true
-    incluido?: true
-    costoAdicional?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type ApartamentoServiciosMaxAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    servicioId?: true
-    incluido?: true
-    costoAdicional?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type ApartamentoServiciosCountAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    servicioId?: true
-    incluido?: true
-    costoAdicional?: true
-    createAt?: true
-    updateAt?: true
-    _all?: true
-  }
-
-  export type ApartamentoServiciosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which ApartamentoServicios to aggregate.
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of ApartamentoServicios to fetch.
-     */
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` ApartamentoServicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` ApartamentoServicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned ApartamentoServicios
-    **/
-    _count?: true | ApartamentoServiciosCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ApartamentoServiciosAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ApartamentoServiciosSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ApartamentoServiciosMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ApartamentoServiciosMaxAggregateInputType
-  }
-
-  export type GetApartamentoServiciosAggregateType<T extends ApartamentoServiciosAggregateArgs> = {
-        [P in keyof T & keyof AggregateApartamentoServicios]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateApartamentoServicios[P]>
-      : GetScalarType<T[P], AggregateApartamentoServicios[P]>
-  }
-
-
-
-
-  export type ApartamentoServiciosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ApartamentoServiciosWhereInput
-    orderBy?: ApartamentoServiciosOrderByWithAggregationInput | ApartamentoServiciosOrderByWithAggregationInput[]
-    by: ApartamentoServiciosScalarFieldEnum[] | ApartamentoServiciosScalarFieldEnum
-    having?: ApartamentoServiciosScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ApartamentoServiciosCountAggregateInputType | true
-    _avg?: ApartamentoServiciosAvgAggregateInputType
-    _sum?: ApartamentoServiciosSumAggregateInputType
-    _min?: ApartamentoServiciosMinAggregateInputType
-    _max?: ApartamentoServiciosMaxAggregateInputType
-  }
-
-  export type ApartamentoServiciosGroupByOutputType = {
-    id: number
-    apartamentoId: number
-    servicioId: number
-    incluido: boolean
-    costoAdicional: Decimal
-    createAt: Date
-    updateAt: Date
-    _count: ApartamentoServiciosCountAggregateOutputType | null
-    _avg: ApartamentoServiciosAvgAggregateOutputType | null
-    _sum: ApartamentoServiciosSumAggregateOutputType | null
-    _min: ApartamentoServiciosMinAggregateOutputType | null
-    _max: ApartamentoServiciosMaxAggregateOutputType | null
-  }
-
-  type GetApartamentoServiciosGroupByPayload<T extends ApartamentoServiciosGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ApartamentoServiciosGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ApartamentoServiciosGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ApartamentoServiciosGroupByOutputType[P]>
-            : GetScalarType<T[P], ApartamentoServiciosGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ApartamentoServiciosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    apartamentoId?: boolean
-    servicioId?: boolean
-    incluido?: boolean
-    costoAdicional?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    servicio?: boolean | ServiciosDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["apartamentoServicios"]>
-
-
-
-  export type ApartamentoServiciosSelectScalar = {
-    id?: boolean
-    apartamentoId?: boolean
-    servicioId?: boolean
-    incluido?: boolean
-    costoAdicional?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-  }
-
-  export type ApartamentoServiciosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apartamentoId" | "servicioId" | "incluido" | "costoAdicional" | "createAt" | "updateAt", ExtArgs["result"]["apartamentoServicios"]>
-  export type ApartamentoServiciosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    servicio?: boolean | ServiciosDefaultArgs<ExtArgs>
-  }
-
-  export type $ApartamentoServiciosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "ApartamentoServicios"
-    objects: {
-      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
-      servicio: Prisma.$ServiciosPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      apartamentoId: number
-      servicioId: number
-      incluido: boolean
-      costoAdicional: Prisma.Decimal
-      createAt: Date
-      updateAt: Date
-    }, ExtArgs["result"]["apartamentoServicios"]>
-    composites: {}
-  }
-
-  type ApartamentoServiciosGetPayload<S extends boolean | null | undefined | ApartamentoServiciosDefaultArgs> = $Result.GetResult<Prisma.$ApartamentoServiciosPayload, S>
-
-  type ApartamentoServiciosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ApartamentoServiciosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ApartamentoServiciosCountAggregateInputType | true
-    }
-
-  export interface ApartamentoServiciosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApartamentoServicios'], meta: { name: 'ApartamentoServicios' } }
-    /**
-     * Find zero or one ApartamentoServicios that matches the filter.
-     * @param {ApartamentoServiciosFindUniqueArgs} args - Arguments to find a ApartamentoServicios
-     * @example
-     * // Get one ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ApartamentoServiciosFindUniqueArgs>(args: SelectSubset<T, ApartamentoServiciosFindUniqueArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one ApartamentoServicios that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ApartamentoServiciosFindUniqueOrThrowArgs} args - Arguments to find a ApartamentoServicios
-     * @example
-     * // Get one ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ApartamentoServiciosFindUniqueOrThrowArgs>(args: SelectSubset<T, ApartamentoServiciosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first ApartamentoServicios that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosFindFirstArgs} args - Arguments to find a ApartamentoServicios
-     * @example
-     * // Get one ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ApartamentoServiciosFindFirstArgs>(args?: SelectSubset<T, ApartamentoServiciosFindFirstArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first ApartamentoServicios that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosFindFirstOrThrowArgs} args - Arguments to find a ApartamentoServicios
-     * @example
-     * // Get one ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ApartamentoServiciosFindFirstOrThrowArgs>(args?: SelectSubset<T, ApartamentoServiciosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more ApartamentoServicios that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findMany()
-     * 
-     * // Get first 10 ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const apartamentoServiciosWithIdOnly = await prisma.apartamentoServicios.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ApartamentoServiciosFindManyArgs>(args?: SelectSubset<T, ApartamentoServiciosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a ApartamentoServicios.
-     * @param {ApartamentoServiciosCreateArgs} args - Arguments to create a ApartamentoServicios.
-     * @example
-     * // Create one ApartamentoServicios
-     * const ApartamentoServicios = await prisma.apartamentoServicios.create({
-     *   data: {
-     *     // ... data to create a ApartamentoServicios
-     *   }
-     * })
-     * 
-     */
-    create<T extends ApartamentoServiciosCreateArgs>(args: SelectSubset<T, ApartamentoServiciosCreateArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many ApartamentoServicios.
-     * @param {ApartamentoServiciosCreateManyArgs} args - Arguments to create many ApartamentoServicios.
-     * @example
-     * // Create many ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ApartamentoServiciosCreateManyArgs>(args?: SelectSubset<T, ApartamentoServiciosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a ApartamentoServicios.
-     * @param {ApartamentoServiciosDeleteArgs} args - Arguments to delete one ApartamentoServicios.
-     * @example
-     * // Delete one ApartamentoServicios
-     * const ApartamentoServicios = await prisma.apartamentoServicios.delete({
-     *   where: {
-     *     // ... filter to delete one ApartamentoServicios
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ApartamentoServiciosDeleteArgs>(args: SelectSubset<T, ApartamentoServiciosDeleteArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one ApartamentoServicios.
-     * @param {ApartamentoServiciosUpdateArgs} args - Arguments to update one ApartamentoServicios.
-     * @example
-     * // Update one ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ApartamentoServiciosUpdateArgs>(args: SelectSubset<T, ApartamentoServiciosUpdateArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more ApartamentoServicios.
-     * @param {ApartamentoServiciosDeleteManyArgs} args - Arguments to filter ApartamentoServicios to delete.
-     * @example
-     * // Delete a few ApartamentoServicios
-     * const { count } = await prisma.apartamentoServicios.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ApartamentoServiciosDeleteManyArgs>(args?: SelectSubset<T, ApartamentoServiciosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more ApartamentoServicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ApartamentoServiciosUpdateManyArgs>(args: SelectSubset<T, ApartamentoServiciosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one ApartamentoServicios.
-     * @param {ApartamentoServiciosUpsertArgs} args - Arguments to update or create a ApartamentoServicios.
-     * @example
-     * // Update or create a ApartamentoServicios
-     * const apartamentoServicios = await prisma.apartamentoServicios.upsert({
-     *   create: {
-     *     // ... data to create a ApartamentoServicios
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the ApartamentoServicios we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ApartamentoServiciosUpsertArgs>(args: SelectSubset<T, ApartamentoServiciosUpsertArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of ApartamentoServicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosCountArgs} args - Arguments to filter ApartamentoServicios to count.
-     * @example
-     * // Count the number of ApartamentoServicios
-     * const count = await prisma.apartamentoServicios.count({
-     *   where: {
-     *     // ... the filter for the ApartamentoServicios we want to count
-     *   }
-     * })
-    **/
-    count<T extends ApartamentoServiciosCountArgs>(
-      args?: Subset<T, ApartamentoServiciosCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ApartamentoServiciosCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a ApartamentoServicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ApartamentoServiciosAggregateArgs>(args: Subset<T, ApartamentoServiciosAggregateArgs>): Prisma.PrismaPromise<GetApartamentoServiciosAggregateType<T>>
-
-    /**
-     * Group by ApartamentoServicios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ApartamentoServiciosGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ApartamentoServiciosGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ApartamentoServiciosGroupByArgs['orderBy'] }
-        : { orderBy?: ApartamentoServiciosGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ApartamentoServiciosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApartamentoServiciosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the ApartamentoServicios model
-   */
-  readonly fields: ApartamentoServiciosFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for ApartamentoServicios.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ApartamentoServiciosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    servicio<T extends ServiciosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServiciosDefaultArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the ApartamentoServicios model
-   */
-  interface ApartamentoServiciosFieldRefs {
-    readonly id: FieldRef<"ApartamentoServicios", 'Int'>
-    readonly apartamentoId: FieldRef<"ApartamentoServicios", 'Int'>
-    readonly servicioId: FieldRef<"ApartamentoServicios", 'Int'>
-    readonly incluido: FieldRef<"ApartamentoServicios", 'Boolean'>
-    readonly costoAdicional: FieldRef<"ApartamentoServicios", 'Decimal'>
-    readonly createAt: FieldRef<"ApartamentoServicios", 'DateTime'>
-    readonly updateAt: FieldRef<"ApartamentoServicios", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * ApartamentoServicios findUnique
-   */
-  export type ApartamentoServiciosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which ApartamentoServicios to fetch.
-     */
-    where: ApartamentoServiciosWhereUniqueInput
-  }
-
-  /**
-   * ApartamentoServicios findUniqueOrThrow
-   */
-  export type ApartamentoServiciosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which ApartamentoServicios to fetch.
-     */
-    where: ApartamentoServiciosWhereUniqueInput
-  }
-
-  /**
-   * ApartamentoServicios findFirst
-   */
-  export type ApartamentoServiciosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which ApartamentoServicios to fetch.
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of ApartamentoServicios to fetch.
-     */
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for ApartamentoServicios.
-     */
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` ApartamentoServicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` ApartamentoServicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of ApartamentoServicios.
-     */
-    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * ApartamentoServicios findFirstOrThrow
-   */
-  export type ApartamentoServiciosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which ApartamentoServicios to fetch.
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of ApartamentoServicios to fetch.
-     */
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for ApartamentoServicios.
-     */
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` ApartamentoServicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` ApartamentoServicios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of ApartamentoServicios.
-     */
-    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * ApartamentoServicios findMany
-   */
-  export type ApartamentoServiciosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter, which ApartamentoServicios to fetch.
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of ApartamentoServicios to fetch.
-     */
-    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing ApartamentoServicios.
-     */
-    cursor?: ApartamentoServiciosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` ApartamentoServicios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` ApartamentoServicios.
-     */
-    skip?: number
-    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
-  }
-
-  /**
-   * ApartamentoServicios create
-   */
-  export type ApartamentoServiciosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * The data needed to create a ApartamentoServicios.
-     */
-    data: XOR<ApartamentoServiciosCreateInput, ApartamentoServiciosUncheckedCreateInput>
-  }
-
-  /**
-   * ApartamentoServicios createMany
-   */
-  export type ApartamentoServiciosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many ApartamentoServicios.
-     */
-    data: ApartamentoServiciosCreateManyInput | ApartamentoServiciosCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * ApartamentoServicios update
-   */
-  export type ApartamentoServiciosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * The data needed to update a ApartamentoServicios.
-     */
-    data: XOR<ApartamentoServiciosUpdateInput, ApartamentoServiciosUncheckedUpdateInput>
-    /**
-     * Choose, which ApartamentoServicios to update.
-     */
-    where: ApartamentoServiciosWhereUniqueInput
-  }
-
-  /**
-   * ApartamentoServicios updateMany
-   */
-  export type ApartamentoServiciosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update ApartamentoServicios.
-     */
-    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyInput>
-    /**
-     * Filter which ApartamentoServicios to update
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * Limit how many ApartamentoServicios to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * ApartamentoServicios upsert
-   */
-  export type ApartamentoServiciosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * The filter to search for the ApartamentoServicios to update in case it exists.
-     */
-    where: ApartamentoServiciosWhereUniqueInput
-    /**
-     * In case the ApartamentoServicios found by the `where` argument doesn't exist, create a new ApartamentoServicios with this data.
-     */
-    create: XOR<ApartamentoServiciosCreateInput, ApartamentoServiciosUncheckedCreateInput>
-    /**
-     * In case the ApartamentoServicios was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ApartamentoServiciosUpdateInput, ApartamentoServiciosUncheckedUpdateInput>
-  }
-
-  /**
-   * ApartamentoServicios delete
-   */
-  export type ApartamentoServiciosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-    /**
-     * Filter which ApartamentoServicios to delete.
-     */
-    where: ApartamentoServiciosWhereUniqueInput
-  }
-
-  /**
-   * ApartamentoServicios deleteMany
-   */
-  export type ApartamentoServiciosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which ApartamentoServicios to delete
-     */
-    where?: ApartamentoServiciosWhereInput
-    /**
-     * Limit how many ApartamentoServicios to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * ApartamentoServicios without action
-   */
-  export type ApartamentoServiciosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ApartamentoServicios
-     */
-    select?: ApartamentoServiciosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ApartamentoServicios
-     */
-    omit?: ApartamentoServiciosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ApartamentoServiciosInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Contratos
-   */
-
-  export type AggregateContratos = {
-    _count: ContratosCountAggregateOutputType | null
-    _avg: ContratosAvgAggregateOutputType | null
-    _sum: ContratosSumAggregateOutputType | null
-    _min: ContratosMinAggregateOutputType | null
-    _max: ContratosMaxAggregateOutputType | null
-  }
-
-  export type ContratosAvgAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    montoMensual: Decimal | null
-  }
-
-  export type ContratosSumAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    montoMensual: Decimal | null
-  }
-
-  export type ContratosMinAggregateOutputType = {
-    id: number | null
-    inquilinoId: string | null
-    apartamentoId: number | null
-    fechaInicio: Date | null
-    fechaFin: Date | null
-    createAt: Date | null
-    updateAt: Date | null
-    montoMensual: Decimal | null
-    activo: boolean | null
-  }
-
-  export type ContratosMaxAggregateOutputType = {
-    id: number | null
-    inquilinoId: string | null
-    apartamentoId: number | null
-    fechaInicio: Date | null
-    fechaFin: Date | null
-    createAt: Date | null
-    updateAt: Date | null
-    montoMensual: Decimal | null
-    activo: boolean | null
-  }
-
-  export type ContratosCountAggregateOutputType = {
-    id: number
-    inquilinoId: number
-    apartamentoId: number
-    fechaInicio: number
-    fechaFin: number
-    createAt: number
-    updateAt: number
-    montoMensual: number
-    activo: number
-    _all: number
-  }
-
-
-  export type ContratosAvgAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    montoMensual?: true
-  }
-
-  export type ContratosSumAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    montoMensual?: true
-  }
-
-  export type ContratosMinAggregateInputType = {
-    id?: true
-    inquilinoId?: true
-    apartamentoId?: true
-    fechaInicio?: true
-    fechaFin?: true
-    createAt?: true
-    updateAt?: true
-    montoMensual?: true
-    activo?: true
-  }
-
-  export type ContratosMaxAggregateInputType = {
-    id?: true
-    inquilinoId?: true
-    apartamentoId?: true
-    fechaInicio?: true
-    fechaFin?: true
-    createAt?: true
-    updateAt?: true
-    montoMensual?: true
-    activo?: true
-  }
-
-  export type ContratosCountAggregateInputType = {
-    id?: true
-    inquilinoId?: true
-    apartamentoId?: true
-    fechaInicio?: true
-    fechaFin?: true
-    createAt?: true
-    updateAt?: true
-    montoMensual?: true
-    activo?: true
-    _all?: true
-  }
-
-  export type ContratosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Contratos to aggregate.
-     */
-    where?: ContratosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contratos to fetch.
-     */
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ContratosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contratos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contratos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Contratos
-    **/
-    _count?: true | ContratosCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: ContratosAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: ContratosSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ContratosMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ContratosMaxAggregateInputType
-  }
-
-  export type GetContratosAggregateType<T extends ContratosAggregateArgs> = {
-        [P in keyof T & keyof AggregateContratos]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateContratos[P]>
-      : GetScalarType<T[P], AggregateContratos[P]>
-  }
-
-
-
-
-  export type ContratosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ContratosWhereInput
-    orderBy?: ContratosOrderByWithAggregationInput | ContratosOrderByWithAggregationInput[]
-    by: ContratosScalarFieldEnum[] | ContratosScalarFieldEnum
-    having?: ContratosScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ContratosCountAggregateInputType | true
-    _avg?: ContratosAvgAggregateInputType
-    _sum?: ContratosSumAggregateInputType
-    _min?: ContratosMinAggregateInputType
-    _max?: ContratosMaxAggregateInputType
-  }
-
-  export type ContratosGroupByOutputType = {
-    id: number
-    inquilinoId: string
-    apartamentoId: number
-    fechaInicio: Date
-    fechaFin: Date | null
-    createAt: Date
-    updateAt: Date
-    montoMensual: Decimal
-    activo: boolean
-    _count: ContratosCountAggregateOutputType | null
-    _avg: ContratosAvgAggregateOutputType | null
-    _sum: ContratosSumAggregateOutputType | null
-    _min: ContratosMinAggregateOutputType | null
-    _max: ContratosMaxAggregateOutputType | null
-  }
-
-  type GetContratosGroupByPayload<T extends ContratosGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ContratosGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ContratosGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ContratosGroupByOutputType[P]>
-            : GetScalarType<T[P], ContratosGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ContratosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    inquilinoId?: boolean
-    apartamentoId?: boolean
-    fechaInicio?: boolean
-    fechaFin?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    montoMensual?: boolean
-    activo?: boolean
-    inquilino?: boolean | InquilinoDefaultArgs<ExtArgs>
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    recibos?: boolean | Contratos$recibosArgs<ExtArgs>
-    _count?: boolean | ContratosCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["contratos"]>
-
-
-
-  export type ContratosSelectScalar = {
-    id?: boolean
-    inquilinoId?: boolean
-    apartamentoId?: boolean
-    fechaInicio?: boolean
-    fechaFin?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    montoMensual?: boolean
-    activo?: boolean
-  }
-
-  export type ContratosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "inquilinoId" | "apartamentoId" | "fechaInicio" | "fechaFin" | "createAt" | "updateAt" | "montoMensual" | "activo", ExtArgs["result"]["contratos"]>
-  export type ContratosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    inquilino?: boolean | InquilinoDefaultArgs<ExtArgs>
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    recibos?: boolean | Contratos$recibosArgs<ExtArgs>
-    _count?: boolean | ContratosCountOutputTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $ContratosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Contratos"
-    objects: {
-      inquilino: Prisma.$InquilinoPayload<ExtArgs>
-      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
-      recibos: Prisma.$RecibosPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      inquilinoId: string
-      apartamentoId: number
-      fechaInicio: Date
-      fechaFin: Date | null
-      createAt: Date
-      updateAt: Date
-      montoMensual: Prisma.Decimal
-      activo: boolean
-    }, ExtArgs["result"]["contratos"]>
-    composites: {}
-  }
-
-  type ContratosGetPayload<S extends boolean | null | undefined | ContratosDefaultArgs> = $Result.GetResult<Prisma.$ContratosPayload, S>
-
-  type ContratosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ContratosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ContratosCountAggregateInputType | true
-    }
-
-  export interface ContratosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contratos'], meta: { name: 'Contratos' } }
-    /**
-     * Find zero or one Contratos that matches the filter.
-     * @param {ContratosFindUniqueArgs} args - Arguments to find a Contratos
-     * @example
-     * // Get one Contratos
-     * const contratos = await prisma.contratos.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ContratosFindUniqueArgs>(args: SelectSubset<T, ContratosFindUniqueArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Contratos that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ContratosFindUniqueOrThrowArgs} args - Arguments to find a Contratos
-     * @example
-     * // Get one Contratos
-     * const contratos = await prisma.contratos.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ContratosFindUniqueOrThrowArgs>(args: SelectSubset<T, ContratosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Contratos that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosFindFirstArgs} args - Arguments to find a Contratos
-     * @example
-     * // Get one Contratos
-     * const contratos = await prisma.contratos.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ContratosFindFirstArgs>(args?: SelectSubset<T, ContratosFindFirstArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Contratos that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosFindFirstOrThrowArgs} args - Arguments to find a Contratos
-     * @example
-     * // Get one Contratos
-     * const contratos = await prisma.contratos.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ContratosFindFirstOrThrowArgs>(args?: SelectSubset<T, ContratosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Contratos that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Contratos
-     * const contratos = await prisma.contratos.findMany()
-     * 
-     * // Get first 10 Contratos
-     * const contratos = await prisma.contratos.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const contratosWithIdOnly = await prisma.contratos.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ContratosFindManyArgs>(args?: SelectSubset<T, ContratosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Contratos.
-     * @param {ContratosCreateArgs} args - Arguments to create a Contratos.
-     * @example
-     * // Create one Contratos
-     * const Contratos = await prisma.contratos.create({
-     *   data: {
-     *     // ... data to create a Contratos
-     *   }
-     * })
-     * 
-     */
-    create<T extends ContratosCreateArgs>(args: SelectSubset<T, ContratosCreateArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Contratos.
-     * @param {ContratosCreateManyArgs} args - Arguments to create many Contratos.
-     * @example
-     * // Create many Contratos
-     * const contratos = await prisma.contratos.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ContratosCreateManyArgs>(args?: SelectSubset<T, ContratosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Contratos.
-     * @param {ContratosDeleteArgs} args - Arguments to delete one Contratos.
-     * @example
-     * // Delete one Contratos
-     * const Contratos = await prisma.contratos.delete({
-     *   where: {
-     *     // ... filter to delete one Contratos
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ContratosDeleteArgs>(args: SelectSubset<T, ContratosDeleteArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Contratos.
-     * @param {ContratosUpdateArgs} args - Arguments to update one Contratos.
-     * @example
-     * // Update one Contratos
-     * const contratos = await prisma.contratos.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ContratosUpdateArgs>(args: SelectSubset<T, ContratosUpdateArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Contratos.
-     * @param {ContratosDeleteManyArgs} args - Arguments to filter Contratos to delete.
-     * @example
-     * // Delete a few Contratos
-     * const { count } = await prisma.contratos.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ContratosDeleteManyArgs>(args?: SelectSubset<T, ContratosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Contratos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Contratos
-     * const contratos = await prisma.contratos.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ContratosUpdateManyArgs>(args: SelectSubset<T, ContratosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Contratos.
-     * @param {ContratosUpsertArgs} args - Arguments to update or create a Contratos.
-     * @example
-     * // Update or create a Contratos
-     * const contratos = await prisma.contratos.upsert({
-     *   create: {
-     *     // ... data to create a Contratos
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Contratos we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ContratosUpsertArgs>(args: SelectSubset<T, ContratosUpsertArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Contratos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosCountArgs} args - Arguments to filter Contratos to count.
-     * @example
-     * // Count the number of Contratos
-     * const count = await prisma.contratos.count({
-     *   where: {
-     *     // ... the filter for the Contratos we want to count
-     *   }
-     * })
-    **/
-    count<T extends ContratosCountArgs>(
-      args?: Subset<T, ContratosCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ContratosCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Contratos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ContratosAggregateArgs>(args: Subset<T, ContratosAggregateArgs>): Prisma.PrismaPromise<GetContratosAggregateType<T>>
-
-    /**
-     * Group by Contratos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContratosGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ContratosGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ContratosGroupByArgs['orderBy'] }
-        : { orderBy?: ContratosGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ContratosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContratosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Contratos model
-   */
-  readonly fields: ContratosFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Contratos.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ContratosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    inquilino<T extends InquilinoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InquilinoDefaultArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    recibos<T extends Contratos$recibosArgs<ExtArgs> = {}>(args?: Subset<T, Contratos$recibosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecibosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Contratos model
-   */
-  interface ContratosFieldRefs {
-    readonly id: FieldRef<"Contratos", 'Int'>
-    readonly inquilinoId: FieldRef<"Contratos", 'String'>
-    readonly apartamentoId: FieldRef<"Contratos", 'Int'>
-    readonly fechaInicio: FieldRef<"Contratos", 'DateTime'>
-    readonly fechaFin: FieldRef<"Contratos", 'DateTime'>
-    readonly createAt: FieldRef<"Contratos", 'DateTime'>
-    readonly updateAt: FieldRef<"Contratos", 'DateTime'>
-    readonly montoMensual: FieldRef<"Contratos", 'Decimal'>
-    readonly activo: FieldRef<"Contratos", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Contratos findUnique
-   */
-  export type ContratosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter, which Contratos to fetch.
-     */
-    where: ContratosWhereUniqueInput
-  }
-
-  /**
-   * Contratos findUniqueOrThrow
-   */
-  export type ContratosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter, which Contratos to fetch.
-     */
-    where: ContratosWhereUniqueInput
-  }
-
-  /**
-   * Contratos findFirst
-   */
-  export type ContratosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter, which Contratos to fetch.
-     */
-    where?: ContratosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contratos to fetch.
-     */
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Contratos.
-     */
-    cursor?: ContratosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contratos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contratos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Contratos.
-     */
-    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
-  }
-
-  /**
-   * Contratos findFirstOrThrow
-   */
-  export type ContratosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter, which Contratos to fetch.
-     */
-    where?: ContratosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contratos to fetch.
-     */
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Contratos.
-     */
-    cursor?: ContratosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contratos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contratos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Contratos.
-     */
-    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
-  }
-
-  /**
-   * Contratos findMany
-   */
-  export type ContratosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter, which Contratos to fetch.
-     */
-    where?: ContratosWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Contratos to fetch.
-     */
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Contratos.
-     */
-    cursor?: ContratosWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Contratos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Contratos.
-     */
-    skip?: number
-    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
-  }
-
-  /**
-   * Contratos create
-   */
-  export type ContratosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Contratos.
-     */
-    data: XOR<ContratosCreateInput, ContratosUncheckedCreateInput>
-  }
-
-  /**
-   * Contratos createMany
-   */
-  export type ContratosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Contratos.
-     */
-    data: ContratosCreateManyInput | ContratosCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Contratos update
-   */
-  export type ContratosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Contratos.
-     */
-    data: XOR<ContratosUpdateInput, ContratosUncheckedUpdateInput>
-    /**
-     * Choose, which Contratos to update.
-     */
-    where: ContratosWhereUniqueInput
-  }
-
-  /**
-   * Contratos updateMany
-   */
-  export type ContratosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Contratos.
-     */
-    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyInput>
-    /**
-     * Filter which Contratos to update
-     */
-    where?: ContratosWhereInput
-    /**
-     * Limit how many Contratos to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Contratos upsert
-   */
-  export type ContratosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Contratos to update in case it exists.
-     */
-    where: ContratosWhereUniqueInput
-    /**
-     * In case the Contratos found by the `where` argument doesn't exist, create a new Contratos with this data.
-     */
-    create: XOR<ContratosCreateInput, ContratosUncheckedCreateInput>
-    /**
-     * In case the Contratos was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ContratosUpdateInput, ContratosUncheckedUpdateInput>
-  }
-
-  /**
-   * Contratos delete
-   */
-  export type ContratosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    /**
-     * Filter which Contratos to delete.
-     */
-    where: ContratosWhereUniqueInput
-  }
-
-  /**
-   * Contratos deleteMany
-   */
-  export type ContratosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Contratos to delete
-     */
-    where?: ContratosWhereInput
-    /**
-     * Limit how many Contratos to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Contratos.recibos
-   */
-  export type Contratos$recibosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Recibos
-     */
-    select?: RecibosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Recibos
-     */
-    omit?: RecibosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecibosInclude<ExtArgs> | null
-    where?: RecibosWhereInput
-    orderBy?: RecibosOrderByWithRelationInput | RecibosOrderByWithRelationInput[]
-    cursor?: RecibosWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RecibosScalarFieldEnum | RecibosScalarFieldEnum[]
-  }
-
-  /**
-   * Contratos without action
-   */
-  export type ContratosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Habitaciones
-   */
-
-  export type AggregateHabitaciones = {
-    _count: HabitacionesCountAggregateOutputType | null
-    _avg: HabitacionesAvgAggregateOutputType | null
-    _sum: HabitacionesSumAggregateOutputType | null
-    _min: HabitacionesMinAggregateOutputType | null
-    _max: HabitacionesMaxAggregateOutputType | null
-  }
-
-  export type HabitacionesAvgAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    tipoHabitacionId: number | null
-    cantidad: number | null
-  }
-
-  export type HabitacionesSumAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    tipoHabitacionId: number | null
-    cantidad: number | null
-  }
-
-  export type HabitacionesMinAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    tipoHabitacionId: number | null
-    cantidad: number | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type HabitacionesMaxAggregateOutputType = {
-    id: number | null
-    apartamentoId: number | null
-    tipoHabitacionId: number | null
-    cantidad: number | null
-    createAt: Date | null
-    updateAt: Date | null
-  }
-
-  export type HabitacionesCountAggregateOutputType = {
-    id: number
-    apartamentoId: number
-    tipoHabitacionId: number
-    cantidad: number
-    createAt: number
-    updateAt: number
-    _all: number
-  }
-
-
-  export type HabitacionesAvgAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    tipoHabitacionId?: true
-    cantidad?: true
-  }
-
-  export type HabitacionesSumAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    tipoHabitacionId?: true
-    cantidad?: true
-  }
-
-  export type HabitacionesMinAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    tipoHabitacionId?: true
-    cantidad?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type HabitacionesMaxAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    tipoHabitacionId?: true
-    cantidad?: true
-    createAt?: true
-    updateAt?: true
-  }
-
-  export type HabitacionesCountAggregateInputType = {
-    id?: true
-    apartamentoId?: true
-    tipoHabitacionId?: true
-    cantidad?: true
-    createAt?: true
-    updateAt?: true
-    _all?: true
-  }
-
-  export type HabitacionesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Habitaciones to aggregate.
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Habitaciones to fetch.
-     */
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: HabitacionesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Habitaciones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Habitaciones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Habitaciones
-    **/
-    _count?: true | HabitacionesCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: HabitacionesAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: HabitacionesSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: HabitacionesMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: HabitacionesMaxAggregateInputType
-  }
-
-  export type GetHabitacionesAggregateType<T extends HabitacionesAggregateArgs> = {
-        [P in keyof T & keyof AggregateHabitaciones]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateHabitaciones[P]>
-      : GetScalarType<T[P], AggregateHabitaciones[P]>
-  }
-
-
-
-
-  export type HabitacionesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HabitacionesWhereInput
-    orderBy?: HabitacionesOrderByWithAggregationInput | HabitacionesOrderByWithAggregationInput[]
-    by: HabitacionesScalarFieldEnum[] | HabitacionesScalarFieldEnum
-    having?: HabitacionesScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: HabitacionesCountAggregateInputType | true
-    _avg?: HabitacionesAvgAggregateInputType
-    _sum?: HabitacionesSumAggregateInputType
-    _min?: HabitacionesMinAggregateInputType
-    _max?: HabitacionesMaxAggregateInputType
-  }
-
-  export type HabitacionesGroupByOutputType = {
-    id: number
-    apartamentoId: number
-    tipoHabitacionId: number
-    cantidad: number
-    createAt: Date
-    updateAt: Date
-    _count: HabitacionesCountAggregateOutputType | null
-    _avg: HabitacionesAvgAggregateOutputType | null
-    _sum: HabitacionesSumAggregateOutputType | null
-    _min: HabitacionesMinAggregateOutputType | null
-    _max: HabitacionesMaxAggregateOutputType | null
-  }
-
-  type GetHabitacionesGroupByPayload<T extends HabitacionesGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<HabitacionesGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof HabitacionesGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], HabitacionesGroupByOutputType[P]>
-            : GetScalarType<T[P], HabitacionesGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type HabitacionesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    apartamentoId?: boolean
-    tipoHabitacionId?: boolean
-    cantidad?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    tipoHabitacion?: boolean | TiposHabitacionDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["habitaciones"]>
-
-
-
-  export type HabitacionesSelectScalar = {
-    id?: boolean
-    apartamentoId?: boolean
-    tipoHabitacionId?: boolean
-    cantidad?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-  }
-
-  export type HabitacionesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apartamentoId" | "tipoHabitacionId" | "cantidad" | "createAt" | "updateAt", ExtArgs["result"]["habitaciones"]>
-  export type HabitacionesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
-    tipoHabitacion?: boolean | TiposHabitacionDefaultArgs<ExtArgs>
-  }
-
-  export type $HabitacionesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Habitaciones"
-    objects: {
-      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
-      tipoHabitacion: Prisma.$TiposHabitacionPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      apartamentoId: number
-      tipoHabitacionId: number
-      cantidad: number
-      createAt: Date
-      updateAt: Date
-    }, ExtArgs["result"]["habitaciones"]>
-    composites: {}
-  }
-
-  type HabitacionesGetPayload<S extends boolean | null | undefined | HabitacionesDefaultArgs> = $Result.GetResult<Prisma.$HabitacionesPayload, S>
-
-  type HabitacionesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<HabitacionesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: HabitacionesCountAggregateInputType | true
-    }
-
-  export interface HabitacionesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Habitaciones'], meta: { name: 'Habitaciones' } }
-    /**
-     * Find zero or one Habitaciones that matches the filter.
-     * @param {HabitacionesFindUniqueArgs} args - Arguments to find a Habitaciones
-     * @example
-     * // Get one Habitaciones
-     * const habitaciones = await prisma.habitaciones.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends HabitacionesFindUniqueArgs>(args: SelectSubset<T, HabitacionesFindUniqueArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Habitaciones that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {HabitacionesFindUniqueOrThrowArgs} args - Arguments to find a Habitaciones
-     * @example
-     * // Get one Habitaciones
-     * const habitaciones = await prisma.habitaciones.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends HabitacionesFindUniqueOrThrowArgs>(args: SelectSubset<T, HabitacionesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Habitaciones that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesFindFirstArgs} args - Arguments to find a Habitaciones
-     * @example
-     * // Get one Habitaciones
-     * const habitaciones = await prisma.habitaciones.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends HabitacionesFindFirstArgs>(args?: SelectSubset<T, HabitacionesFindFirstArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Habitaciones that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesFindFirstOrThrowArgs} args - Arguments to find a Habitaciones
-     * @example
-     * // Get one Habitaciones
-     * const habitaciones = await prisma.habitaciones.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends HabitacionesFindFirstOrThrowArgs>(args?: SelectSubset<T, HabitacionesFindFirstOrThrowArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Habitaciones that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Habitaciones
-     * const habitaciones = await prisma.habitaciones.findMany()
-     * 
-     * // Get first 10 Habitaciones
-     * const habitaciones = await prisma.habitaciones.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const habitacionesWithIdOnly = await prisma.habitaciones.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends HabitacionesFindManyArgs>(args?: SelectSubset<T, HabitacionesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Habitaciones.
-     * @param {HabitacionesCreateArgs} args - Arguments to create a Habitaciones.
-     * @example
-     * // Create one Habitaciones
-     * const Habitaciones = await prisma.habitaciones.create({
-     *   data: {
-     *     // ... data to create a Habitaciones
-     *   }
-     * })
-     * 
-     */
-    create<T extends HabitacionesCreateArgs>(args: SelectSubset<T, HabitacionesCreateArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Habitaciones.
-     * @param {HabitacionesCreateManyArgs} args - Arguments to create many Habitaciones.
-     * @example
-     * // Create many Habitaciones
-     * const habitaciones = await prisma.habitaciones.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends HabitacionesCreateManyArgs>(args?: SelectSubset<T, HabitacionesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Habitaciones.
-     * @param {HabitacionesDeleteArgs} args - Arguments to delete one Habitaciones.
-     * @example
-     * // Delete one Habitaciones
-     * const Habitaciones = await prisma.habitaciones.delete({
-     *   where: {
-     *     // ... filter to delete one Habitaciones
-     *   }
-     * })
-     * 
-     */
-    delete<T extends HabitacionesDeleteArgs>(args: SelectSubset<T, HabitacionesDeleteArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Habitaciones.
-     * @param {HabitacionesUpdateArgs} args - Arguments to update one Habitaciones.
-     * @example
-     * // Update one Habitaciones
-     * const habitaciones = await prisma.habitaciones.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends HabitacionesUpdateArgs>(args: SelectSubset<T, HabitacionesUpdateArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Habitaciones.
-     * @param {HabitacionesDeleteManyArgs} args - Arguments to filter Habitaciones to delete.
-     * @example
-     * // Delete a few Habitaciones
-     * const { count } = await prisma.habitaciones.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends HabitacionesDeleteManyArgs>(args?: SelectSubset<T, HabitacionesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Habitaciones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Habitaciones
-     * const habitaciones = await prisma.habitaciones.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends HabitacionesUpdateManyArgs>(args: SelectSubset<T, HabitacionesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Habitaciones.
-     * @param {HabitacionesUpsertArgs} args - Arguments to update or create a Habitaciones.
-     * @example
-     * // Update or create a Habitaciones
-     * const habitaciones = await prisma.habitaciones.upsert({
-     *   create: {
-     *     // ... data to create a Habitaciones
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Habitaciones we want to update
-     *   }
-     * })
-     */
-    upsert<T extends HabitacionesUpsertArgs>(args: SelectSubset<T, HabitacionesUpsertArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Habitaciones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesCountArgs} args - Arguments to filter Habitaciones to count.
-     * @example
-     * // Count the number of Habitaciones
-     * const count = await prisma.habitaciones.count({
-     *   where: {
-     *     // ... the filter for the Habitaciones we want to count
-     *   }
-     * })
-    **/
-    count<T extends HabitacionesCountArgs>(
-      args?: Subset<T, HabitacionesCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], HabitacionesCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Habitaciones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends HabitacionesAggregateArgs>(args: Subset<T, HabitacionesAggregateArgs>): Prisma.PrismaPromise<GetHabitacionesAggregateType<T>>
-
-    /**
-     * Group by Habitaciones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HabitacionesGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends HabitacionesGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: HabitacionesGroupByArgs['orderBy'] }
-        : { orderBy?: HabitacionesGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, HabitacionesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHabitacionesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Habitaciones model
-   */
-  readonly fields: HabitacionesFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Habitaciones.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__HabitacionesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    tipoHabitacion<T extends TiposHabitacionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TiposHabitacionDefaultArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Habitaciones model
-   */
-  interface HabitacionesFieldRefs {
-    readonly id: FieldRef<"Habitaciones", 'Int'>
-    readonly apartamentoId: FieldRef<"Habitaciones", 'Int'>
-    readonly tipoHabitacionId: FieldRef<"Habitaciones", 'Int'>
-    readonly cantidad: FieldRef<"Habitaciones", 'Int'>
-    readonly createAt: FieldRef<"Habitaciones", 'DateTime'>
-    readonly updateAt: FieldRef<"Habitaciones", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Habitaciones findUnique
-   */
-  export type HabitacionesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter, which Habitaciones to fetch.
-     */
-    where: HabitacionesWhereUniqueInput
-  }
-
-  /**
-   * Habitaciones findUniqueOrThrow
-   */
-  export type HabitacionesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter, which Habitaciones to fetch.
-     */
-    where: HabitacionesWhereUniqueInput
-  }
-
-  /**
-   * Habitaciones findFirst
-   */
-  export type HabitacionesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter, which Habitaciones to fetch.
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Habitaciones to fetch.
-     */
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Habitaciones.
-     */
-    cursor?: HabitacionesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Habitaciones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Habitaciones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Habitaciones.
-     */
-    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
-  }
-
-  /**
-   * Habitaciones findFirstOrThrow
-   */
-  export type HabitacionesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter, which Habitaciones to fetch.
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Habitaciones to fetch.
-     */
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Habitaciones.
-     */
-    cursor?: HabitacionesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Habitaciones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Habitaciones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Habitaciones.
-     */
-    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
-  }
-
-  /**
-   * Habitaciones findMany
-   */
-  export type HabitacionesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter, which Habitaciones to fetch.
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Habitaciones to fetch.
-     */
-    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Habitaciones.
-     */
-    cursor?: HabitacionesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Habitaciones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Habitaciones.
-     */
-    skip?: number
-    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
-  }
-
-  /**
-   * Habitaciones create
-   */
-  export type HabitacionesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Habitaciones.
-     */
-    data: XOR<HabitacionesCreateInput, HabitacionesUncheckedCreateInput>
-  }
-
-  /**
-   * Habitaciones createMany
-   */
-  export type HabitacionesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Habitaciones.
-     */
-    data: HabitacionesCreateManyInput | HabitacionesCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Habitaciones update
-   */
-  export type HabitacionesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Habitaciones.
-     */
-    data: XOR<HabitacionesUpdateInput, HabitacionesUncheckedUpdateInput>
-    /**
-     * Choose, which Habitaciones to update.
-     */
-    where: HabitacionesWhereUniqueInput
-  }
-
-  /**
-   * Habitaciones updateMany
-   */
-  export type HabitacionesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Habitaciones.
-     */
-    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyInput>
-    /**
-     * Filter which Habitaciones to update
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * Limit how many Habitaciones to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Habitaciones upsert
-   */
-  export type HabitacionesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Habitaciones to update in case it exists.
-     */
-    where: HabitacionesWhereUniqueInput
-    /**
-     * In case the Habitaciones found by the `where` argument doesn't exist, create a new Habitaciones with this data.
-     */
-    create: XOR<HabitacionesCreateInput, HabitacionesUncheckedCreateInput>
-    /**
-     * In case the Habitaciones was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<HabitacionesUpdateInput, HabitacionesUncheckedUpdateInput>
-  }
-
-  /**
-   * Habitaciones delete
-   */
-  export type HabitacionesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-    /**
-     * Filter which Habitaciones to delete.
-     */
-    where: HabitacionesWhereUniqueInput
-  }
-
-  /**
-   * Habitaciones deleteMany
-   */
-  export type HabitacionesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Habitaciones to delete
-     */
-    where?: HabitacionesWhereInput
-    /**
-     * Limit how many Habitaciones to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Habitaciones without action
-   */
-  export type HabitacionesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Habitaciones
-     */
-    select?: HabitacionesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Habitaciones
-     */
-    omit?: HabitacionesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HabitacionesInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Acompañante
    */
 
@@ -11259,6 +5196,5968 @@ export namespace Prisma {
 
 
   /**
+   * Model Apartamento
+   */
+
+  export type AggregateApartamento = {
+    _count: ApartamentoCountAggregateOutputType | null
+    _min: ApartamentoMinAggregateOutputType | null
+    _max: ApartamentoMaxAggregateOutputType | null
+  }
+
+  export type ApartamentoMinAggregateOutputType = {
+    id: string | null
+    numero: string | null
+    direccion: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    disponible: boolean | null
+    activo: boolean | null
+  }
+
+  export type ApartamentoMaxAggregateOutputType = {
+    id: string | null
+    numero: string | null
+    direccion: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    disponible: boolean | null
+    activo: boolean | null
+  }
+
+  export type ApartamentoCountAggregateOutputType = {
+    id: number
+    numero: number
+    direccion: number
+    createAt: number
+    updateAt: number
+    disponible: number
+    activo: number
+    _all: number
+  }
+
+
+  export type ApartamentoMinAggregateInputType = {
+    id?: true
+    numero?: true
+    direccion?: true
+    createAt?: true
+    updateAt?: true
+    disponible?: true
+    activo?: true
+  }
+
+  export type ApartamentoMaxAggregateInputType = {
+    id?: true
+    numero?: true
+    direccion?: true
+    createAt?: true
+    updateAt?: true
+    disponible?: true
+    activo?: true
+  }
+
+  export type ApartamentoCountAggregateInputType = {
+    id?: true
+    numero?: true
+    direccion?: true
+    createAt?: true
+    updateAt?: true
+    disponible?: true
+    activo?: true
+    _all?: true
+  }
+
+  export type ApartamentoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Apartamento to aggregate.
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Apartamentos to fetch.
+     */
+    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApartamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Apartamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Apartamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Apartamentos
+    **/
+    _count?: true | ApartamentoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApartamentoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApartamentoMaxAggregateInputType
+  }
+
+  export type GetApartamentoAggregateType<T extends ApartamentoAggregateArgs> = {
+        [P in keyof T & keyof AggregateApartamento]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApartamento[P]>
+      : GetScalarType<T[P], AggregateApartamento[P]>
+  }
+
+
+
+
+  export type ApartamentoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApartamentoWhereInput
+    orderBy?: ApartamentoOrderByWithAggregationInput | ApartamentoOrderByWithAggregationInput[]
+    by: ApartamentoScalarFieldEnum[] | ApartamentoScalarFieldEnum
+    having?: ApartamentoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApartamentoCountAggregateInputType | true
+    _min?: ApartamentoMinAggregateInputType
+    _max?: ApartamentoMaxAggregateInputType
+  }
+
+  export type ApartamentoGroupByOutputType = {
+    id: string
+    numero: string
+    direccion: string | null
+    createAt: Date
+    updateAt: Date
+    disponible: boolean
+    activo: boolean
+    _count: ApartamentoCountAggregateOutputType | null
+    _min: ApartamentoMinAggregateOutputType | null
+    _max: ApartamentoMaxAggregateOutputType | null
+  }
+
+  type GetApartamentoGroupByPayload<T extends ApartamentoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApartamentoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApartamentoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApartamentoGroupByOutputType[P]>
+            : GetScalarType<T[P], ApartamentoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApartamentoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    direccion?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    disponible?: boolean
+    activo?: boolean
+    apartamento?: boolean | Apartamento$apartamentoArgs<ExtArgs>
+    ApartamentoServicios?: boolean | Apartamento$ApartamentoServiciosArgs<ExtArgs>
+    Contratos?: boolean | Apartamento$ContratosArgs<ExtArgs>
+    _count?: boolean | ApartamentoCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["apartamento"]>
+
+
+
+  export type ApartamentoSelectScalar = {
+    id?: boolean
+    numero?: boolean
+    direccion?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    disponible?: boolean
+    activo?: boolean
+  }
+
+  export type ApartamentoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "numero" | "direccion" | "createAt" | "updateAt" | "disponible" | "activo", ExtArgs["result"]["apartamento"]>
+  export type ApartamentoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apartamento?: boolean | Apartamento$apartamentoArgs<ExtArgs>
+    ApartamentoServicios?: boolean | Apartamento$ApartamentoServiciosArgs<ExtArgs>
+    Contratos?: boolean | Apartamento$ContratosArgs<ExtArgs>
+    _count?: boolean | ApartamentoCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $ApartamentoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Apartamento"
+    objects: {
+      apartamento: Prisma.$HabitacionesPayload<ExtArgs>[]
+      ApartamentoServicios: Prisma.$ApartamentoServiciosPayload<ExtArgs>[]
+      Contratos: Prisma.$ContratosPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      numero: string
+      direccion: string | null
+      createAt: Date
+      updateAt: Date
+      disponible: boolean
+      activo: boolean
+    }, ExtArgs["result"]["apartamento"]>
+    composites: {}
+  }
+
+  type ApartamentoGetPayload<S extends boolean | null | undefined | ApartamentoDefaultArgs> = $Result.GetResult<Prisma.$ApartamentoPayload, S>
+
+  type ApartamentoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApartamentoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApartamentoCountAggregateInputType | true
+    }
+
+  export interface ApartamentoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Apartamento'], meta: { name: 'Apartamento' } }
+    /**
+     * Find zero or one Apartamento that matches the filter.
+     * @param {ApartamentoFindUniqueArgs} args - Arguments to find a Apartamento
+     * @example
+     * // Get one Apartamento
+     * const apartamento = await prisma.apartamento.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApartamentoFindUniqueArgs>(args: SelectSubset<T, ApartamentoFindUniqueArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Apartamento that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApartamentoFindUniqueOrThrowArgs} args - Arguments to find a Apartamento
+     * @example
+     * // Get one Apartamento
+     * const apartamento = await prisma.apartamento.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApartamentoFindUniqueOrThrowArgs>(args: SelectSubset<T, ApartamentoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Apartamento that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoFindFirstArgs} args - Arguments to find a Apartamento
+     * @example
+     * // Get one Apartamento
+     * const apartamento = await prisma.apartamento.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApartamentoFindFirstArgs>(args?: SelectSubset<T, ApartamentoFindFirstArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Apartamento that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoFindFirstOrThrowArgs} args - Arguments to find a Apartamento
+     * @example
+     * // Get one Apartamento
+     * const apartamento = await prisma.apartamento.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApartamentoFindFirstOrThrowArgs>(args?: SelectSubset<T, ApartamentoFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Apartamentos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Apartamentos
+     * const apartamentos = await prisma.apartamento.findMany()
+     * 
+     * // Get first 10 Apartamentos
+     * const apartamentos = await prisma.apartamento.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apartamentoWithIdOnly = await prisma.apartamento.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApartamentoFindManyArgs>(args?: SelectSubset<T, ApartamentoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Apartamento.
+     * @param {ApartamentoCreateArgs} args - Arguments to create a Apartamento.
+     * @example
+     * // Create one Apartamento
+     * const Apartamento = await prisma.apartamento.create({
+     *   data: {
+     *     // ... data to create a Apartamento
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApartamentoCreateArgs>(args: SelectSubset<T, ApartamentoCreateArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Apartamentos.
+     * @param {ApartamentoCreateManyArgs} args - Arguments to create many Apartamentos.
+     * @example
+     * // Create many Apartamentos
+     * const apartamento = await prisma.apartamento.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApartamentoCreateManyArgs>(args?: SelectSubset<T, ApartamentoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Apartamento.
+     * @param {ApartamentoDeleteArgs} args - Arguments to delete one Apartamento.
+     * @example
+     * // Delete one Apartamento
+     * const Apartamento = await prisma.apartamento.delete({
+     *   where: {
+     *     // ... filter to delete one Apartamento
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApartamentoDeleteArgs>(args: SelectSubset<T, ApartamentoDeleteArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Apartamento.
+     * @param {ApartamentoUpdateArgs} args - Arguments to update one Apartamento.
+     * @example
+     * // Update one Apartamento
+     * const apartamento = await prisma.apartamento.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApartamentoUpdateArgs>(args: SelectSubset<T, ApartamentoUpdateArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Apartamentos.
+     * @param {ApartamentoDeleteManyArgs} args - Arguments to filter Apartamentos to delete.
+     * @example
+     * // Delete a few Apartamentos
+     * const { count } = await prisma.apartamento.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApartamentoDeleteManyArgs>(args?: SelectSubset<T, ApartamentoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Apartamentos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Apartamentos
+     * const apartamento = await prisma.apartamento.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApartamentoUpdateManyArgs>(args: SelectSubset<T, ApartamentoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Apartamento.
+     * @param {ApartamentoUpsertArgs} args - Arguments to update or create a Apartamento.
+     * @example
+     * // Update or create a Apartamento
+     * const apartamento = await prisma.apartamento.upsert({
+     *   create: {
+     *     // ... data to create a Apartamento
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Apartamento we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApartamentoUpsertArgs>(args: SelectSubset<T, ApartamentoUpsertArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Apartamentos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoCountArgs} args - Arguments to filter Apartamentos to count.
+     * @example
+     * // Count the number of Apartamentos
+     * const count = await prisma.apartamento.count({
+     *   where: {
+     *     // ... the filter for the Apartamentos we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApartamentoCountArgs>(
+      args?: Subset<T, ApartamentoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApartamentoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Apartamento.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApartamentoAggregateArgs>(args: Subset<T, ApartamentoAggregateArgs>): Prisma.PrismaPromise<GetApartamentoAggregateType<T>>
+
+    /**
+     * Group by Apartamento.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApartamentoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApartamentoGroupByArgs['orderBy'] }
+        : { orderBy?: ApartamentoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApartamentoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApartamentoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Apartamento model
+   */
+  readonly fields: ApartamentoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Apartamento.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApartamentoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    apartamento<T extends Apartamento$apartamentoArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$apartamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    ApartamentoServicios<T extends Apartamento$ApartamentoServiciosArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$ApartamentoServiciosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Contratos<T extends Apartamento$ContratosArgs<ExtArgs> = {}>(args?: Subset<T, Apartamento$ContratosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Apartamento model
+   */
+  interface ApartamentoFieldRefs {
+    readonly id: FieldRef<"Apartamento", 'String'>
+    readonly numero: FieldRef<"Apartamento", 'String'>
+    readonly direccion: FieldRef<"Apartamento", 'String'>
+    readonly createAt: FieldRef<"Apartamento", 'DateTime'>
+    readonly updateAt: FieldRef<"Apartamento", 'DateTime'>
+    readonly disponible: FieldRef<"Apartamento", 'Boolean'>
+    readonly activo: FieldRef<"Apartamento", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Apartamento findUnique
+   */
+  export type ApartamentoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which Apartamento to fetch.
+     */
+    where: ApartamentoWhereUniqueInput
+  }
+
+  /**
+   * Apartamento findUniqueOrThrow
+   */
+  export type ApartamentoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which Apartamento to fetch.
+     */
+    where: ApartamentoWhereUniqueInput
+  }
+
+  /**
+   * Apartamento findFirst
+   */
+  export type ApartamentoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which Apartamento to fetch.
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Apartamentos to fetch.
+     */
+    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Apartamentos.
+     */
+    cursor?: ApartamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Apartamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Apartamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Apartamentos.
+     */
+    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento findFirstOrThrow
+   */
+  export type ApartamentoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which Apartamento to fetch.
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Apartamentos to fetch.
+     */
+    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Apartamentos.
+     */
+    cursor?: ApartamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Apartamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Apartamentos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Apartamentos.
+     */
+    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento findMany
+   */
+  export type ApartamentoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter, which Apartamentos to fetch.
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Apartamentos to fetch.
+     */
+    orderBy?: ApartamentoOrderByWithRelationInput | ApartamentoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Apartamentos.
+     */
+    cursor?: ApartamentoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Apartamentos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Apartamentos.
+     */
+    skip?: number
+    distinct?: ApartamentoScalarFieldEnum | ApartamentoScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento create
+   */
+  export type ApartamentoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Apartamento.
+     */
+    data: XOR<ApartamentoCreateInput, ApartamentoUncheckedCreateInput>
+  }
+
+  /**
+   * Apartamento createMany
+   */
+  export type ApartamentoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Apartamentos.
+     */
+    data: ApartamentoCreateManyInput | ApartamentoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Apartamento update
+   */
+  export type ApartamentoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Apartamento.
+     */
+    data: XOR<ApartamentoUpdateInput, ApartamentoUncheckedUpdateInput>
+    /**
+     * Choose, which Apartamento to update.
+     */
+    where: ApartamentoWhereUniqueInput
+  }
+
+  /**
+   * Apartamento updateMany
+   */
+  export type ApartamentoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Apartamentos.
+     */
+    data: XOR<ApartamentoUpdateManyMutationInput, ApartamentoUncheckedUpdateManyInput>
+    /**
+     * Filter which Apartamentos to update
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * Limit how many Apartamentos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Apartamento upsert
+   */
+  export type ApartamentoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Apartamento to update in case it exists.
+     */
+    where: ApartamentoWhereUniqueInput
+    /**
+     * In case the Apartamento found by the `where` argument doesn't exist, create a new Apartamento with this data.
+     */
+    create: XOR<ApartamentoCreateInput, ApartamentoUncheckedCreateInput>
+    /**
+     * In case the Apartamento was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApartamentoUpdateInput, ApartamentoUncheckedUpdateInput>
+  }
+
+  /**
+   * Apartamento delete
+   */
+  export type ApartamentoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+    /**
+     * Filter which Apartamento to delete.
+     */
+    where: ApartamentoWhereUniqueInput
+  }
+
+  /**
+   * Apartamento deleteMany
+   */
+  export type ApartamentoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Apartamentos to delete
+     */
+    where?: ApartamentoWhereInput
+    /**
+     * Limit how many Apartamentos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Apartamento.apartamento
+   */
+  export type Apartamento$apartamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    where?: HabitacionesWhereInput
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    cursor?: HabitacionesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento.ApartamentoServicios
+   */
+  export type Apartamento$ApartamentoServiciosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    where?: ApartamentoServiciosWhereInput
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento.Contratos
+   */
+  export type Apartamento$ContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    where?: ContratosWhereInput
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    cursor?: ContratosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
+  }
+
+  /**
+   * Apartamento without action
+   */
+  export type ApartamentoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Apartamento
+     */
+    select?: ApartamentoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Apartamento
+     */
+    omit?: ApartamentoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TiposHabitacion
+   */
+
+  export type AggregateTiposHabitacion = {
+    _count: TiposHabitacionCountAggregateOutputType | null
+    _min: TiposHabitacionMinAggregateOutputType | null
+    _max: TiposHabitacionMaxAggregateOutputType | null
+  }
+
+  export type TiposHabitacionMinAggregateOutputType = {
+    id: string | null
+    nombre: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type TiposHabitacionMaxAggregateOutputType = {
+    id: string | null
+    nombre: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type TiposHabitacionCountAggregateOutputType = {
+    id: number
+    nombre: number
+    createAt: number
+    updateAt: number
+    activo: number
+    _all: number
+  }
+
+
+  export type TiposHabitacionMinAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type TiposHabitacionMaxAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type TiposHabitacionCountAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+    _all?: true
+  }
+
+  export type TiposHabitacionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TiposHabitacion to aggregate.
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TiposHabitacions to fetch.
+     */
+    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TiposHabitacionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TiposHabitacions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TiposHabitacions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TiposHabitacions
+    **/
+    _count?: true | TiposHabitacionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TiposHabitacionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TiposHabitacionMaxAggregateInputType
+  }
+
+  export type GetTiposHabitacionAggregateType<T extends TiposHabitacionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTiposHabitacion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTiposHabitacion[P]>
+      : GetScalarType<T[P], AggregateTiposHabitacion[P]>
+  }
+
+
+
+
+  export type TiposHabitacionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TiposHabitacionWhereInput
+    orderBy?: TiposHabitacionOrderByWithAggregationInput | TiposHabitacionOrderByWithAggregationInput[]
+    by: TiposHabitacionScalarFieldEnum[] | TiposHabitacionScalarFieldEnum
+    having?: TiposHabitacionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TiposHabitacionCountAggregateInputType | true
+    _min?: TiposHabitacionMinAggregateInputType
+    _max?: TiposHabitacionMaxAggregateInputType
+  }
+
+  export type TiposHabitacionGroupByOutputType = {
+    id: string
+    nombre: string
+    createAt: Date
+    updateAt: Date
+    activo: boolean
+    _count: TiposHabitacionCountAggregateOutputType | null
+    _min: TiposHabitacionMinAggregateOutputType | null
+    _max: TiposHabitacionMaxAggregateOutputType | null
+  }
+
+  type GetTiposHabitacionGroupByPayload<T extends TiposHabitacionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TiposHabitacionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TiposHabitacionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TiposHabitacionGroupByOutputType[P]>
+            : GetScalarType<T[P], TiposHabitacionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TiposHabitacionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+    apartamento?: boolean | TiposHabitacion$apartamentoArgs<ExtArgs>
+    _count?: boolean | TiposHabitacionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tiposHabitacion"]>
+
+
+
+  export type TiposHabitacionSelectScalar = {
+    id?: boolean
+    nombre?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+  }
+
+  export type TiposHabitacionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "createAt" | "updateAt" | "activo", ExtArgs["result"]["tiposHabitacion"]>
+  export type TiposHabitacionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apartamento?: boolean | TiposHabitacion$apartamentoArgs<ExtArgs>
+    _count?: boolean | TiposHabitacionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $TiposHabitacionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TiposHabitacion"
+    objects: {
+      apartamento: Prisma.$HabitacionesPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nombre: string
+      createAt: Date
+      updateAt: Date
+      activo: boolean
+    }, ExtArgs["result"]["tiposHabitacion"]>
+    composites: {}
+  }
+
+  type TiposHabitacionGetPayload<S extends boolean | null | undefined | TiposHabitacionDefaultArgs> = $Result.GetResult<Prisma.$TiposHabitacionPayload, S>
+
+  type TiposHabitacionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TiposHabitacionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TiposHabitacionCountAggregateInputType | true
+    }
+
+  export interface TiposHabitacionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TiposHabitacion'], meta: { name: 'TiposHabitacion' } }
+    /**
+     * Find zero or one TiposHabitacion that matches the filter.
+     * @param {TiposHabitacionFindUniqueArgs} args - Arguments to find a TiposHabitacion
+     * @example
+     * // Get one TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TiposHabitacionFindUniqueArgs>(args: SelectSubset<T, TiposHabitacionFindUniqueArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TiposHabitacion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TiposHabitacionFindUniqueOrThrowArgs} args - Arguments to find a TiposHabitacion
+     * @example
+     * // Get one TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TiposHabitacionFindUniqueOrThrowArgs>(args: SelectSubset<T, TiposHabitacionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TiposHabitacion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionFindFirstArgs} args - Arguments to find a TiposHabitacion
+     * @example
+     * // Get one TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TiposHabitacionFindFirstArgs>(args?: SelectSubset<T, TiposHabitacionFindFirstArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TiposHabitacion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionFindFirstOrThrowArgs} args - Arguments to find a TiposHabitacion
+     * @example
+     * // Get one TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TiposHabitacionFindFirstOrThrowArgs>(args?: SelectSubset<T, TiposHabitacionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TiposHabitacions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TiposHabitacions
+     * const tiposHabitacions = await prisma.tiposHabitacion.findMany()
+     * 
+     * // Get first 10 TiposHabitacions
+     * const tiposHabitacions = await prisma.tiposHabitacion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tiposHabitacionWithIdOnly = await prisma.tiposHabitacion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TiposHabitacionFindManyArgs>(args?: SelectSubset<T, TiposHabitacionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TiposHabitacion.
+     * @param {TiposHabitacionCreateArgs} args - Arguments to create a TiposHabitacion.
+     * @example
+     * // Create one TiposHabitacion
+     * const TiposHabitacion = await prisma.tiposHabitacion.create({
+     *   data: {
+     *     // ... data to create a TiposHabitacion
+     *   }
+     * })
+     * 
+     */
+    create<T extends TiposHabitacionCreateArgs>(args: SelectSubset<T, TiposHabitacionCreateArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TiposHabitacions.
+     * @param {TiposHabitacionCreateManyArgs} args - Arguments to create many TiposHabitacions.
+     * @example
+     * // Create many TiposHabitacions
+     * const tiposHabitacion = await prisma.tiposHabitacion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TiposHabitacionCreateManyArgs>(args?: SelectSubset<T, TiposHabitacionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TiposHabitacion.
+     * @param {TiposHabitacionDeleteArgs} args - Arguments to delete one TiposHabitacion.
+     * @example
+     * // Delete one TiposHabitacion
+     * const TiposHabitacion = await prisma.tiposHabitacion.delete({
+     *   where: {
+     *     // ... filter to delete one TiposHabitacion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TiposHabitacionDeleteArgs>(args: SelectSubset<T, TiposHabitacionDeleteArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TiposHabitacion.
+     * @param {TiposHabitacionUpdateArgs} args - Arguments to update one TiposHabitacion.
+     * @example
+     * // Update one TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TiposHabitacionUpdateArgs>(args: SelectSubset<T, TiposHabitacionUpdateArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TiposHabitacions.
+     * @param {TiposHabitacionDeleteManyArgs} args - Arguments to filter TiposHabitacions to delete.
+     * @example
+     * // Delete a few TiposHabitacions
+     * const { count } = await prisma.tiposHabitacion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TiposHabitacionDeleteManyArgs>(args?: SelectSubset<T, TiposHabitacionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TiposHabitacions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TiposHabitacions
+     * const tiposHabitacion = await prisma.tiposHabitacion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TiposHabitacionUpdateManyArgs>(args: SelectSubset<T, TiposHabitacionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TiposHabitacion.
+     * @param {TiposHabitacionUpsertArgs} args - Arguments to update or create a TiposHabitacion.
+     * @example
+     * // Update or create a TiposHabitacion
+     * const tiposHabitacion = await prisma.tiposHabitacion.upsert({
+     *   create: {
+     *     // ... data to create a TiposHabitacion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TiposHabitacion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TiposHabitacionUpsertArgs>(args: SelectSubset<T, TiposHabitacionUpsertArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TiposHabitacions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionCountArgs} args - Arguments to filter TiposHabitacions to count.
+     * @example
+     * // Count the number of TiposHabitacions
+     * const count = await prisma.tiposHabitacion.count({
+     *   where: {
+     *     // ... the filter for the TiposHabitacions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TiposHabitacionCountArgs>(
+      args?: Subset<T, TiposHabitacionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TiposHabitacionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TiposHabitacion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TiposHabitacionAggregateArgs>(args: Subset<T, TiposHabitacionAggregateArgs>): Prisma.PrismaPromise<GetTiposHabitacionAggregateType<T>>
+
+    /**
+     * Group by TiposHabitacion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TiposHabitacionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TiposHabitacionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TiposHabitacionGroupByArgs['orderBy'] }
+        : { orderBy?: TiposHabitacionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TiposHabitacionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTiposHabitacionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TiposHabitacion model
+   */
+  readonly fields: TiposHabitacionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TiposHabitacion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TiposHabitacionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    apartamento<T extends TiposHabitacion$apartamentoArgs<ExtArgs> = {}>(args?: Subset<T, TiposHabitacion$apartamentoArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TiposHabitacion model
+   */
+  interface TiposHabitacionFieldRefs {
+    readonly id: FieldRef<"TiposHabitacion", 'String'>
+    readonly nombre: FieldRef<"TiposHabitacion", 'String'>
+    readonly createAt: FieldRef<"TiposHabitacion", 'DateTime'>
+    readonly updateAt: FieldRef<"TiposHabitacion", 'DateTime'>
+    readonly activo: FieldRef<"TiposHabitacion", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TiposHabitacion findUnique
+   */
+  export type TiposHabitacionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter, which TiposHabitacion to fetch.
+     */
+    where: TiposHabitacionWhereUniqueInput
+  }
+
+  /**
+   * TiposHabitacion findUniqueOrThrow
+   */
+  export type TiposHabitacionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter, which TiposHabitacion to fetch.
+     */
+    where: TiposHabitacionWhereUniqueInput
+  }
+
+  /**
+   * TiposHabitacion findFirst
+   */
+  export type TiposHabitacionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter, which TiposHabitacion to fetch.
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TiposHabitacions to fetch.
+     */
+    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TiposHabitacions.
+     */
+    cursor?: TiposHabitacionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TiposHabitacions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TiposHabitacions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TiposHabitacions.
+     */
+    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
+  }
+
+  /**
+   * TiposHabitacion findFirstOrThrow
+   */
+  export type TiposHabitacionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter, which TiposHabitacion to fetch.
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TiposHabitacions to fetch.
+     */
+    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TiposHabitacions.
+     */
+    cursor?: TiposHabitacionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TiposHabitacions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TiposHabitacions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TiposHabitacions.
+     */
+    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
+  }
+
+  /**
+   * TiposHabitacion findMany
+   */
+  export type TiposHabitacionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter, which TiposHabitacions to fetch.
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TiposHabitacions to fetch.
+     */
+    orderBy?: TiposHabitacionOrderByWithRelationInput | TiposHabitacionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TiposHabitacions.
+     */
+    cursor?: TiposHabitacionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TiposHabitacions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TiposHabitacions.
+     */
+    skip?: number
+    distinct?: TiposHabitacionScalarFieldEnum | TiposHabitacionScalarFieldEnum[]
+  }
+
+  /**
+   * TiposHabitacion create
+   */
+  export type TiposHabitacionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TiposHabitacion.
+     */
+    data: XOR<TiposHabitacionCreateInput, TiposHabitacionUncheckedCreateInput>
+  }
+
+  /**
+   * TiposHabitacion createMany
+   */
+  export type TiposHabitacionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TiposHabitacions.
+     */
+    data: TiposHabitacionCreateManyInput | TiposHabitacionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TiposHabitacion update
+   */
+  export type TiposHabitacionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TiposHabitacion.
+     */
+    data: XOR<TiposHabitacionUpdateInput, TiposHabitacionUncheckedUpdateInput>
+    /**
+     * Choose, which TiposHabitacion to update.
+     */
+    where: TiposHabitacionWhereUniqueInput
+  }
+
+  /**
+   * TiposHabitacion updateMany
+   */
+  export type TiposHabitacionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TiposHabitacions.
+     */
+    data: XOR<TiposHabitacionUpdateManyMutationInput, TiposHabitacionUncheckedUpdateManyInput>
+    /**
+     * Filter which TiposHabitacions to update
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * Limit how many TiposHabitacions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TiposHabitacion upsert
+   */
+  export type TiposHabitacionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TiposHabitacion to update in case it exists.
+     */
+    where: TiposHabitacionWhereUniqueInput
+    /**
+     * In case the TiposHabitacion found by the `where` argument doesn't exist, create a new TiposHabitacion with this data.
+     */
+    create: XOR<TiposHabitacionCreateInput, TiposHabitacionUncheckedCreateInput>
+    /**
+     * In case the TiposHabitacion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TiposHabitacionUpdateInput, TiposHabitacionUncheckedUpdateInput>
+  }
+
+  /**
+   * TiposHabitacion delete
+   */
+  export type TiposHabitacionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+    /**
+     * Filter which TiposHabitacion to delete.
+     */
+    where: TiposHabitacionWhereUniqueInput
+  }
+
+  /**
+   * TiposHabitacion deleteMany
+   */
+  export type TiposHabitacionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TiposHabitacions to delete
+     */
+    where?: TiposHabitacionWhereInput
+    /**
+     * Limit how many TiposHabitacions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TiposHabitacion.apartamento
+   */
+  export type TiposHabitacion$apartamentoArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    where?: HabitacionesWhereInput
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    cursor?: HabitacionesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
+  }
+
+  /**
+   * TiposHabitacion without action
+   */
+  export type TiposHabitacionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TiposHabitacion
+     */
+    select?: TiposHabitacionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TiposHabitacion
+     */
+    omit?: TiposHabitacionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TiposHabitacionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Habitaciones
+   */
+
+  export type AggregateHabitaciones = {
+    _count: HabitacionesCountAggregateOutputType | null
+    _avg: HabitacionesAvgAggregateOutputType | null
+    _sum: HabitacionesSumAggregateOutputType | null
+    _min: HabitacionesMinAggregateOutputType | null
+    _max: HabitacionesMaxAggregateOutputType | null
+  }
+
+  export type HabitacionesAvgAggregateOutputType = {
+    cantidad: number | null
+  }
+
+  export type HabitacionesSumAggregateOutputType = {
+    cantidad: number | null
+  }
+
+  export type HabitacionesMinAggregateOutputType = {
+    id: string | null
+    apartamentoId: string | null
+    tipoHabitacionId: string | null
+    cantidad: number | null
+    createAt: Date | null
+    activo: boolean | null
+    updateAt: Date | null
+  }
+
+  export type HabitacionesMaxAggregateOutputType = {
+    id: string | null
+    apartamentoId: string | null
+    tipoHabitacionId: string | null
+    cantidad: number | null
+    createAt: Date | null
+    activo: boolean | null
+    updateAt: Date | null
+  }
+
+  export type HabitacionesCountAggregateOutputType = {
+    id: number
+    apartamentoId: number
+    tipoHabitacionId: number
+    cantidad: number
+    createAt: number
+    activo: number
+    updateAt: number
+    _all: number
+  }
+
+
+  export type HabitacionesAvgAggregateInputType = {
+    cantidad?: true
+  }
+
+  export type HabitacionesSumAggregateInputType = {
+    cantidad?: true
+  }
+
+  export type HabitacionesMinAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    tipoHabitacionId?: true
+    cantidad?: true
+    createAt?: true
+    activo?: true
+    updateAt?: true
+  }
+
+  export type HabitacionesMaxAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    tipoHabitacionId?: true
+    cantidad?: true
+    createAt?: true
+    activo?: true
+    updateAt?: true
+  }
+
+  export type HabitacionesCountAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    tipoHabitacionId?: true
+    cantidad?: true
+    createAt?: true
+    activo?: true
+    updateAt?: true
+    _all?: true
+  }
+
+  export type HabitacionesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Habitaciones to aggregate.
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Habitaciones to fetch.
+     */
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HabitacionesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Habitaciones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Habitaciones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Habitaciones
+    **/
+    _count?: true | HabitacionesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: HabitacionesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: HabitacionesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HabitacionesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HabitacionesMaxAggregateInputType
+  }
+
+  export type GetHabitacionesAggregateType<T extends HabitacionesAggregateArgs> = {
+        [P in keyof T & keyof AggregateHabitaciones]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHabitaciones[P]>
+      : GetScalarType<T[P], AggregateHabitaciones[P]>
+  }
+
+
+
+
+  export type HabitacionesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HabitacionesWhereInput
+    orderBy?: HabitacionesOrderByWithAggregationInput | HabitacionesOrderByWithAggregationInput[]
+    by: HabitacionesScalarFieldEnum[] | HabitacionesScalarFieldEnum
+    having?: HabitacionesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HabitacionesCountAggregateInputType | true
+    _avg?: HabitacionesAvgAggregateInputType
+    _sum?: HabitacionesSumAggregateInputType
+    _min?: HabitacionesMinAggregateInputType
+    _max?: HabitacionesMaxAggregateInputType
+  }
+
+  export type HabitacionesGroupByOutputType = {
+    id: string
+    apartamentoId: string
+    tipoHabitacionId: string
+    cantidad: number
+    createAt: Date
+    activo: boolean
+    updateAt: Date
+    _count: HabitacionesCountAggregateOutputType | null
+    _avg: HabitacionesAvgAggregateOutputType | null
+    _sum: HabitacionesSumAggregateOutputType | null
+    _min: HabitacionesMinAggregateOutputType | null
+    _max: HabitacionesMaxAggregateOutputType | null
+  }
+
+  type GetHabitacionesGroupByPayload<T extends HabitacionesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HabitacionesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HabitacionesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HabitacionesGroupByOutputType[P]>
+            : GetScalarType<T[P], HabitacionesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HabitacionesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    apartamentoId?: boolean
+    tipoHabitacionId?: boolean
+    cantidad?: boolean
+    createAt?: boolean
+    activo?: boolean
+    updateAt?: boolean
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    tipoHabitacion?: boolean | TiposHabitacionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["habitaciones"]>
+
+
+
+  export type HabitacionesSelectScalar = {
+    id?: boolean
+    apartamentoId?: boolean
+    tipoHabitacionId?: boolean
+    cantidad?: boolean
+    createAt?: boolean
+    activo?: boolean
+    updateAt?: boolean
+  }
+
+  export type HabitacionesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apartamentoId" | "tipoHabitacionId" | "cantidad" | "createAt" | "activo" | "updateAt", ExtArgs["result"]["habitaciones"]>
+  export type HabitacionesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    tipoHabitacion?: boolean | TiposHabitacionDefaultArgs<ExtArgs>
+  }
+
+  export type $HabitacionesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Habitaciones"
+    objects: {
+      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
+      tipoHabitacion: Prisma.$TiposHabitacionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      apartamentoId: string
+      tipoHabitacionId: string
+      cantidad: number
+      createAt: Date
+      activo: boolean
+      updateAt: Date
+    }, ExtArgs["result"]["habitaciones"]>
+    composites: {}
+  }
+
+  type HabitacionesGetPayload<S extends boolean | null | undefined | HabitacionesDefaultArgs> = $Result.GetResult<Prisma.$HabitacionesPayload, S>
+
+  type HabitacionesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HabitacionesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HabitacionesCountAggregateInputType | true
+    }
+
+  export interface HabitacionesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Habitaciones'], meta: { name: 'Habitaciones' } }
+    /**
+     * Find zero or one Habitaciones that matches the filter.
+     * @param {HabitacionesFindUniqueArgs} args - Arguments to find a Habitaciones
+     * @example
+     * // Get one Habitaciones
+     * const habitaciones = await prisma.habitaciones.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HabitacionesFindUniqueArgs>(args: SelectSubset<T, HabitacionesFindUniqueArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Habitaciones that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HabitacionesFindUniqueOrThrowArgs} args - Arguments to find a Habitaciones
+     * @example
+     * // Get one Habitaciones
+     * const habitaciones = await prisma.habitaciones.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HabitacionesFindUniqueOrThrowArgs>(args: SelectSubset<T, HabitacionesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Habitaciones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesFindFirstArgs} args - Arguments to find a Habitaciones
+     * @example
+     * // Get one Habitaciones
+     * const habitaciones = await prisma.habitaciones.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HabitacionesFindFirstArgs>(args?: SelectSubset<T, HabitacionesFindFirstArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Habitaciones that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesFindFirstOrThrowArgs} args - Arguments to find a Habitaciones
+     * @example
+     * // Get one Habitaciones
+     * const habitaciones = await prisma.habitaciones.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HabitacionesFindFirstOrThrowArgs>(args?: SelectSubset<T, HabitacionesFindFirstOrThrowArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Habitaciones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Habitaciones
+     * const habitaciones = await prisma.habitaciones.findMany()
+     * 
+     * // Get first 10 Habitaciones
+     * const habitaciones = await prisma.habitaciones.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const habitacionesWithIdOnly = await prisma.habitaciones.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HabitacionesFindManyArgs>(args?: SelectSubset<T, HabitacionesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Habitaciones.
+     * @param {HabitacionesCreateArgs} args - Arguments to create a Habitaciones.
+     * @example
+     * // Create one Habitaciones
+     * const Habitaciones = await prisma.habitaciones.create({
+     *   data: {
+     *     // ... data to create a Habitaciones
+     *   }
+     * })
+     * 
+     */
+    create<T extends HabitacionesCreateArgs>(args: SelectSubset<T, HabitacionesCreateArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Habitaciones.
+     * @param {HabitacionesCreateManyArgs} args - Arguments to create many Habitaciones.
+     * @example
+     * // Create many Habitaciones
+     * const habitaciones = await prisma.habitaciones.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HabitacionesCreateManyArgs>(args?: SelectSubset<T, HabitacionesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Habitaciones.
+     * @param {HabitacionesDeleteArgs} args - Arguments to delete one Habitaciones.
+     * @example
+     * // Delete one Habitaciones
+     * const Habitaciones = await prisma.habitaciones.delete({
+     *   where: {
+     *     // ... filter to delete one Habitaciones
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HabitacionesDeleteArgs>(args: SelectSubset<T, HabitacionesDeleteArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Habitaciones.
+     * @param {HabitacionesUpdateArgs} args - Arguments to update one Habitaciones.
+     * @example
+     * // Update one Habitaciones
+     * const habitaciones = await prisma.habitaciones.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HabitacionesUpdateArgs>(args: SelectSubset<T, HabitacionesUpdateArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Habitaciones.
+     * @param {HabitacionesDeleteManyArgs} args - Arguments to filter Habitaciones to delete.
+     * @example
+     * // Delete a few Habitaciones
+     * const { count } = await prisma.habitaciones.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HabitacionesDeleteManyArgs>(args?: SelectSubset<T, HabitacionesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Habitaciones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Habitaciones
+     * const habitaciones = await prisma.habitaciones.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HabitacionesUpdateManyArgs>(args: SelectSubset<T, HabitacionesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Habitaciones.
+     * @param {HabitacionesUpsertArgs} args - Arguments to update or create a Habitaciones.
+     * @example
+     * // Update or create a Habitaciones
+     * const habitaciones = await prisma.habitaciones.upsert({
+     *   create: {
+     *     // ... data to create a Habitaciones
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Habitaciones we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HabitacionesUpsertArgs>(args: SelectSubset<T, HabitacionesUpsertArgs<ExtArgs>>): Prisma__HabitacionesClient<$Result.GetResult<Prisma.$HabitacionesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Habitaciones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesCountArgs} args - Arguments to filter Habitaciones to count.
+     * @example
+     * // Count the number of Habitaciones
+     * const count = await prisma.habitaciones.count({
+     *   where: {
+     *     // ... the filter for the Habitaciones we want to count
+     *   }
+     * })
+    **/
+    count<T extends HabitacionesCountArgs>(
+      args?: Subset<T, HabitacionesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HabitacionesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Habitaciones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HabitacionesAggregateArgs>(args: Subset<T, HabitacionesAggregateArgs>): Prisma.PrismaPromise<GetHabitacionesAggregateType<T>>
+
+    /**
+     * Group by Habitaciones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HabitacionesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HabitacionesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HabitacionesGroupByArgs['orderBy'] }
+        : { orderBy?: HabitacionesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HabitacionesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHabitacionesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Habitaciones model
+   */
+  readonly fields: HabitacionesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Habitaciones.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HabitacionesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tipoHabitacion<T extends TiposHabitacionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TiposHabitacionDefaultArgs<ExtArgs>>): Prisma__TiposHabitacionClient<$Result.GetResult<Prisma.$TiposHabitacionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Habitaciones model
+   */
+  interface HabitacionesFieldRefs {
+    readonly id: FieldRef<"Habitaciones", 'String'>
+    readonly apartamentoId: FieldRef<"Habitaciones", 'String'>
+    readonly tipoHabitacionId: FieldRef<"Habitaciones", 'String'>
+    readonly cantidad: FieldRef<"Habitaciones", 'Int'>
+    readonly createAt: FieldRef<"Habitaciones", 'DateTime'>
+    readonly activo: FieldRef<"Habitaciones", 'Boolean'>
+    readonly updateAt: FieldRef<"Habitaciones", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Habitaciones findUnique
+   */
+  export type HabitacionesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter, which Habitaciones to fetch.
+     */
+    where: HabitacionesWhereUniqueInput
+  }
+
+  /**
+   * Habitaciones findUniqueOrThrow
+   */
+  export type HabitacionesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter, which Habitaciones to fetch.
+     */
+    where: HabitacionesWhereUniqueInput
+  }
+
+  /**
+   * Habitaciones findFirst
+   */
+  export type HabitacionesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter, which Habitaciones to fetch.
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Habitaciones to fetch.
+     */
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Habitaciones.
+     */
+    cursor?: HabitacionesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Habitaciones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Habitaciones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Habitaciones.
+     */
+    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
+  }
+
+  /**
+   * Habitaciones findFirstOrThrow
+   */
+  export type HabitacionesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter, which Habitaciones to fetch.
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Habitaciones to fetch.
+     */
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Habitaciones.
+     */
+    cursor?: HabitacionesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Habitaciones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Habitaciones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Habitaciones.
+     */
+    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
+  }
+
+  /**
+   * Habitaciones findMany
+   */
+  export type HabitacionesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter, which Habitaciones to fetch.
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Habitaciones to fetch.
+     */
+    orderBy?: HabitacionesOrderByWithRelationInput | HabitacionesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Habitaciones.
+     */
+    cursor?: HabitacionesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Habitaciones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Habitaciones.
+     */
+    skip?: number
+    distinct?: HabitacionesScalarFieldEnum | HabitacionesScalarFieldEnum[]
+  }
+
+  /**
+   * Habitaciones create
+   */
+  export type HabitacionesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Habitaciones.
+     */
+    data: XOR<HabitacionesCreateInput, HabitacionesUncheckedCreateInput>
+  }
+
+  /**
+   * Habitaciones createMany
+   */
+  export type HabitacionesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Habitaciones.
+     */
+    data: HabitacionesCreateManyInput | HabitacionesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Habitaciones update
+   */
+  export type HabitacionesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Habitaciones.
+     */
+    data: XOR<HabitacionesUpdateInput, HabitacionesUncheckedUpdateInput>
+    /**
+     * Choose, which Habitaciones to update.
+     */
+    where: HabitacionesWhereUniqueInput
+  }
+
+  /**
+   * Habitaciones updateMany
+   */
+  export type HabitacionesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Habitaciones.
+     */
+    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyInput>
+    /**
+     * Filter which Habitaciones to update
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * Limit how many Habitaciones to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Habitaciones upsert
+   */
+  export type HabitacionesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Habitaciones to update in case it exists.
+     */
+    where: HabitacionesWhereUniqueInput
+    /**
+     * In case the Habitaciones found by the `where` argument doesn't exist, create a new Habitaciones with this data.
+     */
+    create: XOR<HabitacionesCreateInput, HabitacionesUncheckedCreateInput>
+    /**
+     * In case the Habitaciones was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HabitacionesUpdateInput, HabitacionesUncheckedUpdateInput>
+  }
+
+  /**
+   * Habitaciones delete
+   */
+  export type HabitacionesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+    /**
+     * Filter which Habitaciones to delete.
+     */
+    where: HabitacionesWhereUniqueInput
+  }
+
+  /**
+   * Habitaciones deleteMany
+   */
+  export type HabitacionesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Habitaciones to delete
+     */
+    where?: HabitacionesWhereInput
+    /**
+     * Limit how many Habitaciones to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Habitaciones without action
+   */
+  export type HabitacionesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Habitaciones
+     */
+    select?: HabitacionesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Habitaciones
+     */
+    omit?: HabitacionesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HabitacionesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Servicios
+   */
+
+  export type AggregateServicios = {
+    _count: ServiciosCountAggregateOutputType | null
+    _min: ServiciosMinAggregateOutputType | null
+    _max: ServiciosMaxAggregateOutputType | null
+  }
+
+  export type ServiciosMinAggregateOutputType = {
+    id: string | null
+    nombre: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type ServiciosMaxAggregateOutputType = {
+    id: string | null
+    nombre: string | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type ServiciosCountAggregateOutputType = {
+    id: number
+    nombre: number
+    createAt: number
+    updateAt: number
+    activo: number
+    _all: number
+  }
+
+
+  export type ServiciosMinAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type ServiciosMaxAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type ServiciosCountAggregateInputType = {
+    id?: true
+    nombre?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+    _all?: true
+  }
+
+  export type ServiciosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Servicios to aggregate.
+     */
+    where?: ServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servicios to fetch.
+     */
+    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Servicios
+    **/
+    _count?: true | ServiciosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServiciosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServiciosMaxAggregateInputType
+  }
+
+  export type GetServiciosAggregateType<T extends ServiciosAggregateArgs> = {
+        [P in keyof T & keyof AggregateServicios]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServicios[P]>
+      : GetScalarType<T[P], AggregateServicios[P]>
+  }
+
+
+
+
+  export type ServiciosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServiciosWhereInput
+    orderBy?: ServiciosOrderByWithAggregationInput | ServiciosOrderByWithAggregationInput[]
+    by: ServiciosScalarFieldEnum[] | ServiciosScalarFieldEnum
+    having?: ServiciosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServiciosCountAggregateInputType | true
+    _min?: ServiciosMinAggregateInputType
+    _max?: ServiciosMaxAggregateInputType
+  }
+
+  export type ServiciosGroupByOutputType = {
+    id: string
+    nombre: string
+    createAt: Date
+    updateAt: Date
+    activo: boolean
+    _count: ServiciosCountAggregateOutputType | null
+    _min: ServiciosMinAggregateOutputType | null
+    _max: ServiciosMaxAggregateOutputType | null
+  }
+
+  type GetServiciosGroupByPayload<T extends ServiciosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServiciosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServiciosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServiciosGroupByOutputType[P]>
+            : GetScalarType<T[P], ServiciosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServiciosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+    ApartamentoServicios?: boolean | Servicios$ApartamentoServiciosArgs<ExtArgs>
+    _count?: boolean | ServiciosCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["servicios"]>
+
+
+
+  export type ServiciosSelectScalar = {
+    id?: boolean
+    nombre?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+  }
+
+  export type ServiciosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "createAt" | "updateAt" | "activo", ExtArgs["result"]["servicios"]>
+  export type ServiciosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    ApartamentoServicios?: boolean | Servicios$ApartamentoServiciosArgs<ExtArgs>
+    _count?: boolean | ServiciosCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $ServiciosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Servicios"
+    objects: {
+      ApartamentoServicios: Prisma.$ApartamentoServiciosPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nombre: string
+      createAt: Date
+      updateAt: Date
+      activo: boolean
+    }, ExtArgs["result"]["servicios"]>
+    composites: {}
+  }
+
+  type ServiciosGetPayload<S extends boolean | null | undefined | ServiciosDefaultArgs> = $Result.GetResult<Prisma.$ServiciosPayload, S>
+
+  type ServiciosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServiciosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServiciosCountAggregateInputType | true
+    }
+
+  export interface ServiciosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Servicios'], meta: { name: 'Servicios' } }
+    /**
+     * Find zero or one Servicios that matches the filter.
+     * @param {ServiciosFindUniqueArgs} args - Arguments to find a Servicios
+     * @example
+     * // Get one Servicios
+     * const servicios = await prisma.servicios.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServiciosFindUniqueArgs>(args: SelectSubset<T, ServiciosFindUniqueArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Servicios that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServiciosFindUniqueOrThrowArgs} args - Arguments to find a Servicios
+     * @example
+     * // Get one Servicios
+     * const servicios = await prisma.servicios.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServiciosFindUniqueOrThrowArgs>(args: SelectSubset<T, ServiciosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servicios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosFindFirstArgs} args - Arguments to find a Servicios
+     * @example
+     * // Get one Servicios
+     * const servicios = await prisma.servicios.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServiciosFindFirstArgs>(args?: SelectSubset<T, ServiciosFindFirstArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Servicios that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosFindFirstOrThrowArgs} args - Arguments to find a Servicios
+     * @example
+     * // Get one Servicios
+     * const servicios = await prisma.servicios.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServiciosFindFirstOrThrowArgs>(args?: SelectSubset<T, ServiciosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Servicios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Servicios
+     * const servicios = await prisma.servicios.findMany()
+     * 
+     * // Get first 10 Servicios
+     * const servicios = await prisma.servicios.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serviciosWithIdOnly = await prisma.servicios.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServiciosFindManyArgs>(args?: SelectSubset<T, ServiciosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Servicios.
+     * @param {ServiciosCreateArgs} args - Arguments to create a Servicios.
+     * @example
+     * // Create one Servicios
+     * const Servicios = await prisma.servicios.create({
+     *   data: {
+     *     // ... data to create a Servicios
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServiciosCreateArgs>(args: SelectSubset<T, ServiciosCreateArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Servicios.
+     * @param {ServiciosCreateManyArgs} args - Arguments to create many Servicios.
+     * @example
+     * // Create many Servicios
+     * const servicios = await prisma.servicios.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServiciosCreateManyArgs>(args?: SelectSubset<T, ServiciosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Servicios.
+     * @param {ServiciosDeleteArgs} args - Arguments to delete one Servicios.
+     * @example
+     * // Delete one Servicios
+     * const Servicios = await prisma.servicios.delete({
+     *   where: {
+     *     // ... filter to delete one Servicios
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServiciosDeleteArgs>(args: SelectSubset<T, ServiciosDeleteArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Servicios.
+     * @param {ServiciosUpdateArgs} args - Arguments to update one Servicios.
+     * @example
+     * // Update one Servicios
+     * const servicios = await prisma.servicios.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServiciosUpdateArgs>(args: SelectSubset<T, ServiciosUpdateArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Servicios.
+     * @param {ServiciosDeleteManyArgs} args - Arguments to filter Servicios to delete.
+     * @example
+     * // Delete a few Servicios
+     * const { count } = await prisma.servicios.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServiciosDeleteManyArgs>(args?: SelectSubset<T, ServiciosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Servicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Servicios
+     * const servicios = await prisma.servicios.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServiciosUpdateManyArgs>(args: SelectSubset<T, ServiciosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Servicios.
+     * @param {ServiciosUpsertArgs} args - Arguments to update or create a Servicios.
+     * @example
+     * // Update or create a Servicios
+     * const servicios = await prisma.servicios.upsert({
+     *   create: {
+     *     // ... data to create a Servicios
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Servicios we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServiciosUpsertArgs>(args: SelectSubset<T, ServiciosUpsertArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Servicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosCountArgs} args - Arguments to filter Servicios to count.
+     * @example
+     * // Count the number of Servicios
+     * const count = await prisma.servicios.count({
+     *   where: {
+     *     // ... the filter for the Servicios we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServiciosCountArgs>(
+      args?: Subset<T, ServiciosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServiciosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Servicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServiciosAggregateArgs>(args: Subset<T, ServiciosAggregateArgs>): Prisma.PrismaPromise<GetServiciosAggregateType<T>>
+
+    /**
+     * Group by Servicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServiciosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServiciosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServiciosGroupByArgs['orderBy'] }
+        : { orderBy?: ServiciosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServiciosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServiciosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Servicios model
+   */
+  readonly fields: ServiciosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Servicios.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServiciosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    ApartamentoServicios<T extends Servicios$ApartamentoServiciosArgs<ExtArgs> = {}>(args?: Subset<T, Servicios$ApartamentoServiciosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Servicios model
+   */
+  interface ServiciosFieldRefs {
+    readonly id: FieldRef<"Servicios", 'String'>
+    readonly nombre: FieldRef<"Servicios", 'String'>
+    readonly createAt: FieldRef<"Servicios", 'DateTime'>
+    readonly updateAt: FieldRef<"Servicios", 'DateTime'>
+    readonly activo: FieldRef<"Servicios", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Servicios findUnique
+   */
+  export type ServiciosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which Servicios to fetch.
+     */
+    where: ServiciosWhereUniqueInput
+  }
+
+  /**
+   * Servicios findUniqueOrThrow
+   */
+  export type ServiciosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which Servicios to fetch.
+     */
+    where: ServiciosWhereUniqueInput
+  }
+
+  /**
+   * Servicios findFirst
+   */
+  export type ServiciosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which Servicios to fetch.
+     */
+    where?: ServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servicios to fetch.
+     */
+    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servicios.
+     */
+    cursor?: ServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servicios.
+     */
+    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * Servicios findFirstOrThrow
+   */
+  export type ServiciosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which Servicios to fetch.
+     */
+    where?: ServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servicios to fetch.
+     */
+    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Servicios.
+     */
+    cursor?: ServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Servicios.
+     */
+    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * Servicios findMany
+   */
+  export type ServiciosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which Servicios to fetch.
+     */
+    where?: ServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Servicios to fetch.
+     */
+    orderBy?: ServiciosOrderByWithRelationInput | ServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Servicios.
+     */
+    cursor?: ServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Servicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Servicios.
+     */
+    skip?: number
+    distinct?: ServiciosScalarFieldEnum | ServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * Servicios create
+   */
+  export type ServiciosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Servicios.
+     */
+    data: XOR<ServiciosCreateInput, ServiciosUncheckedCreateInput>
+  }
+
+  /**
+   * Servicios createMany
+   */
+  export type ServiciosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Servicios.
+     */
+    data: ServiciosCreateManyInput | ServiciosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Servicios update
+   */
+  export type ServiciosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Servicios.
+     */
+    data: XOR<ServiciosUpdateInput, ServiciosUncheckedUpdateInput>
+    /**
+     * Choose, which Servicios to update.
+     */
+    where: ServiciosWhereUniqueInput
+  }
+
+  /**
+   * Servicios updateMany
+   */
+  export type ServiciosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Servicios.
+     */
+    data: XOR<ServiciosUpdateManyMutationInput, ServiciosUncheckedUpdateManyInput>
+    /**
+     * Filter which Servicios to update
+     */
+    where?: ServiciosWhereInput
+    /**
+     * Limit how many Servicios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Servicios upsert
+   */
+  export type ServiciosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Servicios to update in case it exists.
+     */
+    where: ServiciosWhereUniqueInput
+    /**
+     * In case the Servicios found by the `where` argument doesn't exist, create a new Servicios with this data.
+     */
+    create: XOR<ServiciosCreateInput, ServiciosUncheckedCreateInput>
+    /**
+     * In case the Servicios was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServiciosUpdateInput, ServiciosUncheckedUpdateInput>
+  }
+
+  /**
+   * Servicios delete
+   */
+  export type ServiciosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+    /**
+     * Filter which Servicios to delete.
+     */
+    where: ServiciosWhereUniqueInput
+  }
+
+  /**
+   * Servicios deleteMany
+   */
+  export type ServiciosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Servicios to delete
+     */
+    where?: ServiciosWhereInput
+    /**
+     * Limit how many Servicios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Servicios.ApartamentoServicios
+   */
+  export type Servicios$ApartamentoServiciosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    where?: ApartamentoServiciosWhereInput
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * Servicios without action
+   */
+  export type ServiciosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Servicios
+     */
+    select?: ServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Servicios
+     */
+    omit?: ServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiciosInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApartamentoServicios
+   */
+
+  export type AggregateApartamentoServicios = {
+    _count: ApartamentoServiciosCountAggregateOutputType | null
+    _avg: ApartamentoServiciosAvgAggregateOutputType | null
+    _sum: ApartamentoServiciosSumAggregateOutputType | null
+    _min: ApartamentoServiciosMinAggregateOutputType | null
+    _max: ApartamentoServiciosMaxAggregateOutputType | null
+  }
+
+  export type ApartamentoServiciosAvgAggregateOutputType = {
+    costoAdicional: Decimal | null
+  }
+
+  export type ApartamentoServiciosSumAggregateOutputType = {
+    costoAdicional: Decimal | null
+  }
+
+  export type ApartamentoServiciosMinAggregateOutputType = {
+    id: string | null
+    apartamentoId: string | null
+    servicioId: string | null
+    incluido: boolean | null
+    costoAdicional: Decimal | null
+    createAt: Date | null
+    updateAt: Date | null
+  }
+
+  export type ApartamentoServiciosMaxAggregateOutputType = {
+    id: string | null
+    apartamentoId: string | null
+    servicioId: string | null
+    incluido: boolean | null
+    costoAdicional: Decimal | null
+    createAt: Date | null
+    updateAt: Date | null
+  }
+
+  export type ApartamentoServiciosCountAggregateOutputType = {
+    id: number
+    apartamentoId: number
+    servicioId: number
+    incluido: number
+    costoAdicional: number
+    createAt: number
+    updateAt: number
+    _all: number
+  }
+
+
+  export type ApartamentoServiciosAvgAggregateInputType = {
+    costoAdicional?: true
+  }
+
+  export type ApartamentoServiciosSumAggregateInputType = {
+    costoAdicional?: true
+  }
+
+  export type ApartamentoServiciosMinAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    servicioId?: true
+    incluido?: true
+    costoAdicional?: true
+    createAt?: true
+    updateAt?: true
+  }
+
+  export type ApartamentoServiciosMaxAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    servicioId?: true
+    incluido?: true
+    costoAdicional?: true
+    createAt?: true
+    updateAt?: true
+  }
+
+  export type ApartamentoServiciosCountAggregateInputType = {
+    id?: true
+    apartamentoId?: true
+    servicioId?: true
+    incluido?: true
+    costoAdicional?: true
+    createAt?: true
+    updateAt?: true
+    _all?: true
+  }
+
+  export type ApartamentoServiciosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApartamentoServicios to aggregate.
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApartamentoServicios to fetch.
+     */
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApartamentoServicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApartamentoServicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApartamentoServicios
+    **/
+    _count?: true | ApartamentoServiciosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApartamentoServiciosAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApartamentoServiciosSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApartamentoServiciosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApartamentoServiciosMaxAggregateInputType
+  }
+
+  export type GetApartamentoServiciosAggregateType<T extends ApartamentoServiciosAggregateArgs> = {
+        [P in keyof T & keyof AggregateApartamentoServicios]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApartamentoServicios[P]>
+      : GetScalarType<T[P], AggregateApartamentoServicios[P]>
+  }
+
+
+
+
+  export type ApartamentoServiciosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApartamentoServiciosWhereInput
+    orderBy?: ApartamentoServiciosOrderByWithAggregationInput | ApartamentoServiciosOrderByWithAggregationInput[]
+    by: ApartamentoServiciosScalarFieldEnum[] | ApartamentoServiciosScalarFieldEnum
+    having?: ApartamentoServiciosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApartamentoServiciosCountAggregateInputType | true
+    _avg?: ApartamentoServiciosAvgAggregateInputType
+    _sum?: ApartamentoServiciosSumAggregateInputType
+    _min?: ApartamentoServiciosMinAggregateInputType
+    _max?: ApartamentoServiciosMaxAggregateInputType
+  }
+
+  export type ApartamentoServiciosGroupByOutputType = {
+    id: string
+    apartamentoId: string
+    servicioId: string
+    incluido: boolean
+    costoAdicional: Decimal
+    createAt: Date
+    updateAt: Date
+    _count: ApartamentoServiciosCountAggregateOutputType | null
+    _avg: ApartamentoServiciosAvgAggregateOutputType | null
+    _sum: ApartamentoServiciosSumAggregateOutputType | null
+    _min: ApartamentoServiciosMinAggregateOutputType | null
+    _max: ApartamentoServiciosMaxAggregateOutputType | null
+  }
+
+  type GetApartamentoServiciosGroupByPayload<T extends ApartamentoServiciosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApartamentoServiciosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApartamentoServiciosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApartamentoServiciosGroupByOutputType[P]>
+            : GetScalarType<T[P], ApartamentoServiciosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApartamentoServiciosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    apartamentoId?: boolean
+    servicioId?: boolean
+    incluido?: boolean
+    costoAdicional?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    servicio?: boolean | ServiciosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["apartamentoServicios"]>
+
+
+
+  export type ApartamentoServiciosSelectScalar = {
+    id?: boolean
+    apartamentoId?: boolean
+    servicioId?: boolean
+    incluido?: boolean
+    costoAdicional?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+  }
+
+  export type ApartamentoServiciosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "apartamentoId" | "servicioId" | "incluido" | "costoAdicional" | "createAt" | "updateAt", ExtArgs["result"]["apartamentoServicios"]>
+  export type ApartamentoServiciosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    servicio?: boolean | ServiciosDefaultArgs<ExtArgs>
+  }
+
+  export type $ApartamentoServiciosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApartamentoServicios"
+    objects: {
+      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
+      servicio: Prisma.$ServiciosPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      apartamentoId: string
+      servicioId: string
+      incluido: boolean
+      costoAdicional: Prisma.Decimal
+      createAt: Date
+      updateAt: Date
+    }, ExtArgs["result"]["apartamentoServicios"]>
+    composites: {}
+  }
+
+  type ApartamentoServiciosGetPayload<S extends boolean | null | undefined | ApartamentoServiciosDefaultArgs> = $Result.GetResult<Prisma.$ApartamentoServiciosPayload, S>
+
+  type ApartamentoServiciosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApartamentoServiciosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApartamentoServiciosCountAggregateInputType | true
+    }
+
+  export interface ApartamentoServiciosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApartamentoServicios'], meta: { name: 'ApartamentoServicios' } }
+    /**
+     * Find zero or one ApartamentoServicios that matches the filter.
+     * @param {ApartamentoServiciosFindUniqueArgs} args - Arguments to find a ApartamentoServicios
+     * @example
+     * // Get one ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApartamentoServiciosFindUniqueArgs>(args: SelectSubset<T, ApartamentoServiciosFindUniqueArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApartamentoServicios that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApartamentoServiciosFindUniqueOrThrowArgs} args - Arguments to find a ApartamentoServicios
+     * @example
+     * // Get one ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApartamentoServiciosFindUniqueOrThrowArgs>(args: SelectSubset<T, ApartamentoServiciosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApartamentoServicios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosFindFirstArgs} args - Arguments to find a ApartamentoServicios
+     * @example
+     * // Get one ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApartamentoServiciosFindFirstArgs>(args?: SelectSubset<T, ApartamentoServiciosFindFirstArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApartamentoServicios that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosFindFirstOrThrowArgs} args - Arguments to find a ApartamentoServicios
+     * @example
+     * // Get one ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApartamentoServiciosFindFirstOrThrowArgs>(args?: SelectSubset<T, ApartamentoServiciosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApartamentoServicios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findMany()
+     * 
+     * // Get first 10 ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apartamentoServiciosWithIdOnly = await prisma.apartamentoServicios.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApartamentoServiciosFindManyArgs>(args?: SelectSubset<T, ApartamentoServiciosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApartamentoServicios.
+     * @param {ApartamentoServiciosCreateArgs} args - Arguments to create a ApartamentoServicios.
+     * @example
+     * // Create one ApartamentoServicios
+     * const ApartamentoServicios = await prisma.apartamentoServicios.create({
+     *   data: {
+     *     // ... data to create a ApartamentoServicios
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApartamentoServiciosCreateArgs>(args: SelectSubset<T, ApartamentoServiciosCreateArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApartamentoServicios.
+     * @param {ApartamentoServiciosCreateManyArgs} args - Arguments to create many ApartamentoServicios.
+     * @example
+     * // Create many ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApartamentoServiciosCreateManyArgs>(args?: SelectSubset<T, ApartamentoServiciosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ApartamentoServicios.
+     * @param {ApartamentoServiciosDeleteArgs} args - Arguments to delete one ApartamentoServicios.
+     * @example
+     * // Delete one ApartamentoServicios
+     * const ApartamentoServicios = await prisma.apartamentoServicios.delete({
+     *   where: {
+     *     // ... filter to delete one ApartamentoServicios
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApartamentoServiciosDeleteArgs>(args: SelectSubset<T, ApartamentoServiciosDeleteArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApartamentoServicios.
+     * @param {ApartamentoServiciosUpdateArgs} args - Arguments to update one ApartamentoServicios.
+     * @example
+     * // Update one ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApartamentoServiciosUpdateArgs>(args: SelectSubset<T, ApartamentoServiciosUpdateArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApartamentoServicios.
+     * @param {ApartamentoServiciosDeleteManyArgs} args - Arguments to filter ApartamentoServicios to delete.
+     * @example
+     * // Delete a few ApartamentoServicios
+     * const { count } = await prisma.apartamentoServicios.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApartamentoServiciosDeleteManyArgs>(args?: SelectSubset<T, ApartamentoServiciosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApartamentoServicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApartamentoServiciosUpdateManyArgs>(args: SelectSubset<T, ApartamentoServiciosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ApartamentoServicios.
+     * @param {ApartamentoServiciosUpsertArgs} args - Arguments to update or create a ApartamentoServicios.
+     * @example
+     * // Update or create a ApartamentoServicios
+     * const apartamentoServicios = await prisma.apartamentoServicios.upsert({
+     *   create: {
+     *     // ... data to create a ApartamentoServicios
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApartamentoServicios we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApartamentoServiciosUpsertArgs>(args: SelectSubset<T, ApartamentoServiciosUpsertArgs<ExtArgs>>): Prisma__ApartamentoServiciosClient<$Result.GetResult<Prisma.$ApartamentoServiciosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApartamentoServicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosCountArgs} args - Arguments to filter ApartamentoServicios to count.
+     * @example
+     * // Count the number of ApartamentoServicios
+     * const count = await prisma.apartamentoServicios.count({
+     *   where: {
+     *     // ... the filter for the ApartamentoServicios we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApartamentoServiciosCountArgs>(
+      args?: Subset<T, ApartamentoServiciosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApartamentoServiciosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApartamentoServicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApartamentoServiciosAggregateArgs>(args: Subset<T, ApartamentoServiciosAggregateArgs>): Prisma.PrismaPromise<GetApartamentoServiciosAggregateType<T>>
+
+    /**
+     * Group by ApartamentoServicios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApartamentoServiciosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApartamentoServiciosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApartamentoServiciosGroupByArgs['orderBy'] }
+        : { orderBy?: ApartamentoServiciosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApartamentoServiciosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApartamentoServiciosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApartamentoServicios model
+   */
+  readonly fields: ApartamentoServiciosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApartamentoServicios.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApartamentoServiciosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    servicio<T extends ServiciosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ServiciosDefaultArgs<ExtArgs>>): Prisma__ServiciosClient<$Result.GetResult<Prisma.$ServiciosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApartamentoServicios model
+   */
+  interface ApartamentoServiciosFieldRefs {
+    readonly id: FieldRef<"ApartamentoServicios", 'String'>
+    readonly apartamentoId: FieldRef<"ApartamentoServicios", 'String'>
+    readonly servicioId: FieldRef<"ApartamentoServicios", 'String'>
+    readonly incluido: FieldRef<"ApartamentoServicios", 'Boolean'>
+    readonly costoAdicional: FieldRef<"ApartamentoServicios", 'Decimal'>
+    readonly createAt: FieldRef<"ApartamentoServicios", 'DateTime'>
+    readonly updateAt: FieldRef<"ApartamentoServicios", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApartamentoServicios findUnique
+   */
+  export type ApartamentoServiciosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which ApartamentoServicios to fetch.
+     */
+    where: ApartamentoServiciosWhereUniqueInput
+  }
+
+  /**
+   * ApartamentoServicios findUniqueOrThrow
+   */
+  export type ApartamentoServiciosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which ApartamentoServicios to fetch.
+     */
+    where: ApartamentoServiciosWhereUniqueInput
+  }
+
+  /**
+   * ApartamentoServicios findFirst
+   */
+  export type ApartamentoServiciosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which ApartamentoServicios to fetch.
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApartamentoServicios to fetch.
+     */
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApartamentoServicios.
+     */
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApartamentoServicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApartamentoServicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApartamentoServicios.
+     */
+    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * ApartamentoServicios findFirstOrThrow
+   */
+  export type ApartamentoServiciosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which ApartamentoServicios to fetch.
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApartamentoServicios to fetch.
+     */
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApartamentoServicios.
+     */
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApartamentoServicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApartamentoServicios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApartamentoServicios.
+     */
+    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * ApartamentoServicios findMany
+   */
+  export type ApartamentoServiciosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter, which ApartamentoServicios to fetch.
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApartamentoServicios to fetch.
+     */
+    orderBy?: ApartamentoServiciosOrderByWithRelationInput | ApartamentoServiciosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApartamentoServicios.
+     */
+    cursor?: ApartamentoServiciosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApartamentoServicios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApartamentoServicios.
+     */
+    skip?: number
+    distinct?: ApartamentoServiciosScalarFieldEnum | ApartamentoServiciosScalarFieldEnum[]
+  }
+
+  /**
+   * ApartamentoServicios create
+   */
+  export type ApartamentoServiciosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ApartamentoServicios.
+     */
+    data: XOR<ApartamentoServiciosCreateInput, ApartamentoServiciosUncheckedCreateInput>
+  }
+
+  /**
+   * ApartamentoServicios createMany
+   */
+  export type ApartamentoServiciosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApartamentoServicios.
+     */
+    data: ApartamentoServiciosCreateManyInput | ApartamentoServiciosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApartamentoServicios update
+   */
+  export type ApartamentoServiciosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ApartamentoServicios.
+     */
+    data: XOR<ApartamentoServiciosUpdateInput, ApartamentoServiciosUncheckedUpdateInput>
+    /**
+     * Choose, which ApartamentoServicios to update.
+     */
+    where: ApartamentoServiciosWhereUniqueInput
+  }
+
+  /**
+   * ApartamentoServicios updateMany
+   */
+  export type ApartamentoServiciosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApartamentoServicios.
+     */
+    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyInput>
+    /**
+     * Filter which ApartamentoServicios to update
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * Limit how many ApartamentoServicios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApartamentoServicios upsert
+   */
+  export type ApartamentoServiciosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ApartamentoServicios to update in case it exists.
+     */
+    where: ApartamentoServiciosWhereUniqueInput
+    /**
+     * In case the ApartamentoServicios found by the `where` argument doesn't exist, create a new ApartamentoServicios with this data.
+     */
+    create: XOR<ApartamentoServiciosCreateInput, ApartamentoServiciosUncheckedCreateInput>
+    /**
+     * In case the ApartamentoServicios was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApartamentoServiciosUpdateInput, ApartamentoServiciosUncheckedUpdateInput>
+  }
+
+  /**
+   * ApartamentoServicios delete
+   */
+  export type ApartamentoServiciosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+    /**
+     * Filter which ApartamentoServicios to delete.
+     */
+    where: ApartamentoServiciosWhereUniqueInput
+  }
+
+  /**
+   * ApartamentoServicios deleteMany
+   */
+  export type ApartamentoServiciosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApartamentoServicios to delete
+     */
+    where?: ApartamentoServiciosWhereInput
+    /**
+     * Limit how many ApartamentoServicios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApartamentoServicios without action
+   */
+  export type ApartamentoServiciosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApartamentoServicios
+     */
+    select?: ApartamentoServiciosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApartamentoServicios
+     */
+    omit?: ApartamentoServiciosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ApartamentoServiciosInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Contratos
+   */
+
+  export type AggregateContratos = {
+    _count: ContratosCountAggregateOutputType | null
+    _avg: ContratosAvgAggregateOutputType | null
+    _sum: ContratosSumAggregateOutputType | null
+    _min: ContratosMinAggregateOutputType | null
+    _max: ContratosMaxAggregateOutputType | null
+  }
+
+  export type ContratosAvgAggregateOutputType = {
+    montoMensual: Decimal | null
+  }
+
+  export type ContratosSumAggregateOutputType = {
+    montoMensual: Decimal | null
+  }
+
+  export type ContratosMinAggregateOutputType = {
+    id: string | null
+    inquilinoId: string | null
+    apartamentoId: string | null
+    fechaInicio: Date | null
+    fechaFin: Date | null
+    createAt: Date | null
+    updateAt: Date | null
+    montoMensual: Decimal | null
+    activo: boolean | null
+  }
+
+  export type ContratosMaxAggregateOutputType = {
+    id: string | null
+    inquilinoId: string | null
+    apartamentoId: string | null
+    fechaInicio: Date | null
+    fechaFin: Date | null
+    createAt: Date | null
+    updateAt: Date | null
+    montoMensual: Decimal | null
+    activo: boolean | null
+  }
+
+  export type ContratosCountAggregateOutputType = {
+    id: number
+    inquilinoId: number
+    apartamentoId: number
+    fechaInicio: number
+    fechaFin: number
+    createAt: number
+    updateAt: number
+    montoMensual: number
+    activo: number
+    _all: number
+  }
+
+
+  export type ContratosAvgAggregateInputType = {
+    montoMensual?: true
+  }
+
+  export type ContratosSumAggregateInputType = {
+    montoMensual?: true
+  }
+
+  export type ContratosMinAggregateInputType = {
+    id?: true
+    inquilinoId?: true
+    apartamentoId?: true
+    fechaInicio?: true
+    fechaFin?: true
+    createAt?: true
+    updateAt?: true
+    montoMensual?: true
+    activo?: true
+  }
+
+  export type ContratosMaxAggregateInputType = {
+    id?: true
+    inquilinoId?: true
+    apartamentoId?: true
+    fechaInicio?: true
+    fechaFin?: true
+    createAt?: true
+    updateAt?: true
+    montoMensual?: true
+    activo?: true
+  }
+
+  export type ContratosCountAggregateInputType = {
+    id?: true
+    inquilinoId?: true
+    apartamentoId?: true
+    fechaInicio?: true
+    fechaFin?: true
+    createAt?: true
+    updateAt?: true
+    montoMensual?: true
+    activo?: true
+    _all?: true
+  }
+
+  export type ContratosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contratos to aggregate.
+     */
+    where?: ContratosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contratos to fetch.
+     */
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContratosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contratos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contratos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contratos
+    **/
+    _count?: true | ContratosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContratosAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContratosSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContratosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContratosMaxAggregateInputType
+  }
+
+  export type GetContratosAggregateType<T extends ContratosAggregateArgs> = {
+        [P in keyof T & keyof AggregateContratos]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContratos[P]>
+      : GetScalarType<T[P], AggregateContratos[P]>
+  }
+
+
+
+
+  export type ContratosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContratosWhereInput
+    orderBy?: ContratosOrderByWithAggregationInput | ContratosOrderByWithAggregationInput[]
+    by: ContratosScalarFieldEnum[] | ContratosScalarFieldEnum
+    having?: ContratosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContratosCountAggregateInputType | true
+    _avg?: ContratosAvgAggregateInputType
+    _sum?: ContratosSumAggregateInputType
+    _min?: ContratosMinAggregateInputType
+    _max?: ContratosMaxAggregateInputType
+  }
+
+  export type ContratosGroupByOutputType = {
+    id: string
+    inquilinoId: string
+    apartamentoId: string
+    fechaInicio: Date
+    fechaFin: Date | null
+    createAt: Date
+    updateAt: Date
+    montoMensual: Decimal
+    activo: boolean
+    _count: ContratosCountAggregateOutputType | null
+    _avg: ContratosAvgAggregateOutputType | null
+    _sum: ContratosSumAggregateOutputType | null
+    _min: ContratosMinAggregateOutputType | null
+    _max: ContratosMaxAggregateOutputType | null
+  }
+
+  type GetContratosGroupByPayload<T extends ContratosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContratosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContratosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContratosGroupByOutputType[P]>
+            : GetScalarType<T[P], ContratosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContratosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    inquilinoId?: boolean
+    apartamentoId?: boolean
+    fechaInicio?: boolean
+    fechaFin?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    montoMensual?: boolean
+    activo?: boolean
+    inquilino?: boolean | InquilinoDefaultArgs<ExtArgs>
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    recibos?: boolean | Contratos$recibosArgs<ExtArgs>
+    _count?: boolean | ContratosCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["contratos"]>
+
+
+
+  export type ContratosSelectScalar = {
+    id?: boolean
+    inquilinoId?: boolean
+    apartamentoId?: boolean
+    fechaInicio?: boolean
+    fechaFin?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    montoMensual?: boolean
+    activo?: boolean
+  }
+
+  export type ContratosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "inquilinoId" | "apartamentoId" | "fechaInicio" | "fechaFin" | "createAt" | "updateAt" | "montoMensual" | "activo", ExtArgs["result"]["contratos"]>
+  export type ContratosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    inquilino?: boolean | InquilinoDefaultArgs<ExtArgs>
+    apartamento?: boolean | ApartamentoDefaultArgs<ExtArgs>
+    recibos?: boolean | Contratos$recibosArgs<ExtArgs>
+    _count?: boolean | ContratosCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $ContratosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Contratos"
+    objects: {
+      inquilino: Prisma.$InquilinoPayload<ExtArgs>
+      apartamento: Prisma.$ApartamentoPayload<ExtArgs>
+      recibos: Prisma.$RecibosPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      inquilinoId: string
+      apartamentoId: string
+      fechaInicio: Date
+      fechaFin: Date | null
+      createAt: Date
+      updateAt: Date
+      montoMensual: Prisma.Decimal
+      activo: boolean
+    }, ExtArgs["result"]["contratos"]>
+    composites: {}
+  }
+
+  type ContratosGetPayload<S extends boolean | null | undefined | ContratosDefaultArgs> = $Result.GetResult<Prisma.$ContratosPayload, S>
+
+  type ContratosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContratosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContratosCountAggregateInputType | true
+    }
+
+  export interface ContratosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contratos'], meta: { name: 'Contratos' } }
+    /**
+     * Find zero or one Contratos that matches the filter.
+     * @param {ContratosFindUniqueArgs} args - Arguments to find a Contratos
+     * @example
+     * // Get one Contratos
+     * const contratos = await prisma.contratos.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContratosFindUniqueArgs>(args: SelectSubset<T, ContratosFindUniqueArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contratos that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContratosFindUniqueOrThrowArgs} args - Arguments to find a Contratos
+     * @example
+     * // Get one Contratos
+     * const contratos = await prisma.contratos.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContratosFindUniqueOrThrowArgs>(args: SelectSubset<T, ContratosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contratos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosFindFirstArgs} args - Arguments to find a Contratos
+     * @example
+     * // Get one Contratos
+     * const contratos = await prisma.contratos.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContratosFindFirstArgs>(args?: SelectSubset<T, ContratosFindFirstArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contratos that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosFindFirstOrThrowArgs} args - Arguments to find a Contratos
+     * @example
+     * // Get one Contratos
+     * const contratos = await prisma.contratos.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContratosFindFirstOrThrowArgs>(args?: SelectSubset<T, ContratosFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contratos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contratos
+     * const contratos = await prisma.contratos.findMany()
+     * 
+     * // Get first 10 Contratos
+     * const contratos = await prisma.contratos.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contratosWithIdOnly = await prisma.contratos.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContratosFindManyArgs>(args?: SelectSubset<T, ContratosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contratos.
+     * @param {ContratosCreateArgs} args - Arguments to create a Contratos.
+     * @example
+     * // Create one Contratos
+     * const Contratos = await prisma.contratos.create({
+     *   data: {
+     *     // ... data to create a Contratos
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContratosCreateArgs>(args: SelectSubset<T, ContratosCreateArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contratos.
+     * @param {ContratosCreateManyArgs} args - Arguments to create many Contratos.
+     * @example
+     * // Create many Contratos
+     * const contratos = await prisma.contratos.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContratosCreateManyArgs>(args?: SelectSubset<T, ContratosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Contratos.
+     * @param {ContratosDeleteArgs} args - Arguments to delete one Contratos.
+     * @example
+     * // Delete one Contratos
+     * const Contratos = await prisma.contratos.delete({
+     *   where: {
+     *     // ... filter to delete one Contratos
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContratosDeleteArgs>(args: SelectSubset<T, ContratosDeleteArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contratos.
+     * @param {ContratosUpdateArgs} args - Arguments to update one Contratos.
+     * @example
+     * // Update one Contratos
+     * const contratos = await prisma.contratos.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContratosUpdateArgs>(args: SelectSubset<T, ContratosUpdateArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contratos.
+     * @param {ContratosDeleteManyArgs} args - Arguments to filter Contratos to delete.
+     * @example
+     * // Delete a few Contratos
+     * const { count } = await prisma.contratos.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContratosDeleteManyArgs>(args?: SelectSubset<T, ContratosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contratos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contratos
+     * const contratos = await prisma.contratos.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContratosUpdateManyArgs>(args: SelectSubset<T, ContratosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Contratos.
+     * @param {ContratosUpsertArgs} args - Arguments to update or create a Contratos.
+     * @example
+     * // Update or create a Contratos
+     * const contratos = await prisma.contratos.upsert({
+     *   create: {
+     *     // ... data to create a Contratos
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contratos we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContratosUpsertArgs>(args: SelectSubset<T, ContratosUpsertArgs<ExtArgs>>): Prisma__ContratosClient<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contratos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosCountArgs} args - Arguments to filter Contratos to count.
+     * @example
+     * // Count the number of Contratos
+     * const count = await prisma.contratos.count({
+     *   where: {
+     *     // ... the filter for the Contratos we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContratosCountArgs>(
+      args?: Subset<T, ContratosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContratosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contratos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContratosAggregateArgs>(args: Subset<T, ContratosAggregateArgs>): Prisma.PrismaPromise<GetContratosAggregateType<T>>
+
+    /**
+     * Group by Contratos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContratosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContratosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContratosGroupByArgs['orderBy'] }
+        : { orderBy?: ContratosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContratosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContratosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Contratos model
+   */
+  readonly fields: ContratosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Contratos.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContratosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    inquilino<T extends InquilinoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InquilinoDefaultArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    apartamento<T extends ApartamentoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ApartamentoDefaultArgs<ExtArgs>>): Prisma__ApartamentoClient<$Result.GetResult<Prisma.$ApartamentoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    recibos<T extends Contratos$recibosArgs<ExtArgs> = {}>(args?: Subset<T, Contratos$recibosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecibosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Contratos model
+   */
+  interface ContratosFieldRefs {
+    readonly id: FieldRef<"Contratos", 'String'>
+    readonly inquilinoId: FieldRef<"Contratos", 'String'>
+    readonly apartamentoId: FieldRef<"Contratos", 'String'>
+    readonly fechaInicio: FieldRef<"Contratos", 'DateTime'>
+    readonly fechaFin: FieldRef<"Contratos", 'DateTime'>
+    readonly createAt: FieldRef<"Contratos", 'DateTime'>
+    readonly updateAt: FieldRef<"Contratos", 'DateTime'>
+    readonly montoMensual: FieldRef<"Contratos", 'Decimal'>
+    readonly activo: FieldRef<"Contratos", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Contratos findUnique
+   */
+  export type ContratosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter, which Contratos to fetch.
+     */
+    where: ContratosWhereUniqueInput
+  }
+
+  /**
+   * Contratos findUniqueOrThrow
+   */
+  export type ContratosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter, which Contratos to fetch.
+     */
+    where: ContratosWhereUniqueInput
+  }
+
+  /**
+   * Contratos findFirst
+   */
+  export type ContratosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter, which Contratos to fetch.
+     */
+    where?: ContratosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contratos to fetch.
+     */
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contratos.
+     */
+    cursor?: ContratosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contratos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contratos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contratos.
+     */
+    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
+  }
+
+  /**
+   * Contratos findFirstOrThrow
+   */
+  export type ContratosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter, which Contratos to fetch.
+     */
+    where?: ContratosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contratos to fetch.
+     */
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contratos.
+     */
+    cursor?: ContratosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contratos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contratos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contratos.
+     */
+    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
+  }
+
+  /**
+   * Contratos findMany
+   */
+  export type ContratosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter, which Contratos to fetch.
+     */
+    where?: ContratosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contratos to fetch.
+     */
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contratos.
+     */
+    cursor?: ContratosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contratos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contratos.
+     */
+    skip?: number
+    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
+  }
+
+  /**
+   * Contratos create
+   */
+  export type ContratosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Contratos.
+     */
+    data: XOR<ContratosCreateInput, ContratosUncheckedCreateInput>
+  }
+
+  /**
+   * Contratos createMany
+   */
+  export type ContratosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Contratos.
+     */
+    data: ContratosCreateManyInput | ContratosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Contratos update
+   */
+  export type ContratosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Contratos.
+     */
+    data: XOR<ContratosUpdateInput, ContratosUncheckedUpdateInput>
+    /**
+     * Choose, which Contratos to update.
+     */
+    where: ContratosWhereUniqueInput
+  }
+
+  /**
+   * Contratos updateMany
+   */
+  export type ContratosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Contratos.
+     */
+    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyInput>
+    /**
+     * Filter which Contratos to update
+     */
+    where?: ContratosWhereInput
+    /**
+     * Limit how many Contratos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contratos upsert
+   */
+  export type ContratosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Contratos to update in case it exists.
+     */
+    where: ContratosWhereUniqueInput
+    /**
+     * In case the Contratos found by the `where` argument doesn't exist, create a new Contratos with this data.
+     */
+    create: XOR<ContratosCreateInput, ContratosUncheckedCreateInput>
+    /**
+     * In case the Contratos was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContratosUpdateInput, ContratosUncheckedUpdateInput>
+  }
+
+  /**
+   * Contratos delete
+   */
+  export type ContratosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    /**
+     * Filter which Contratos to delete.
+     */
+    where: ContratosWhereUniqueInput
+  }
+
+  /**
+   * Contratos deleteMany
+   */
+  export type ContratosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contratos to delete
+     */
+    where?: ContratosWhereInput
+    /**
+     * Limit how many Contratos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contratos.recibos
+   */
+  export type Contratos$recibosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recibos
+     */
+    select?: RecibosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recibos
+     */
+    omit?: RecibosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecibosInclude<ExtArgs> | null
+    where?: RecibosWhereInput
+    orderBy?: RecibosOrderByWithRelationInput | RecibosOrderByWithRelationInput[]
+    cursor?: RecibosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecibosScalarFieldEnum | RecibosScalarFieldEnum[]
+  }
+
+  /**
+   * Contratos without action
+   */
+  export type ContratosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Recibos
    */
 
@@ -11271,20 +11170,16 @@ export namespace Prisma {
   }
 
   export type RecibosAvgAggregateOutputType = {
-    id: number | null
-    contratoId: number | null
     total: Decimal | null
   }
 
   export type RecibosSumAggregateOutputType = {
-    id: number | null
-    contratoId: number | null
     total: Decimal | null
   }
 
   export type RecibosMinAggregateOutputType = {
-    id: number | null
-    contratoId: number | null
+    id: string | null
+    contratoId: string | null
     fechaPago: Date | null
     total: Decimal | null
     createAt: Date | null
@@ -11292,8 +11187,8 @@ export namespace Prisma {
   }
 
   export type RecibosMaxAggregateOutputType = {
-    id: number | null
-    contratoId: number | null
+    id: string | null
+    contratoId: string | null
     fechaPago: Date | null
     total: Decimal | null
     createAt: Date | null
@@ -11312,14 +11207,10 @@ export namespace Prisma {
 
 
   export type RecibosAvgAggregateInputType = {
-    id?: true
-    contratoId?: true
     total?: true
   }
 
   export type RecibosSumAggregateInputType = {
-    id?: true
-    contratoId?: true
     total?: true
   }
 
@@ -11438,8 +11329,8 @@ export namespace Prisma {
   }
 
   export type RecibosGroupByOutputType = {
-    id: number
-    contratoId: number
+    id: string
+    contratoId: string
     fechaPago: Date
     total: Decimal
     createAt: Date
@@ -11502,8 +11393,8 @@ export namespace Prisma {
       detalles: Prisma.$ReciboDetallesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
-      contratoId: number
+      id: string
+      contratoId: string
       fechaPago: Date
       total: Prisma.Decimal
       createAt: Date
@@ -11879,8 +11770,8 @@ export namespace Prisma {
    * Fields of the Recibos model
    */
   interface RecibosFieldRefs {
-    readonly id: FieldRef<"Recibos", 'Int'>
-    readonly contratoId: FieldRef<"Recibos", 'Int'>
+    readonly id: FieldRef<"Recibos", 'String'>
+    readonly contratoId: FieldRef<"Recibos", 'String'>
     readonly fechaPago: FieldRef<"Recibos", 'DateTime'>
     readonly total: FieldRef<"Recibos", 'Decimal'>
     readonly createAt: FieldRef<"Recibos", 'DateTime'>
@@ -12283,20 +12174,16 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesAvgAggregateOutputType = {
-    id: number | null
-    reciboId: number | null
     monto: Decimal | null
   }
 
   export type ReciboDetallesSumAggregateOutputType = {
-    id: number | null
-    reciboId: number | null
     monto: Decimal | null
   }
 
   export type ReciboDetallesMinAggregateOutputType = {
-    id: number | null
-    reciboId: number | null
+    id: string | null
+    reciboId: string | null
     descripcion: string | null
     monto: Decimal | null
     createAt: Date | null
@@ -12304,8 +12191,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesMaxAggregateOutputType = {
-    id: number | null
-    reciboId: number | null
+    id: string | null
+    reciboId: string | null
     descripcion: string | null
     monto: Decimal | null
     createAt: Date | null
@@ -12324,14 +12211,10 @@ export namespace Prisma {
 
 
   export type ReciboDetallesAvgAggregateInputType = {
-    id?: true
-    reciboId?: true
     monto?: true
   }
 
   export type ReciboDetallesSumAggregateInputType = {
-    id?: true
-    reciboId?: true
     monto?: true
   }
 
@@ -12450,8 +12333,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesGroupByOutputType = {
-    id: number
-    reciboId: number
+    id: string
+    reciboId: string
     descripcion: string
     monto: Decimal
     createAt: Date
@@ -12509,8 +12392,8 @@ export namespace Prisma {
       recibo: Prisma.$RecibosPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
-      reciboId: number
+      id: string
+      reciboId: string
       descripcion: string
       monto: Prisma.Decimal
       createAt: Date
@@ -12885,8 +12768,8 @@ export namespace Prisma {
    * Fields of the ReciboDetalles model
    */
   interface ReciboDetallesFieldRefs {
-    readonly id: FieldRef<"ReciboDetalles", 'Int'>
-    readonly reciboId: FieldRef<"ReciboDetalles", 'Int'>
+    readonly id: FieldRef<"ReciboDetalles", 'String'>
+    readonly reciboId: FieldRef<"ReciboDetalles", 'String'>
     readonly descripcion: FieldRef<"ReciboDetalles", 'String'>
     readonly monto: FieldRef<"ReciboDetalles", 'Decimal'>
     readonly createAt: FieldRef<"ReciboDetalles", 'DateTime'>
@@ -16154,13 +16037,27 @@ export namespace Prisma {
   export type InquilinoScalarFieldEnum = (typeof InquilinoScalarFieldEnum)[keyof typeof InquilinoScalarFieldEnum]
 
 
+  export const AcompañanteScalarFieldEnum: {
+    id: 'id',
+    nombreCompleto: 'nombreCompleto',
+    inquilinoId: 'inquilinoId',
+    Parentesco: 'Parentesco',
+    createAt: 'createAt',
+    updateAt: 'updateAt',
+    activo: 'activo'
+  };
+
+  export type AcompañanteScalarFieldEnum = (typeof AcompañanteScalarFieldEnum)[keyof typeof AcompañanteScalarFieldEnum]
+
+
   export const ApartamentoScalarFieldEnum: {
     id: 'id',
     numero: 'numero',
     direccion: 'direccion',
     createAt: 'createAt',
     updateAt: 'updateAt',
-    disponible: 'disponible'
+    disponible: 'disponible',
+    activo: 'activo'
   };
 
   export type ApartamentoScalarFieldEnum = (typeof ApartamentoScalarFieldEnum)[keyof typeof ApartamentoScalarFieldEnum]
@@ -16170,10 +16067,24 @@ export namespace Prisma {
     id: 'id',
     nombre: 'nombre',
     createAt: 'createAt',
-    updateAt: 'updateAt'
+    updateAt: 'updateAt',
+    activo: 'activo'
   };
 
   export type TiposHabitacionScalarFieldEnum = (typeof TiposHabitacionScalarFieldEnum)[keyof typeof TiposHabitacionScalarFieldEnum]
+
+
+  export const HabitacionesScalarFieldEnum: {
+    id: 'id',
+    apartamentoId: 'apartamentoId',
+    tipoHabitacionId: 'tipoHabitacionId',
+    cantidad: 'cantidad',
+    createAt: 'createAt',
+    activo: 'activo',
+    updateAt: 'updateAt'
+  };
+
+  export type HabitacionesScalarFieldEnum = (typeof HabitacionesScalarFieldEnum)[keyof typeof HabitacionesScalarFieldEnum]
 
 
   export const ServiciosScalarFieldEnum: {
@@ -16213,31 +16124,6 @@ export namespace Prisma {
   };
 
   export type ContratosScalarFieldEnum = (typeof ContratosScalarFieldEnum)[keyof typeof ContratosScalarFieldEnum]
-
-
-  export const HabitacionesScalarFieldEnum: {
-    id: 'id',
-    apartamentoId: 'apartamentoId',
-    tipoHabitacionId: 'tipoHabitacionId',
-    cantidad: 'cantidad',
-    createAt: 'createAt',
-    updateAt: 'updateAt'
-  };
-
-  export type HabitacionesScalarFieldEnum = (typeof HabitacionesScalarFieldEnum)[keyof typeof HabitacionesScalarFieldEnum]
-
-
-  export const AcompañanteScalarFieldEnum: {
-    id: 'id',
-    nombreCompleto: 'nombreCompleto',
-    inquilinoId: 'inquilinoId',
-    Parentesco: 'Parentesco',
-    createAt: 'createAt',
-    updateAt: 'updateAt',
-    activo: 'activo'
-  };
-
-  export type AcompañanteScalarFieldEnum = (typeof AcompañanteScalarFieldEnum)[keyof typeof AcompañanteScalarFieldEnum]
 
 
   export const RecibosScalarFieldEnum: {
@@ -16329,43 +16215,6 @@ export namespace Prisma {
   export type InquilinoOrderByRelevanceFieldEnum = (typeof InquilinoOrderByRelevanceFieldEnum)[keyof typeof InquilinoOrderByRelevanceFieldEnum]
 
 
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-  export const ApartamentoOrderByRelevanceFieldEnum: {
-    numero: 'numero',
-    direccion: 'direccion'
-  };
-
-  export type ApartamentoOrderByRelevanceFieldEnum = (typeof ApartamentoOrderByRelevanceFieldEnum)[keyof typeof ApartamentoOrderByRelevanceFieldEnum]
-
-
-  export const TiposHabitacionOrderByRelevanceFieldEnum: {
-    nombre: 'nombre'
-  };
-
-  export type TiposHabitacionOrderByRelevanceFieldEnum = (typeof TiposHabitacionOrderByRelevanceFieldEnum)[keyof typeof TiposHabitacionOrderByRelevanceFieldEnum]
-
-
-  export const ServiciosOrderByRelevanceFieldEnum: {
-    nombre: 'nombre'
-  };
-
-  export type ServiciosOrderByRelevanceFieldEnum = (typeof ServiciosOrderByRelevanceFieldEnum)[keyof typeof ServiciosOrderByRelevanceFieldEnum]
-
-
-  export const ContratosOrderByRelevanceFieldEnum: {
-    inquilinoId: 'inquilinoId'
-  };
-
-  export type ContratosOrderByRelevanceFieldEnum = (typeof ContratosOrderByRelevanceFieldEnum)[keyof typeof ContratosOrderByRelevanceFieldEnum]
-
-
   export const AcompañanteOrderByRelevanceFieldEnum: {
     id: 'id',
     nombreCompleto: 'nombreCompleto',
@@ -16376,7 +16225,77 @@ export namespace Prisma {
   export type AcompañanteOrderByRelevanceFieldEnum = (typeof AcompañanteOrderByRelevanceFieldEnum)[keyof typeof AcompañanteOrderByRelevanceFieldEnum]
 
 
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const ApartamentoOrderByRelevanceFieldEnum: {
+    id: 'id',
+    numero: 'numero',
+    direccion: 'direccion'
+  };
+
+  export type ApartamentoOrderByRelevanceFieldEnum = (typeof ApartamentoOrderByRelevanceFieldEnum)[keyof typeof ApartamentoOrderByRelevanceFieldEnum]
+
+
+  export const TiposHabitacionOrderByRelevanceFieldEnum: {
+    id: 'id',
+    nombre: 'nombre'
+  };
+
+  export type TiposHabitacionOrderByRelevanceFieldEnum = (typeof TiposHabitacionOrderByRelevanceFieldEnum)[keyof typeof TiposHabitacionOrderByRelevanceFieldEnum]
+
+
+  export const HabitacionesOrderByRelevanceFieldEnum: {
+    id: 'id',
+    apartamentoId: 'apartamentoId',
+    tipoHabitacionId: 'tipoHabitacionId'
+  };
+
+  export type HabitacionesOrderByRelevanceFieldEnum = (typeof HabitacionesOrderByRelevanceFieldEnum)[keyof typeof HabitacionesOrderByRelevanceFieldEnum]
+
+
+  export const ServiciosOrderByRelevanceFieldEnum: {
+    id: 'id',
+    nombre: 'nombre'
+  };
+
+  export type ServiciosOrderByRelevanceFieldEnum = (typeof ServiciosOrderByRelevanceFieldEnum)[keyof typeof ServiciosOrderByRelevanceFieldEnum]
+
+
+  export const ApartamentoServiciosOrderByRelevanceFieldEnum: {
+    id: 'id',
+    apartamentoId: 'apartamentoId',
+    servicioId: 'servicioId'
+  };
+
+  export type ApartamentoServiciosOrderByRelevanceFieldEnum = (typeof ApartamentoServiciosOrderByRelevanceFieldEnum)[keyof typeof ApartamentoServiciosOrderByRelevanceFieldEnum]
+
+
+  export const ContratosOrderByRelevanceFieldEnum: {
+    id: 'id',
+    inquilinoId: 'inquilinoId',
+    apartamentoId: 'apartamentoId'
+  };
+
+  export type ContratosOrderByRelevanceFieldEnum = (typeof ContratosOrderByRelevanceFieldEnum)[keyof typeof ContratosOrderByRelevanceFieldEnum]
+
+
+  export const RecibosOrderByRelevanceFieldEnum: {
+    id: 'id',
+    contratoId: 'contratoId'
+  };
+
+  export type RecibosOrderByRelevanceFieldEnum = (typeof RecibosOrderByRelevanceFieldEnum)[keyof typeof RecibosOrderByRelevanceFieldEnum]
+
+
   export const ReciboDetallesOrderByRelevanceFieldEnum: {
+    id: 'id',
+    reciboId: 'reciboId',
     descripcion: 'descripcion'
   };
 
@@ -16605,405 +16524,6 @@ export namespace Prisma {
     activo?: BoolWithAggregatesFilter<"Inquilino"> | boolean
   }
 
-  export type ApartamentoWhereInput = {
-    AND?: ApartamentoWhereInput | ApartamentoWhereInput[]
-    OR?: ApartamentoWhereInput[]
-    NOT?: ApartamentoWhereInput | ApartamentoWhereInput[]
-    id?: IntFilter<"Apartamento"> | number
-    numero?: StringFilter<"Apartamento"> | string
-    direccion?: StringNullableFilter<"Apartamento"> | string | null
-    createAt?: DateTimeFilter<"Apartamento"> | Date | string
-    updateAt?: DateTimeFilter<"Apartamento"> | Date | string
-    disponible?: BoolFilter<"Apartamento"> | boolean
-    apartamento?: HabitacionesListRelationFilter
-    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
-    Contratos?: ContratosListRelationFilter
-  }
-
-  export type ApartamentoOrderByWithRelationInput = {
-    id?: SortOrder
-    numero?: SortOrder
-    direccion?: SortOrderInput | SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    disponible?: SortOrder
-    apartamento?: HabitacionesOrderByRelationAggregateInput
-    ApartamentoServicios?: ApartamentoServiciosOrderByRelationAggregateInput
-    Contratos?: ContratosOrderByRelationAggregateInput
-    _relevance?: ApartamentoOrderByRelevanceInput
-  }
-
-  export type ApartamentoWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    numero?: string
-    AND?: ApartamentoWhereInput | ApartamentoWhereInput[]
-    OR?: ApartamentoWhereInput[]
-    NOT?: ApartamentoWhereInput | ApartamentoWhereInput[]
-    direccion?: StringNullableFilter<"Apartamento"> | string | null
-    createAt?: DateTimeFilter<"Apartamento"> | Date | string
-    updateAt?: DateTimeFilter<"Apartamento"> | Date | string
-    disponible?: BoolFilter<"Apartamento"> | boolean
-    apartamento?: HabitacionesListRelationFilter
-    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
-    Contratos?: ContratosListRelationFilter
-  }, "id" | "numero">
-
-  export type ApartamentoOrderByWithAggregationInput = {
-    id?: SortOrder
-    numero?: SortOrder
-    direccion?: SortOrderInput | SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    disponible?: SortOrder
-    _count?: ApartamentoCountOrderByAggregateInput
-    _avg?: ApartamentoAvgOrderByAggregateInput
-    _max?: ApartamentoMaxOrderByAggregateInput
-    _min?: ApartamentoMinOrderByAggregateInput
-    _sum?: ApartamentoSumOrderByAggregateInput
-  }
-
-  export type ApartamentoScalarWhereWithAggregatesInput = {
-    AND?: ApartamentoScalarWhereWithAggregatesInput | ApartamentoScalarWhereWithAggregatesInput[]
-    OR?: ApartamentoScalarWhereWithAggregatesInput[]
-    NOT?: ApartamentoScalarWhereWithAggregatesInput | ApartamentoScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Apartamento"> | number
-    numero?: StringWithAggregatesFilter<"Apartamento"> | string
-    direccion?: StringNullableWithAggregatesFilter<"Apartamento"> | string | null
-    createAt?: DateTimeWithAggregatesFilter<"Apartamento"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"Apartamento"> | Date | string
-    disponible?: BoolWithAggregatesFilter<"Apartamento"> | boolean
-  }
-
-  export type TiposHabitacionWhereInput = {
-    AND?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
-    OR?: TiposHabitacionWhereInput[]
-    NOT?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
-    id?: IntFilter<"TiposHabitacion"> | number
-    nombre?: StringFilter<"TiposHabitacion"> | string
-    createAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
-    updateAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
-    apartamento?: HabitacionesListRelationFilter
-  }
-
-  export type TiposHabitacionOrderByWithRelationInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    apartamento?: HabitacionesOrderByRelationAggregateInput
-    _relevance?: TiposHabitacionOrderByRelevanceInput
-  }
-
-  export type TiposHabitacionWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    nombre?: string
-    AND?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
-    OR?: TiposHabitacionWhereInput[]
-    NOT?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
-    createAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
-    updateAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
-    apartamento?: HabitacionesListRelationFilter
-  }, "id" | "nombre">
-
-  export type TiposHabitacionOrderByWithAggregationInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    _count?: TiposHabitacionCountOrderByAggregateInput
-    _avg?: TiposHabitacionAvgOrderByAggregateInput
-    _max?: TiposHabitacionMaxOrderByAggregateInput
-    _min?: TiposHabitacionMinOrderByAggregateInput
-    _sum?: TiposHabitacionSumOrderByAggregateInput
-  }
-
-  export type TiposHabitacionScalarWhereWithAggregatesInput = {
-    AND?: TiposHabitacionScalarWhereWithAggregatesInput | TiposHabitacionScalarWhereWithAggregatesInput[]
-    OR?: TiposHabitacionScalarWhereWithAggregatesInput[]
-    NOT?: TiposHabitacionScalarWhereWithAggregatesInput | TiposHabitacionScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"TiposHabitacion"> | number
-    nombre?: StringWithAggregatesFilter<"TiposHabitacion"> | string
-    createAt?: DateTimeWithAggregatesFilter<"TiposHabitacion"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"TiposHabitacion"> | Date | string
-  }
-
-  export type ServiciosWhereInput = {
-    AND?: ServiciosWhereInput | ServiciosWhereInput[]
-    OR?: ServiciosWhereInput[]
-    NOT?: ServiciosWhereInput | ServiciosWhereInput[]
-    id?: IntFilter<"Servicios"> | number
-    nombre?: StringFilter<"Servicios"> | string
-    createAt?: DateTimeFilter<"Servicios"> | Date | string
-    updateAt?: DateTimeFilter<"Servicios"> | Date | string
-    activo?: BoolFilter<"Servicios"> | boolean
-    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
-  }
-
-  export type ServiciosOrderByWithRelationInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-    ApartamentoServicios?: ApartamentoServiciosOrderByRelationAggregateInput
-    _relevance?: ServiciosOrderByRelevanceInput
-  }
-
-  export type ServiciosWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    nombre?: string
-    AND?: ServiciosWhereInput | ServiciosWhereInput[]
-    OR?: ServiciosWhereInput[]
-    NOT?: ServiciosWhereInput | ServiciosWhereInput[]
-    createAt?: DateTimeFilter<"Servicios"> | Date | string
-    updateAt?: DateTimeFilter<"Servicios"> | Date | string
-    activo?: BoolFilter<"Servicios"> | boolean
-    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
-  }, "id" | "nombre">
-
-  export type ServiciosOrderByWithAggregationInput = {
-    id?: SortOrder
-    nombre?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-    _count?: ServiciosCountOrderByAggregateInput
-    _avg?: ServiciosAvgOrderByAggregateInput
-    _max?: ServiciosMaxOrderByAggregateInput
-    _min?: ServiciosMinOrderByAggregateInput
-    _sum?: ServiciosSumOrderByAggregateInput
-  }
-
-  export type ServiciosScalarWhereWithAggregatesInput = {
-    AND?: ServiciosScalarWhereWithAggregatesInput | ServiciosScalarWhereWithAggregatesInput[]
-    OR?: ServiciosScalarWhereWithAggregatesInput[]
-    NOT?: ServiciosScalarWhereWithAggregatesInput | ServiciosScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Servicios"> | number
-    nombre?: StringWithAggregatesFilter<"Servicios"> | string
-    createAt?: DateTimeWithAggregatesFilter<"Servicios"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"Servicios"> | Date | string
-    activo?: BoolWithAggregatesFilter<"Servicios"> | boolean
-  }
-
-  export type ApartamentoServiciosWhereInput = {
-    AND?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
-    OR?: ApartamentoServiciosWhereInput[]
-    NOT?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
-    id?: IntFilter<"ApartamentoServicios"> | number
-    apartamentoId?: IntFilter<"ApartamentoServicios"> | number
-    servicioId?: IntFilter<"ApartamentoServicios"> | number
-    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
-    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    servicio?: XOR<ServiciosScalarRelationFilter, ServiciosWhereInput>
-  }
-
-  export type ApartamentoServiciosOrderByWithRelationInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    servicioId?: SortOrder
-    incluido?: SortOrder
-    costoAdicional?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    apartamento?: ApartamentoOrderByWithRelationInput
-    servicio?: ServiciosOrderByWithRelationInput
-  }
-
-  export type ApartamentoServiciosWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    AND?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
-    OR?: ApartamentoServiciosWhereInput[]
-    NOT?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
-    apartamentoId?: IntFilter<"ApartamentoServicios"> | number
-    servicioId?: IntFilter<"ApartamentoServicios"> | number
-    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
-    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    servicio?: XOR<ServiciosScalarRelationFilter, ServiciosWhereInput>
-  }, "id">
-
-  export type ApartamentoServiciosOrderByWithAggregationInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    servicioId?: SortOrder
-    incluido?: SortOrder
-    costoAdicional?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    _count?: ApartamentoServiciosCountOrderByAggregateInput
-    _avg?: ApartamentoServiciosAvgOrderByAggregateInput
-    _max?: ApartamentoServiciosMaxOrderByAggregateInput
-    _min?: ApartamentoServiciosMinOrderByAggregateInput
-    _sum?: ApartamentoServiciosSumOrderByAggregateInput
-  }
-
-  export type ApartamentoServiciosScalarWhereWithAggregatesInput = {
-    AND?: ApartamentoServiciosScalarWhereWithAggregatesInput | ApartamentoServiciosScalarWhereWithAggregatesInput[]
-    OR?: ApartamentoServiciosScalarWhereWithAggregatesInput[]
-    NOT?: ApartamentoServiciosScalarWhereWithAggregatesInput | ApartamentoServiciosScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"ApartamentoServicios"> | number
-    apartamentoId?: IntWithAggregatesFilter<"ApartamentoServicios"> | number
-    servicioId?: IntWithAggregatesFilter<"ApartamentoServicios"> | number
-    incluido?: BoolWithAggregatesFilter<"ApartamentoServicios"> | boolean
-    costoAdicional?: DecimalWithAggregatesFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeWithAggregatesFilter<"ApartamentoServicios"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"ApartamentoServicios"> | Date | string
-  }
-
-  export type ContratosWhereInput = {
-    AND?: ContratosWhereInput | ContratosWhereInput[]
-    OR?: ContratosWhereInput[]
-    NOT?: ContratosWhereInput | ContratosWhereInput[]
-    id?: IntFilter<"Contratos"> | number
-    inquilinoId?: StringFilter<"Contratos"> | string
-    apartamentoId?: IntFilter<"Contratos"> | number
-    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
-    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
-    createAt?: DateTimeFilter<"Contratos"> | Date | string
-    updateAt?: DateTimeFilter<"Contratos"> | Date | string
-    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
-    activo?: BoolFilter<"Contratos"> | boolean
-    inquilino?: XOR<InquilinoScalarRelationFilter, InquilinoWhereInput>
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    recibos?: RecibosListRelationFilter
-  }
-
-  export type ContratosOrderByWithRelationInput = {
-    id?: SortOrder
-    inquilinoId?: SortOrder
-    apartamentoId?: SortOrder
-    fechaInicio?: SortOrder
-    fechaFin?: SortOrderInput | SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    montoMensual?: SortOrder
-    activo?: SortOrder
-    inquilino?: InquilinoOrderByWithRelationInput
-    apartamento?: ApartamentoOrderByWithRelationInput
-    recibos?: RecibosOrderByRelationAggregateInput
-    _relevance?: ContratosOrderByRelevanceInput
-  }
-
-  export type ContratosWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    AND?: ContratosWhereInput | ContratosWhereInput[]
-    OR?: ContratosWhereInput[]
-    NOT?: ContratosWhereInput | ContratosWhereInput[]
-    inquilinoId?: StringFilter<"Contratos"> | string
-    apartamentoId?: IntFilter<"Contratos"> | number
-    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
-    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
-    createAt?: DateTimeFilter<"Contratos"> | Date | string
-    updateAt?: DateTimeFilter<"Contratos"> | Date | string
-    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
-    activo?: BoolFilter<"Contratos"> | boolean
-    inquilino?: XOR<InquilinoScalarRelationFilter, InquilinoWhereInput>
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    recibos?: RecibosListRelationFilter
-  }, "id">
-
-  export type ContratosOrderByWithAggregationInput = {
-    id?: SortOrder
-    inquilinoId?: SortOrder
-    apartamentoId?: SortOrder
-    fechaInicio?: SortOrder
-    fechaFin?: SortOrderInput | SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    montoMensual?: SortOrder
-    activo?: SortOrder
-    _count?: ContratosCountOrderByAggregateInput
-    _avg?: ContratosAvgOrderByAggregateInput
-    _max?: ContratosMaxOrderByAggregateInput
-    _min?: ContratosMinOrderByAggregateInput
-    _sum?: ContratosSumOrderByAggregateInput
-  }
-
-  export type ContratosScalarWhereWithAggregatesInput = {
-    AND?: ContratosScalarWhereWithAggregatesInput | ContratosScalarWhereWithAggregatesInput[]
-    OR?: ContratosScalarWhereWithAggregatesInput[]
-    NOT?: ContratosScalarWhereWithAggregatesInput | ContratosScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Contratos"> | number
-    inquilinoId?: StringWithAggregatesFilter<"Contratos"> | string
-    apartamentoId?: IntWithAggregatesFilter<"Contratos"> | number
-    fechaInicio?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
-    fechaFin?: DateTimeNullableWithAggregatesFilter<"Contratos"> | Date | string | null
-    createAt?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
-    montoMensual?: DecimalWithAggregatesFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
-    activo?: BoolWithAggregatesFilter<"Contratos"> | boolean
-  }
-
-  export type HabitacionesWhereInput = {
-    AND?: HabitacionesWhereInput | HabitacionesWhereInput[]
-    OR?: HabitacionesWhereInput[]
-    NOT?: HabitacionesWhereInput | HabitacionesWhereInput[]
-    id?: IntFilter<"Habitaciones"> | number
-    apartamentoId?: IntFilter<"Habitaciones"> | number
-    tipoHabitacionId?: IntFilter<"Habitaciones"> | number
-    cantidad?: IntFilter<"Habitaciones"> | number
-    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
-    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    tipoHabitacion?: XOR<TiposHabitacionScalarRelationFilter, TiposHabitacionWhereInput>
-  }
-
-  export type HabitacionesOrderByWithRelationInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    apartamento?: ApartamentoOrderByWithRelationInput
-    tipoHabitacion?: TiposHabitacionOrderByWithRelationInput
-  }
-
-  export type HabitacionesWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    AND?: HabitacionesWhereInput | HabitacionesWhereInput[]
-    OR?: HabitacionesWhereInput[]
-    NOT?: HabitacionesWhereInput | HabitacionesWhereInput[]
-    apartamentoId?: IntFilter<"Habitaciones"> | number
-    tipoHabitacionId?: IntFilter<"Habitaciones"> | number
-    cantidad?: IntFilter<"Habitaciones"> | number
-    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
-    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
-    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
-    tipoHabitacion?: XOR<TiposHabitacionScalarRelationFilter, TiposHabitacionWhereInput>
-  }, "id">
-
-  export type HabitacionesOrderByWithAggregationInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    _count?: HabitacionesCountOrderByAggregateInput
-    _avg?: HabitacionesAvgOrderByAggregateInput
-    _max?: HabitacionesMaxOrderByAggregateInput
-    _min?: HabitacionesMinOrderByAggregateInput
-    _sum?: HabitacionesSumOrderByAggregateInput
-  }
-
-  export type HabitacionesScalarWhereWithAggregatesInput = {
-    AND?: HabitacionesScalarWhereWithAggregatesInput | HabitacionesScalarWhereWithAggregatesInput[]
-    OR?: HabitacionesScalarWhereWithAggregatesInput[]
-    NOT?: HabitacionesScalarWhereWithAggregatesInput | HabitacionesScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Habitaciones"> | number
-    apartamentoId?: IntWithAggregatesFilter<"Habitaciones"> | number
-    tipoHabitacionId?: IntWithAggregatesFilter<"Habitaciones"> | number
-    cantidad?: IntWithAggregatesFilter<"Habitaciones"> | number
-    createAt?: DateTimeWithAggregatesFilter<"Habitaciones"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"Habitaciones"> | Date | string
-  }
-
   export type AcompañanteWhereInput = {
     AND?: AcompañanteWhereInput | AcompañanteWhereInput[]
     OR?: AcompañanteWhereInput[]
@@ -17070,12 +16590,422 @@ export namespace Prisma {
     activo?: BoolWithAggregatesFilter<"Acompañante"> | boolean
   }
 
+  export type ApartamentoWhereInput = {
+    AND?: ApartamentoWhereInput | ApartamentoWhereInput[]
+    OR?: ApartamentoWhereInput[]
+    NOT?: ApartamentoWhereInput | ApartamentoWhereInput[]
+    id?: StringFilter<"Apartamento"> | string
+    numero?: StringFilter<"Apartamento"> | string
+    direccion?: StringNullableFilter<"Apartamento"> | string | null
+    createAt?: DateTimeFilter<"Apartamento"> | Date | string
+    updateAt?: DateTimeFilter<"Apartamento"> | Date | string
+    disponible?: BoolFilter<"Apartamento"> | boolean
+    activo?: BoolFilter<"Apartamento"> | boolean
+    apartamento?: HabitacionesListRelationFilter
+    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
+    Contratos?: ContratosListRelationFilter
+  }
+
+  export type ApartamentoOrderByWithRelationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    direccion?: SortOrderInput | SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    disponible?: SortOrder
+    activo?: SortOrder
+    apartamento?: HabitacionesOrderByRelationAggregateInput
+    ApartamentoServicios?: ApartamentoServiciosOrderByRelationAggregateInput
+    Contratos?: ContratosOrderByRelationAggregateInput
+    _relevance?: ApartamentoOrderByRelevanceInput
+  }
+
+  export type ApartamentoWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    numero?: string
+    AND?: ApartamentoWhereInput | ApartamentoWhereInput[]
+    OR?: ApartamentoWhereInput[]
+    NOT?: ApartamentoWhereInput | ApartamentoWhereInput[]
+    direccion?: StringNullableFilter<"Apartamento"> | string | null
+    createAt?: DateTimeFilter<"Apartamento"> | Date | string
+    updateAt?: DateTimeFilter<"Apartamento"> | Date | string
+    disponible?: BoolFilter<"Apartamento"> | boolean
+    activo?: BoolFilter<"Apartamento"> | boolean
+    apartamento?: HabitacionesListRelationFilter
+    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
+    Contratos?: ContratosListRelationFilter
+  }, "id" | "numero">
+
+  export type ApartamentoOrderByWithAggregationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    direccion?: SortOrderInput | SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    disponible?: SortOrder
+    activo?: SortOrder
+    _count?: ApartamentoCountOrderByAggregateInput
+    _max?: ApartamentoMaxOrderByAggregateInput
+    _min?: ApartamentoMinOrderByAggregateInput
+  }
+
+  export type ApartamentoScalarWhereWithAggregatesInput = {
+    AND?: ApartamentoScalarWhereWithAggregatesInput | ApartamentoScalarWhereWithAggregatesInput[]
+    OR?: ApartamentoScalarWhereWithAggregatesInput[]
+    NOT?: ApartamentoScalarWhereWithAggregatesInput | ApartamentoScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Apartamento"> | string
+    numero?: StringWithAggregatesFilter<"Apartamento"> | string
+    direccion?: StringNullableWithAggregatesFilter<"Apartamento"> | string | null
+    createAt?: DateTimeWithAggregatesFilter<"Apartamento"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"Apartamento"> | Date | string
+    disponible?: BoolWithAggregatesFilter<"Apartamento"> | boolean
+    activo?: BoolWithAggregatesFilter<"Apartamento"> | boolean
+  }
+
+  export type TiposHabitacionWhereInput = {
+    AND?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
+    OR?: TiposHabitacionWhereInput[]
+    NOT?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
+    id?: StringFilter<"TiposHabitacion"> | string
+    nombre?: StringFilter<"TiposHabitacion"> | string
+    createAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
+    updateAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
+    activo?: BoolFilter<"TiposHabitacion"> | boolean
+    apartamento?: HabitacionesListRelationFilter
+  }
+
+  export type TiposHabitacionOrderByWithRelationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    apartamento?: HabitacionesOrderByRelationAggregateInput
+    _relevance?: TiposHabitacionOrderByRelevanceInput
+  }
+
+  export type TiposHabitacionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    nombre?: string
+    AND?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
+    OR?: TiposHabitacionWhereInput[]
+    NOT?: TiposHabitacionWhereInput | TiposHabitacionWhereInput[]
+    createAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
+    updateAt?: DateTimeFilter<"TiposHabitacion"> | Date | string
+    activo?: BoolFilter<"TiposHabitacion"> | boolean
+    apartamento?: HabitacionesListRelationFilter
+  }, "id" | "nombre">
+
+  export type TiposHabitacionOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    _count?: TiposHabitacionCountOrderByAggregateInput
+    _max?: TiposHabitacionMaxOrderByAggregateInput
+    _min?: TiposHabitacionMinOrderByAggregateInput
+  }
+
+  export type TiposHabitacionScalarWhereWithAggregatesInput = {
+    AND?: TiposHabitacionScalarWhereWithAggregatesInput | TiposHabitacionScalarWhereWithAggregatesInput[]
+    OR?: TiposHabitacionScalarWhereWithAggregatesInput[]
+    NOT?: TiposHabitacionScalarWhereWithAggregatesInput | TiposHabitacionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TiposHabitacion"> | string
+    nombre?: StringWithAggregatesFilter<"TiposHabitacion"> | string
+    createAt?: DateTimeWithAggregatesFilter<"TiposHabitacion"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"TiposHabitacion"> | Date | string
+    activo?: BoolWithAggregatesFilter<"TiposHabitacion"> | boolean
+  }
+
+  export type HabitacionesWhereInput = {
+    AND?: HabitacionesWhereInput | HabitacionesWhereInput[]
+    OR?: HabitacionesWhereInput[]
+    NOT?: HabitacionesWhereInput | HabitacionesWhereInput[]
+    id?: StringFilter<"Habitaciones"> | string
+    apartamentoId?: StringFilter<"Habitaciones"> | string
+    tipoHabitacionId?: StringFilter<"Habitaciones"> | string
+    cantidad?: IntFilter<"Habitaciones"> | number
+    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
+    activo?: BoolFilter<"Habitaciones"> | boolean
+    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    tipoHabitacion?: XOR<TiposHabitacionScalarRelationFilter, TiposHabitacionWhereInput>
+  }
+
+  export type HabitacionesOrderByWithRelationInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    tipoHabitacionId?: SortOrder
+    cantidad?: SortOrder
+    createAt?: SortOrder
+    activo?: SortOrder
+    updateAt?: SortOrder
+    apartamento?: ApartamentoOrderByWithRelationInput
+    tipoHabitacion?: TiposHabitacionOrderByWithRelationInput
+    _relevance?: HabitacionesOrderByRelevanceInput
+  }
+
+  export type HabitacionesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: HabitacionesWhereInput | HabitacionesWhereInput[]
+    OR?: HabitacionesWhereInput[]
+    NOT?: HabitacionesWhereInput | HabitacionesWhereInput[]
+    apartamentoId?: StringFilter<"Habitaciones"> | string
+    tipoHabitacionId?: StringFilter<"Habitaciones"> | string
+    cantidad?: IntFilter<"Habitaciones"> | number
+    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
+    activo?: BoolFilter<"Habitaciones"> | boolean
+    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    tipoHabitacion?: XOR<TiposHabitacionScalarRelationFilter, TiposHabitacionWhereInput>
+  }, "id">
+
+  export type HabitacionesOrderByWithAggregationInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    tipoHabitacionId?: SortOrder
+    cantidad?: SortOrder
+    createAt?: SortOrder
+    activo?: SortOrder
+    updateAt?: SortOrder
+    _count?: HabitacionesCountOrderByAggregateInput
+    _avg?: HabitacionesAvgOrderByAggregateInput
+    _max?: HabitacionesMaxOrderByAggregateInput
+    _min?: HabitacionesMinOrderByAggregateInput
+    _sum?: HabitacionesSumOrderByAggregateInput
+  }
+
+  export type HabitacionesScalarWhereWithAggregatesInput = {
+    AND?: HabitacionesScalarWhereWithAggregatesInput | HabitacionesScalarWhereWithAggregatesInput[]
+    OR?: HabitacionesScalarWhereWithAggregatesInput[]
+    NOT?: HabitacionesScalarWhereWithAggregatesInput | HabitacionesScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Habitaciones"> | string
+    apartamentoId?: StringWithAggregatesFilter<"Habitaciones"> | string
+    tipoHabitacionId?: StringWithAggregatesFilter<"Habitaciones"> | string
+    cantidad?: IntWithAggregatesFilter<"Habitaciones"> | number
+    createAt?: DateTimeWithAggregatesFilter<"Habitaciones"> | Date | string
+    activo?: BoolWithAggregatesFilter<"Habitaciones"> | boolean
+    updateAt?: DateTimeWithAggregatesFilter<"Habitaciones"> | Date | string
+  }
+
+  export type ServiciosWhereInput = {
+    AND?: ServiciosWhereInput | ServiciosWhereInput[]
+    OR?: ServiciosWhereInput[]
+    NOT?: ServiciosWhereInput | ServiciosWhereInput[]
+    id?: StringFilter<"Servicios"> | string
+    nombre?: StringFilter<"Servicios"> | string
+    createAt?: DateTimeFilter<"Servicios"> | Date | string
+    updateAt?: DateTimeFilter<"Servicios"> | Date | string
+    activo?: BoolFilter<"Servicios"> | boolean
+    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
+  }
+
+  export type ServiciosOrderByWithRelationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    ApartamentoServicios?: ApartamentoServiciosOrderByRelationAggregateInput
+    _relevance?: ServiciosOrderByRelevanceInput
+  }
+
+  export type ServiciosWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    nombre?: string
+    AND?: ServiciosWhereInput | ServiciosWhereInput[]
+    OR?: ServiciosWhereInput[]
+    NOT?: ServiciosWhereInput | ServiciosWhereInput[]
+    createAt?: DateTimeFilter<"Servicios"> | Date | string
+    updateAt?: DateTimeFilter<"Servicios"> | Date | string
+    activo?: BoolFilter<"Servicios"> | boolean
+    ApartamentoServicios?: ApartamentoServiciosListRelationFilter
+  }, "id" | "nombre">
+
+  export type ServiciosOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    _count?: ServiciosCountOrderByAggregateInput
+    _max?: ServiciosMaxOrderByAggregateInput
+    _min?: ServiciosMinOrderByAggregateInput
+  }
+
+  export type ServiciosScalarWhereWithAggregatesInput = {
+    AND?: ServiciosScalarWhereWithAggregatesInput | ServiciosScalarWhereWithAggregatesInput[]
+    OR?: ServiciosScalarWhereWithAggregatesInput[]
+    NOT?: ServiciosScalarWhereWithAggregatesInput | ServiciosScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Servicios"> | string
+    nombre?: StringWithAggregatesFilter<"Servicios"> | string
+    createAt?: DateTimeWithAggregatesFilter<"Servicios"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"Servicios"> | Date | string
+    activo?: BoolWithAggregatesFilter<"Servicios"> | boolean
+  }
+
+  export type ApartamentoServiciosWhereInput = {
+    AND?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
+    OR?: ApartamentoServiciosWhereInput[]
+    NOT?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
+    id?: StringFilter<"ApartamentoServicios"> | string
+    apartamentoId?: StringFilter<"ApartamentoServicios"> | string
+    servicioId?: StringFilter<"ApartamentoServicios"> | string
+    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
+    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    servicio?: XOR<ServiciosScalarRelationFilter, ServiciosWhereInput>
+  }
+
+  export type ApartamentoServiciosOrderByWithRelationInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    servicioId?: SortOrder
+    incluido?: SortOrder
+    costoAdicional?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    apartamento?: ApartamentoOrderByWithRelationInput
+    servicio?: ServiciosOrderByWithRelationInput
+    _relevance?: ApartamentoServiciosOrderByRelevanceInput
+  }
+
+  export type ApartamentoServiciosWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
+    OR?: ApartamentoServiciosWhereInput[]
+    NOT?: ApartamentoServiciosWhereInput | ApartamentoServiciosWhereInput[]
+    apartamentoId?: StringFilter<"ApartamentoServicios"> | string
+    servicioId?: StringFilter<"ApartamentoServicios"> | string
+    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
+    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    servicio?: XOR<ServiciosScalarRelationFilter, ServiciosWhereInput>
+  }, "id">
+
+  export type ApartamentoServiciosOrderByWithAggregationInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    servicioId?: SortOrder
+    incluido?: SortOrder
+    costoAdicional?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    _count?: ApartamentoServiciosCountOrderByAggregateInput
+    _avg?: ApartamentoServiciosAvgOrderByAggregateInput
+    _max?: ApartamentoServiciosMaxOrderByAggregateInput
+    _min?: ApartamentoServiciosMinOrderByAggregateInput
+    _sum?: ApartamentoServiciosSumOrderByAggregateInput
+  }
+
+  export type ApartamentoServiciosScalarWhereWithAggregatesInput = {
+    AND?: ApartamentoServiciosScalarWhereWithAggregatesInput | ApartamentoServiciosScalarWhereWithAggregatesInput[]
+    OR?: ApartamentoServiciosScalarWhereWithAggregatesInput[]
+    NOT?: ApartamentoServiciosScalarWhereWithAggregatesInput | ApartamentoServiciosScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApartamentoServicios"> | string
+    apartamentoId?: StringWithAggregatesFilter<"ApartamentoServicios"> | string
+    servicioId?: StringWithAggregatesFilter<"ApartamentoServicios"> | string
+    incluido?: BoolWithAggregatesFilter<"ApartamentoServicios"> | boolean
+    costoAdicional?: DecimalWithAggregatesFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeWithAggregatesFilter<"ApartamentoServicios"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"ApartamentoServicios"> | Date | string
+  }
+
+  export type ContratosWhereInput = {
+    AND?: ContratosWhereInput | ContratosWhereInput[]
+    OR?: ContratosWhereInput[]
+    NOT?: ContratosWhereInput | ContratosWhereInput[]
+    id?: StringFilter<"Contratos"> | string
+    inquilinoId?: StringFilter<"Contratos"> | string
+    apartamentoId?: StringFilter<"Contratos"> | string
+    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
+    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
+    createAt?: DateTimeFilter<"Contratos"> | Date | string
+    updateAt?: DateTimeFilter<"Contratos"> | Date | string
+    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
+    activo?: BoolFilter<"Contratos"> | boolean
+    inquilino?: XOR<InquilinoScalarRelationFilter, InquilinoWhereInput>
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    recibos?: RecibosListRelationFilter
+  }
+
+  export type ContratosOrderByWithRelationInput = {
+    id?: SortOrder
+    inquilinoId?: SortOrder
+    apartamentoId?: SortOrder
+    fechaInicio?: SortOrder
+    fechaFin?: SortOrderInput | SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    montoMensual?: SortOrder
+    activo?: SortOrder
+    inquilino?: InquilinoOrderByWithRelationInput
+    apartamento?: ApartamentoOrderByWithRelationInput
+    recibos?: RecibosOrderByRelationAggregateInput
+    _relevance?: ContratosOrderByRelevanceInput
+  }
+
+  export type ContratosWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ContratosWhereInput | ContratosWhereInput[]
+    OR?: ContratosWhereInput[]
+    NOT?: ContratosWhereInput | ContratosWhereInput[]
+    inquilinoId?: StringFilter<"Contratos"> | string
+    apartamentoId?: StringFilter<"Contratos"> | string
+    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
+    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
+    createAt?: DateTimeFilter<"Contratos"> | Date | string
+    updateAt?: DateTimeFilter<"Contratos"> | Date | string
+    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
+    activo?: BoolFilter<"Contratos"> | boolean
+    inquilino?: XOR<InquilinoScalarRelationFilter, InquilinoWhereInput>
+    apartamento?: XOR<ApartamentoScalarRelationFilter, ApartamentoWhereInput>
+    recibos?: RecibosListRelationFilter
+  }, "id">
+
+  export type ContratosOrderByWithAggregationInput = {
+    id?: SortOrder
+    inquilinoId?: SortOrder
+    apartamentoId?: SortOrder
+    fechaInicio?: SortOrder
+    fechaFin?: SortOrderInput | SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    montoMensual?: SortOrder
+    activo?: SortOrder
+    _count?: ContratosCountOrderByAggregateInput
+    _avg?: ContratosAvgOrderByAggregateInput
+    _max?: ContratosMaxOrderByAggregateInput
+    _min?: ContratosMinOrderByAggregateInput
+    _sum?: ContratosSumOrderByAggregateInput
+  }
+
+  export type ContratosScalarWhereWithAggregatesInput = {
+    AND?: ContratosScalarWhereWithAggregatesInput | ContratosScalarWhereWithAggregatesInput[]
+    OR?: ContratosScalarWhereWithAggregatesInput[]
+    NOT?: ContratosScalarWhereWithAggregatesInput | ContratosScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Contratos"> | string
+    inquilinoId?: StringWithAggregatesFilter<"Contratos"> | string
+    apartamentoId?: StringWithAggregatesFilter<"Contratos"> | string
+    fechaInicio?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
+    fechaFin?: DateTimeNullableWithAggregatesFilter<"Contratos"> | Date | string | null
+    createAt?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"Contratos"> | Date | string
+    montoMensual?: DecimalWithAggregatesFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
+    activo?: BoolWithAggregatesFilter<"Contratos"> | boolean
+  }
+
   export type RecibosWhereInput = {
     AND?: RecibosWhereInput | RecibosWhereInput[]
     OR?: RecibosWhereInput[]
     NOT?: RecibosWhereInput | RecibosWhereInput[]
-    id?: IntFilter<"Recibos"> | number
-    contratoId?: IntFilter<"Recibos"> | number
+    id?: StringFilter<"Recibos"> | string
+    contratoId?: StringFilter<"Recibos"> | string
     fechaPago?: DateTimeFilter<"Recibos"> | Date | string
     total?: DecimalFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"Recibos"> | Date | string
@@ -17093,14 +17023,15 @@ export namespace Prisma {
     updateAt?: SortOrder
     contrato?: ContratosOrderByWithRelationInput
     detalles?: ReciboDetallesOrderByRelationAggregateInput
+    _relevance?: RecibosOrderByRelevanceInput
   }
 
   export type RecibosWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: RecibosWhereInput | RecibosWhereInput[]
     OR?: RecibosWhereInput[]
     NOT?: RecibosWhereInput | RecibosWhereInput[]
-    contratoId?: IntFilter<"Recibos"> | number
+    contratoId?: StringFilter<"Recibos"> | string
     fechaPago?: DateTimeFilter<"Recibos"> | Date | string
     total?: DecimalFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"Recibos"> | Date | string
@@ -17127,8 +17058,8 @@ export namespace Prisma {
     AND?: RecibosScalarWhereWithAggregatesInput | RecibosScalarWhereWithAggregatesInput[]
     OR?: RecibosScalarWhereWithAggregatesInput[]
     NOT?: RecibosScalarWhereWithAggregatesInput | RecibosScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Recibos"> | number
-    contratoId?: IntWithAggregatesFilter<"Recibos"> | number
+    id?: StringWithAggregatesFilter<"Recibos"> | string
+    contratoId?: StringWithAggregatesFilter<"Recibos"> | string
     fechaPago?: DateTimeWithAggregatesFilter<"Recibos"> | Date | string
     total?: DecimalWithAggregatesFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeWithAggregatesFilter<"Recibos"> | Date | string
@@ -17139,8 +17070,8 @@ export namespace Prisma {
     AND?: ReciboDetallesWhereInput | ReciboDetallesWhereInput[]
     OR?: ReciboDetallesWhereInput[]
     NOT?: ReciboDetallesWhereInput | ReciboDetallesWhereInput[]
-    id?: IntFilter<"ReciboDetalles"> | number
-    reciboId?: IntFilter<"ReciboDetalles"> | number
+    id?: StringFilter<"ReciboDetalles"> | string
+    reciboId?: StringFilter<"ReciboDetalles"> | string
     descripcion?: StringFilter<"ReciboDetalles"> | string
     monto?: DecimalFilter<"ReciboDetalles"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"ReciboDetalles"> | Date | string
@@ -17160,11 +17091,11 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: ReciboDetallesWhereInput | ReciboDetallesWhereInput[]
     OR?: ReciboDetallesWhereInput[]
     NOT?: ReciboDetallesWhereInput | ReciboDetallesWhereInput[]
-    reciboId?: IntFilter<"ReciboDetalles"> | number
+    reciboId?: StringFilter<"ReciboDetalles"> | string
     descripcion?: StringFilter<"ReciboDetalles"> | string
     monto?: DecimalFilter<"ReciboDetalles"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"ReciboDetalles"> | Date | string
@@ -17190,8 +17121,8 @@ export namespace Prisma {
     AND?: ReciboDetallesScalarWhereWithAggregatesInput | ReciboDetallesScalarWhereWithAggregatesInput[]
     OR?: ReciboDetallesScalarWhereWithAggregatesInput[]
     NOT?: ReciboDetallesScalarWhereWithAggregatesInput | ReciboDetallesScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"ReciboDetalles"> | number
-    reciboId?: IntWithAggregatesFilter<"ReciboDetalles"> | number
+    id?: StringWithAggregatesFilter<"ReciboDetalles"> | string
+    reciboId?: StringWithAggregatesFilter<"ReciboDetalles"> | string
     descripcion?: StringWithAggregatesFilter<"ReciboDetalles"> | string
     monto?: DecimalWithAggregatesFilter<"ReciboDetalles"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeWithAggregatesFilter<"ReciboDetalles"> | Date | string
@@ -17553,391 +17484,6 @@ export namespace Prisma {
     activo?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type ApartamentoCreateInput = {
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
-    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoUncheckedCreateInput = {
-    id?: number
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
-    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoUpdateInput = {
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
-    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ApartamentoUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
-    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ApartamentoCreateManyInput = {
-    id?: number
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-  }
-
-  export type ApartamentoUpdateManyMutationInput = {
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ApartamentoUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type TiposHabitacionCreateInput = {
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento?: HabitacionesCreateNestedManyWithoutTipoHabitacionInput
-  }
-
-  export type TiposHabitacionUncheckedCreateInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutTipoHabitacionInput
-  }
-
-  export type TiposHabitacionUpdateInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    apartamento?: HabitacionesUpdateManyWithoutTipoHabitacionNestedInput
-  }
-
-  export type TiposHabitacionUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    apartamento?: HabitacionesUncheckedUpdateManyWithoutTipoHabitacionNestedInput
-  }
-
-  export type TiposHabitacionCreateManyInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type TiposHabitacionUpdateManyMutationInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TiposHabitacionUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ServiciosCreateInput = {
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutServicioInput
-  }
-
-  export type ServiciosUncheckedCreateInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutServicioInput
-  }
-
-  export type ServiciosUpdateInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutServicioNestedInput
-  }
-
-  export type ServiciosUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutServicioNestedInput
-  }
-
-  export type ServiciosCreateManyInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type ServiciosUpdateManyMutationInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ServiciosUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ApartamentoServiciosCreateInput = {
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento: ApartamentoCreateNestedOneWithoutApartamentoServiciosInput
-    servicio: ServiciosCreateNestedOneWithoutApartamentoServiciosInput
-  }
-
-  export type ApartamentoServiciosUncheckedCreateInput = {
-    id?: number
-    apartamentoId: number
-    servicioId: number
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type ApartamentoServiciosUpdateInput = {
-    incluido?: BoolFieldUpdateOperationsInput | boolean
-    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    apartamento?: ApartamentoUpdateOneRequiredWithoutApartamentoServiciosNestedInput
-    servicio?: ServiciosUpdateOneRequiredWithoutApartamentoServiciosNestedInput
-  }
-
-  export type ApartamentoServiciosUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    servicioId?: IntFieldUpdateOperationsInput | number
-    incluido?: BoolFieldUpdateOperationsInput | boolean
-    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ApartamentoServiciosCreateManyInput = {
-    id?: number
-    apartamentoId: number
-    servicioId: number
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type ApartamentoServiciosUpdateManyMutationInput = {
-    incluido?: BoolFieldUpdateOperationsInput | boolean
-    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ApartamentoServiciosUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    servicioId?: IntFieldUpdateOperationsInput | number
-    incluido?: BoolFieldUpdateOperationsInput | boolean
-    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ContratosCreateInput = {
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    inquilino: InquilinoCreateNestedOneWithoutContratosInput
-    apartamento: ApartamentoCreateNestedOneWithoutContratosInput
-    recibos?: RecibosCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosUncheckedCreateInput = {
-    id?: number
-    inquilinoId: string
-    apartamentoId: number
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosUpdateInput = {
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    inquilino?: InquilinoUpdateOneRequiredWithoutContratosNestedInput
-    apartamento?: ApartamentoUpdateOneRequiredWithoutContratosNestedInput
-    recibos?: RecibosUpdateManyWithoutContratoNestedInput
-  }
-
-  export type ContratosUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    inquilinoId?: StringFieldUpdateOperationsInput | string
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    recibos?: RecibosUncheckedUpdateManyWithoutContratoNestedInput
-  }
-
-  export type ContratosCreateManyInput = {
-    id?: number
-    inquilinoId: string
-    apartamentoId: number
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-  }
-
-  export type ContratosUpdateManyMutationInput = {
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ContratosUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    inquilinoId?: StringFieldUpdateOperationsInput | string
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type HabitacionesCreateInput = {
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento: ApartamentoCreateNestedOneWithoutApartamentoInput
-    tipoHabitacion: TiposHabitacionCreateNestedOneWithoutApartamentoInput
-  }
-
-  export type HabitacionesUncheckedCreateInput = {
-    id?: number
-    apartamentoId: number
-    tipoHabitacionId: number
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type HabitacionesUpdateInput = {
-    cantidad?: IntFieldUpdateOperationsInput | number
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    apartamento?: ApartamentoUpdateOneRequiredWithoutApartamentoNestedInput
-    tipoHabitacion?: TiposHabitacionUpdateOneRequiredWithoutApartamentoNestedInput
-  }
-
-  export type HabitacionesUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    tipoHabitacionId?: IntFieldUpdateOperationsInput | number
-    cantidad?: IntFieldUpdateOperationsInput | number
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type HabitacionesCreateManyInput = {
-    id?: number
-    apartamentoId: number
-    tipoHabitacionId: number
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type HabitacionesUpdateManyMutationInput = {
-    cantidad?: IntFieldUpdateOperationsInput | number
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type HabitacionesUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
-    tipoHabitacionId?: IntFieldUpdateOperationsInput | number
-    cantidad?: IntFieldUpdateOperationsInput | number
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type AcompañanteCreateInput = {
     id?: string
     nombreCompleto: string
@@ -18007,7 +17553,432 @@ export namespace Prisma {
     activo?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type ApartamentoCreateInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
+    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoUncheckedCreateInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
+    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
+    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ApartamentoUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
+    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ApartamentoCreateManyInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+  }
+
+  export type ApartamentoUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ApartamentoUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TiposHabitacionCreateInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    apartamento?: HabitacionesCreateNestedManyWithoutTipoHabitacionInput
+  }
+
+  export type TiposHabitacionUncheckedCreateInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutTipoHabitacionInput
+  }
+
+  export type TiposHabitacionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUpdateManyWithoutTipoHabitacionNestedInput
+  }
+
+  export type TiposHabitacionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUncheckedUpdateManyWithoutTipoHabitacionNestedInput
+  }
+
+  export type TiposHabitacionCreateManyInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type TiposHabitacionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TiposHabitacionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type HabitacionesCreateInput = {
+    id?: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+    apartamento: ApartamentoCreateNestedOneWithoutApartamentoInput
+    tipoHabitacion: TiposHabitacionCreateNestedOneWithoutApartamentoInput
+  }
+
+  export type HabitacionesUncheckedCreateInput = {
+    id?: string
+    apartamentoId: string
+    tipoHabitacionId: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+  }
+
+  export type HabitacionesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cantidad?: IntFieldUpdateOperationsInput | number
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartamento?: ApartamentoUpdateOneRequiredWithoutApartamentoNestedInput
+    tipoHabitacion?: TiposHabitacionUpdateOneRequiredWithoutApartamentoNestedInput
+  }
+
+  export type HabitacionesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    tipoHabitacionId?: StringFieldUpdateOperationsInput | string
+    cantidad?: IntFieldUpdateOperationsInput | number
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HabitacionesCreateManyInput = {
+    id?: string
+    apartamentoId: string
+    tipoHabitacionId: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+  }
+
+  export type HabitacionesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cantidad?: IntFieldUpdateOperationsInput | number
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HabitacionesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    tipoHabitacionId?: StringFieldUpdateOperationsInput | string
+    cantidad?: IntFieldUpdateOperationsInput | number
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServiciosCreateInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutServicioInput
+  }
+
+  export type ServiciosUncheckedCreateInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutServicioInput
+  }
+
+  export type ServiciosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutServicioNestedInput
+  }
+
+  export type ServiciosUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutServicioNestedInput
+  }
+
+  export type ServiciosCreateManyInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type ServiciosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ServiciosUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ApartamentoServiciosCreateInput = {
+    id?: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    apartamento: ApartamentoCreateNestedOneWithoutApartamentoServiciosInput
+    servicio: ServiciosCreateNestedOneWithoutApartamentoServiciosInput
+  }
+
+  export type ApartamentoServiciosUncheckedCreateInput = {
+    id?: string
+    apartamentoId: string
+    servicioId: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+  }
+
+  export type ApartamentoServiciosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incluido?: BoolFieldUpdateOperationsInput | boolean
+    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartamento?: ApartamentoUpdateOneRequiredWithoutApartamentoServiciosNestedInput
+    servicio?: ServiciosUpdateOneRequiredWithoutApartamentoServiciosNestedInput
+  }
+
+  export type ApartamentoServiciosUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    servicioId?: StringFieldUpdateOperationsInput | string
+    incluido?: BoolFieldUpdateOperationsInput | boolean
+    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApartamentoServiciosCreateManyInput = {
+    id?: string
+    apartamentoId: string
+    servicioId: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+  }
+
+  export type ApartamentoServiciosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    incluido?: BoolFieldUpdateOperationsInput | boolean
+    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApartamentoServiciosUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    servicioId?: StringFieldUpdateOperationsInput | string
+    incluido?: BoolFieldUpdateOperationsInput | boolean
+    costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContratosCreateInput = {
+    id?: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    inquilino: InquilinoCreateNestedOneWithoutContratosInput
+    apartamento: ApartamentoCreateNestedOneWithoutContratosInput
+    recibos?: RecibosCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosUncheckedCreateInput = {
+    id?: string
+    inquilinoId: string
+    apartamentoId: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    inquilino?: InquilinoUpdateOneRequiredWithoutContratosNestedInput
+    apartamento?: ApartamentoUpdateOneRequiredWithoutContratosNestedInput
+    recibos?: RecibosUpdateManyWithoutContratoNestedInput
+  }
+
+  export type ContratosUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquilinoId?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    recibos?: RecibosUncheckedUpdateManyWithoutContratoNestedInput
+  }
+
+  export type ContratosCreateManyInput = {
+    id?: string
+    inquilinoId: string
+    apartamentoId: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+  }
+
+  export type ContratosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ContratosUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    inquilinoId?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type RecibosCreateInput = {
+    id?: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18017,8 +17988,8 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedCreateInput = {
-    id?: number
-    contratoId: number
+    id?: string
+    contratoId: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18027,6 +17998,7 @@ export namespace Prisma {
   }
 
   export type RecibosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18036,8 +18008,8 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    contratoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    contratoId?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18046,8 +18018,8 @@ export namespace Prisma {
   }
 
   export type RecibosCreateManyInput = {
-    id?: number
-    contratoId: number
+    id?: string
+    contratoId: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18055,6 +18027,7 @@ export namespace Prisma {
   }
 
   export type RecibosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18062,8 +18035,8 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    contratoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    contratoId?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18071,6 +18044,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesCreateInput = {
+    id?: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18079,8 +18053,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedCreateInput = {
-    id?: number
-    reciboId: number
+    id?: string
+    reciboId: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18088,6 +18062,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18096,8 +18071,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    reciboId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    reciboId?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18105,8 +18080,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesCreateManyInput = {
-    id?: number
-    reciboId: number
+    id?: string
+    reciboId: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -18114,6 +18089,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18121,8 +18097,8 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    reciboId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    reciboId?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18512,15 +18488,45 @@ export namespace Prisma {
     activo?: SortOrder
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
+  export type InquilinoScalarRelationFilter = {
+    is?: InquilinoWhereInput
+    isNot?: InquilinoWhereInput
+  }
+
+  export type AcompañanteOrderByRelevanceInput = {
+    fields: AcompañanteOrderByRelevanceFieldEnum | AcompañanteOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type AcompañanteCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    inquilinoId?: SortOrder
+    Parentesco?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+  }
+
+  export type AcompañanteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    inquilinoId?: SortOrder
+    Parentesco?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+  }
+
+  export type AcompañanteMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    inquilinoId?: SortOrder
+    Parentesco?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -18576,10 +18582,7 @@ export namespace Prisma {
     createAt?: SortOrder
     updateAt?: SortOrder
     disponible?: SortOrder
-  }
-
-  export type ApartamentoAvgOrderByAggregateInput = {
-    id?: SortOrder
+    activo?: SortOrder
   }
 
   export type ApartamentoMaxOrderByAggregateInput = {
@@ -18589,6 +18592,7 @@ export namespace Prisma {
     createAt?: SortOrder
     updateAt?: SortOrder
     disponible?: SortOrder
+    activo?: SortOrder
   }
 
   export type ApartamentoMinOrderByAggregateInput = {
@@ -18598,26 +18602,7 @@ export namespace Prisma {
     createAt?: SortOrder
     updateAt?: SortOrder
     disponible?: SortOrder
-  }
-
-  export type ApartamentoSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+    activo?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18649,10 +18634,7 @@ export namespace Prisma {
     nombre?: SortOrder
     createAt?: SortOrder
     updateAt?: SortOrder
-  }
-
-  export type TiposHabitacionAvgOrderByAggregateInput = {
-    id?: SortOrder
+    activo?: SortOrder
   }
 
   export type TiposHabitacionMaxOrderByAggregateInput = {
@@ -18660,6 +18642,7 @@ export namespace Prisma {
     nombre?: SortOrder
     createAt?: SortOrder
     updateAt?: SortOrder
+    activo?: SortOrder
   }
 
   export type TiposHabitacionMinOrderByAggregateInput = {
@@ -18667,10 +18650,88 @@ export namespace Prisma {
     nombre?: SortOrder
     createAt?: SortOrder
     updateAt?: SortOrder
+    activo?: SortOrder
   }
 
-  export type TiposHabitacionSumOrderByAggregateInput = {
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ApartamentoScalarRelationFilter = {
+    is?: ApartamentoWhereInput
+    isNot?: ApartamentoWhereInput
+  }
+
+  export type TiposHabitacionScalarRelationFilter = {
+    is?: TiposHabitacionWhereInput
+    isNot?: TiposHabitacionWhereInput
+  }
+
+  export type HabitacionesOrderByRelevanceInput = {
+    fields: HabitacionesOrderByRelevanceFieldEnum | HabitacionesOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type HabitacionesCountOrderByAggregateInput = {
     id?: SortOrder
+    apartamentoId?: SortOrder
+    tipoHabitacionId?: SortOrder
+    cantidad?: SortOrder
+    createAt?: SortOrder
+    activo?: SortOrder
+    updateAt?: SortOrder
+  }
+
+  export type HabitacionesAvgOrderByAggregateInput = {
+    cantidad?: SortOrder
+  }
+
+  export type HabitacionesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    tipoHabitacionId?: SortOrder
+    cantidad?: SortOrder
+    createAt?: SortOrder
+    activo?: SortOrder
+    updateAt?: SortOrder
+  }
+
+  export type HabitacionesMinOrderByAggregateInput = {
+    id?: SortOrder
+    apartamentoId?: SortOrder
+    tipoHabitacionId?: SortOrder
+    cantidad?: SortOrder
+    createAt?: SortOrder
+    activo?: SortOrder
+    updateAt?: SortOrder
+  }
+
+  export type HabitacionesSumOrderByAggregateInput = {
+    cantidad?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type ServiciosOrderByRelevanceInput = {
@@ -18685,10 +18746,6 @@ export namespace Prisma {
     createAt?: SortOrder
     updateAt?: SortOrder
     activo?: SortOrder
-  }
-
-  export type ServiciosAvgOrderByAggregateInput = {
-    id?: SortOrder
   }
 
   export type ServiciosMaxOrderByAggregateInput = {
@@ -18707,10 +18764,6 @@ export namespace Prisma {
     activo?: SortOrder
   }
 
-  export type ServiciosSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
   export type DecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[]
@@ -18722,14 +18775,15 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type ApartamentoScalarRelationFilter = {
-    is?: ApartamentoWhereInput
-    isNot?: ApartamentoWhereInput
-  }
-
   export type ServiciosScalarRelationFilter = {
     is?: ServiciosWhereInput
     isNot?: ServiciosWhereInput
+  }
+
+  export type ApartamentoServiciosOrderByRelevanceInput = {
+    fields: ApartamentoServiciosOrderByRelevanceFieldEnum | ApartamentoServiciosOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
   }
 
   export type ApartamentoServiciosCountOrderByAggregateInput = {
@@ -18743,9 +18797,6 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosAvgOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    servicioId?: SortOrder
     costoAdicional?: SortOrder
   }
 
@@ -18770,9 +18821,6 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosSumOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    servicioId?: SortOrder
     costoAdicional?: SortOrder
   }
 
@@ -18801,11 +18849,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type InquilinoScalarRelationFilter = {
-    is?: InquilinoWhereInput
-    isNot?: InquilinoWhereInput
   }
 
   export type RecibosListRelationFilter = {
@@ -18837,8 +18880,6 @@ export namespace Prisma {
   }
 
   export type ContratosAvgOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
     montoMensual?: SortOrder
   }
 
@@ -18867,8 +18908,6 @@ export namespace Prisma {
   }
 
   export type ContratosSumOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
     montoMensual?: SortOrder
   }
 
@@ -18886,88 +18925,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type TiposHabitacionScalarRelationFilter = {
-    is?: TiposHabitacionWhereInput
-    isNot?: TiposHabitacionWhereInput
-  }
-
-  export type HabitacionesCountOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-  }
-
-  export type HabitacionesAvgOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-  }
-
-  export type HabitacionesMaxOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-  }
-
-  export type HabitacionesMinOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-  }
-
-  export type HabitacionesSumOrderByAggregateInput = {
-    id?: SortOrder
-    apartamentoId?: SortOrder
-    tipoHabitacionId?: SortOrder
-    cantidad?: SortOrder
-  }
-
-  export type AcompañanteOrderByRelevanceInput = {
-    fields: AcompañanteOrderByRelevanceFieldEnum | AcompañanteOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type AcompañanteCountOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    inquilinoId?: SortOrder
-    Parentesco?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
-  export type AcompañanteMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    inquilinoId?: SortOrder
-    Parentesco?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
-  export type AcompañanteMinOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    inquilinoId?: SortOrder
-    Parentesco?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
   export type ContratosScalarRelationFilter = {
     is?: ContratosWhereInput
     isNot?: ContratosWhereInput
@@ -18983,6 +18940,12 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type RecibosOrderByRelevanceInput = {
+    fields: RecibosOrderByRelevanceFieldEnum | RecibosOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
   export type RecibosCountOrderByAggregateInput = {
     id?: SortOrder
     contratoId?: SortOrder
@@ -18993,8 +18956,6 @@ export namespace Prisma {
   }
 
   export type RecibosAvgOrderByAggregateInput = {
-    id?: SortOrder
-    contratoId?: SortOrder
     total?: SortOrder
   }
 
@@ -19017,8 +18978,6 @@ export namespace Prisma {
   }
 
   export type RecibosSumOrderByAggregateInput = {
-    id?: SortOrder
-    contratoId?: SortOrder
     total?: SortOrder
   }
 
@@ -19043,8 +19002,6 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesAvgOrderByAggregateInput = {
-    id?: SortOrder
-    reciboId?: SortOrder
     monto?: SortOrder
   }
 
@@ -19067,8 +19024,6 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesSumOrderByAggregateInput = {
-    id?: SortOrder
-    reciboId?: SortOrder
     monto?: SortOrder
   }
 
@@ -19369,6 +19324,20 @@ export namespace Prisma {
     deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
   }
 
+  export type InquilinoCreateNestedOneWithoutAcompañanteInput = {
+    create?: XOR<InquilinoCreateWithoutAcompañanteInput, InquilinoUncheckedCreateWithoutAcompañanteInput>
+    connectOrCreate?: InquilinoCreateOrConnectWithoutAcompañanteInput
+    connect?: InquilinoWhereUniqueInput
+  }
+
+  export type InquilinoUpdateOneRequiredWithoutAcompañanteNestedInput = {
+    create?: XOR<InquilinoCreateWithoutAcompañanteInput, InquilinoUncheckedCreateWithoutAcompañanteInput>
+    connectOrCreate?: InquilinoCreateOrConnectWithoutAcompañanteInput
+    upsert?: InquilinoUpsertWithoutAcompañanteInput
+    connect?: InquilinoWhereUniqueInput
+    update?: XOR<XOR<InquilinoUpdateToOneWithWhereWithoutAcompañanteInput, InquilinoUpdateWithoutAcompañanteInput>, InquilinoUncheckedUpdateWithoutAcompañanteInput>
+  }
+
   export type HabitacionesCreateNestedManyWithoutApartamentoInput = {
     create?: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput> | HabitacionesCreateWithoutApartamentoInput[] | HabitacionesUncheckedCreateWithoutApartamentoInput[]
     connectOrCreate?: HabitacionesCreateOrConnectWithoutApartamentoInput | HabitacionesCreateOrConnectWithoutApartamentoInput[]
@@ -19457,14 +19426,6 @@ export namespace Prisma {
     deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput = {
     create?: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput> | HabitacionesCreateWithoutApartamentoInput[] | HabitacionesUncheckedCreateWithoutApartamentoInput[]
     connectOrCreate?: HabitacionesCreateOrConnectWithoutApartamentoInput | HabitacionesCreateOrConnectWithoutApartamentoInput[]
@@ -19547,6 +19508,42 @@ export namespace Prisma {
     update?: HabitacionesUpdateWithWhereUniqueWithoutTipoHabitacionInput | HabitacionesUpdateWithWhereUniqueWithoutTipoHabitacionInput[]
     updateMany?: HabitacionesUpdateManyWithWhereWithoutTipoHabitacionInput | HabitacionesUpdateManyWithWhereWithoutTipoHabitacionInput[]
     deleteMany?: HabitacionesScalarWhereInput | HabitacionesScalarWhereInput[]
+  }
+
+  export type ApartamentoCreateNestedOneWithoutApartamentoInput = {
+    create?: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
+    connectOrCreate?: ApartamentoCreateOrConnectWithoutApartamentoInput
+    connect?: ApartamentoWhereUniqueInput
+  }
+
+  export type TiposHabitacionCreateNestedOneWithoutApartamentoInput = {
+    create?: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
+    connectOrCreate?: TiposHabitacionCreateOrConnectWithoutApartamentoInput
+    connect?: TiposHabitacionWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type ApartamentoUpdateOneRequiredWithoutApartamentoNestedInput = {
+    create?: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
+    connectOrCreate?: ApartamentoCreateOrConnectWithoutApartamentoInput
+    upsert?: ApartamentoUpsertWithoutApartamentoInput
+    connect?: ApartamentoWhereUniqueInput
+    update?: XOR<XOR<ApartamentoUpdateToOneWithWhereWithoutApartamentoInput, ApartamentoUpdateWithoutApartamentoInput>, ApartamentoUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type TiposHabitacionUpdateOneRequiredWithoutApartamentoNestedInput = {
+    create?: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
+    connectOrCreate?: TiposHabitacionCreateOrConnectWithoutApartamentoInput
+    upsert?: TiposHabitacionUpsertWithoutApartamentoInput
+    connect?: TiposHabitacionWhereUniqueInput
+    update?: XOR<XOR<TiposHabitacionUpdateToOneWithWhereWithoutApartamentoInput, TiposHabitacionUpdateWithoutApartamentoInput>, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
   }
 
   export type ApartamentoServiciosCreateNestedManyWithoutServicioInput = {
@@ -19699,48 +19696,6 @@ export namespace Prisma {
     update?: RecibosUpdateWithWhereUniqueWithoutContratoInput | RecibosUpdateWithWhereUniqueWithoutContratoInput[]
     updateMany?: RecibosUpdateManyWithWhereWithoutContratoInput | RecibosUpdateManyWithWhereWithoutContratoInput[]
     deleteMany?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
-  }
-
-  export type ApartamentoCreateNestedOneWithoutApartamentoInput = {
-    create?: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
-    connectOrCreate?: ApartamentoCreateOrConnectWithoutApartamentoInput
-    connect?: ApartamentoWhereUniqueInput
-  }
-
-  export type TiposHabitacionCreateNestedOneWithoutApartamentoInput = {
-    create?: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
-    connectOrCreate?: TiposHabitacionCreateOrConnectWithoutApartamentoInput
-    connect?: TiposHabitacionWhereUniqueInput
-  }
-
-  export type ApartamentoUpdateOneRequiredWithoutApartamentoNestedInput = {
-    create?: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
-    connectOrCreate?: ApartamentoCreateOrConnectWithoutApartamentoInput
-    upsert?: ApartamentoUpsertWithoutApartamentoInput
-    connect?: ApartamentoWhereUniqueInput
-    update?: XOR<XOR<ApartamentoUpdateToOneWithWhereWithoutApartamentoInput, ApartamentoUpdateWithoutApartamentoInput>, ApartamentoUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type TiposHabitacionUpdateOneRequiredWithoutApartamentoNestedInput = {
-    create?: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
-    connectOrCreate?: TiposHabitacionCreateOrConnectWithoutApartamentoInput
-    upsert?: TiposHabitacionUpsertWithoutApartamentoInput
-    connect?: TiposHabitacionWhereUniqueInput
-    update?: XOR<XOR<TiposHabitacionUpdateToOneWithWhereWithoutApartamentoInput, TiposHabitacionUpdateWithoutApartamentoInput>, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type InquilinoCreateNestedOneWithoutAcompañanteInput = {
-    create?: XOR<InquilinoCreateWithoutAcompañanteInput, InquilinoUncheckedCreateWithoutAcompañanteInput>
-    connectOrCreate?: InquilinoCreateOrConnectWithoutAcompañanteInput
-    connect?: InquilinoWhereUniqueInput
-  }
-
-  export type InquilinoUpdateOneRequiredWithoutAcompañanteNestedInput = {
-    create?: XOR<InquilinoCreateWithoutAcompañanteInput, InquilinoUncheckedCreateWithoutAcompañanteInput>
-    connectOrCreate?: InquilinoCreateOrConnectWithoutAcompañanteInput
-    upsert?: InquilinoUpsertWithoutAcompañanteInput
-    connect?: InquilinoWhereUniqueInput
-    update?: XOR<XOR<InquilinoUpdateToOneWithWhereWithoutAcompañanteInput, InquilinoUpdateWithoutAcompañanteInput>, InquilinoUncheckedUpdateWithoutAcompañanteInput>
   }
 
   export type ContratosCreateNestedOneWithoutRecibosInput = {
@@ -19994,33 +19949,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | null
@@ -20048,6 +19976,33 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedDecimalFilter<$PrismaModel = never> = {
@@ -20242,6 +20197,7 @@ export namespace Prisma {
   }
 
   export type ContratosCreateWithoutInquilinoInput = {
+    id?: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
     createAt?: Date | string
@@ -20253,8 +20209,8 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedCreateWithoutInquilinoInput = {
-    id?: number
-    apartamentoId: number
+    id?: string
+    apartamentoId: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
     createAt?: Date | string
@@ -20323,642 +20279,15 @@ export namespace Prisma {
     AND?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
     OR?: ContratosScalarWhereInput[]
     NOT?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
-    id?: IntFilter<"Contratos"> | number
+    id?: StringFilter<"Contratos"> | string
     inquilinoId?: StringFilter<"Contratos"> | string
-    apartamentoId?: IntFilter<"Contratos"> | number
+    apartamentoId?: StringFilter<"Contratos"> | string
     fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
     fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
     createAt?: DateTimeFilter<"Contratos"> | Date | string
     updateAt?: DateTimeFilter<"Contratos"> | Date | string
     montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
     activo?: BoolFilter<"Contratos"> | boolean
-  }
-
-  export type HabitacionesCreateWithoutApartamentoInput = {
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-    tipoHabitacion: TiposHabitacionCreateNestedOneWithoutApartamentoInput
-  }
-
-  export type HabitacionesUncheckedCreateWithoutApartamentoInput = {
-    id?: number
-    tipoHabitacionId: number
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type HabitacionesCreateOrConnectWithoutApartamentoInput = {
-    where: HabitacionesWhereUniqueInput
-    create: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type HabitacionesCreateManyApartamentoInputEnvelope = {
-    data: HabitacionesCreateManyApartamentoInput | HabitacionesCreateManyApartamentoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ApartamentoServiciosCreateWithoutApartamentoInput = {
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    servicio: ServiciosCreateNestedOneWithoutApartamentoServiciosInput
-  }
-
-  export type ApartamentoServiciosUncheckedCreateWithoutApartamentoInput = {
-    id?: number
-    servicioId: number
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type ApartamentoServiciosCreateOrConnectWithoutApartamentoInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    create: XOR<ApartamentoServiciosCreateWithoutApartamentoInput, ApartamentoServiciosUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type ApartamentoServiciosCreateManyApartamentoInputEnvelope = {
-    data: ApartamentoServiciosCreateManyApartamentoInput | ApartamentoServiciosCreateManyApartamentoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ContratosCreateWithoutApartamentoInput = {
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    inquilino: InquilinoCreateNestedOneWithoutContratosInput
-    recibos?: RecibosCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosUncheckedCreateWithoutApartamentoInput = {
-    id?: number
-    inquilinoId: string
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosCreateOrConnectWithoutApartamentoInput = {
-    where: ContratosWhereUniqueInput
-    create: XOR<ContratosCreateWithoutApartamentoInput, ContratosUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type ContratosCreateManyApartamentoInputEnvelope = {
-    data: ContratosCreateManyApartamentoInput | ContratosCreateManyApartamentoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type HabitacionesUpsertWithWhereUniqueWithoutApartamentoInput = {
-    where: HabitacionesWhereUniqueInput
-    update: XOR<HabitacionesUpdateWithoutApartamentoInput, HabitacionesUncheckedUpdateWithoutApartamentoInput>
-    create: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type HabitacionesUpdateWithWhereUniqueWithoutApartamentoInput = {
-    where: HabitacionesWhereUniqueInput
-    data: XOR<HabitacionesUpdateWithoutApartamentoInput, HabitacionesUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type HabitacionesUpdateManyWithWhereWithoutApartamentoInput = {
-    where: HabitacionesScalarWhereInput
-    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyWithoutApartamentoInput>
-  }
-
-  export type HabitacionesScalarWhereInput = {
-    AND?: HabitacionesScalarWhereInput | HabitacionesScalarWhereInput[]
-    OR?: HabitacionesScalarWhereInput[]
-    NOT?: HabitacionesScalarWhereInput | HabitacionesScalarWhereInput[]
-    id?: IntFilter<"Habitaciones"> | number
-    apartamentoId?: IntFilter<"Habitaciones"> | number
-    tipoHabitacionId?: IntFilter<"Habitaciones"> | number
-    cantidad?: IntFilter<"Habitaciones"> | number
-    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
-    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
-  }
-
-  export type ApartamentoServiciosUpsertWithWhereUniqueWithoutApartamentoInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    update: XOR<ApartamentoServiciosUpdateWithoutApartamentoInput, ApartamentoServiciosUncheckedUpdateWithoutApartamentoInput>
-    create: XOR<ApartamentoServiciosCreateWithoutApartamentoInput, ApartamentoServiciosUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type ApartamentoServiciosUpdateWithWhereUniqueWithoutApartamentoInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    data: XOR<ApartamentoServiciosUpdateWithoutApartamentoInput, ApartamentoServiciosUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type ApartamentoServiciosUpdateManyWithWhereWithoutApartamentoInput = {
-    where: ApartamentoServiciosScalarWhereInput
-    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoInput>
-  }
-
-  export type ApartamentoServiciosScalarWhereInput = {
-    AND?: ApartamentoServiciosScalarWhereInput | ApartamentoServiciosScalarWhereInput[]
-    OR?: ApartamentoServiciosScalarWhereInput[]
-    NOT?: ApartamentoServiciosScalarWhereInput | ApartamentoServiciosScalarWhereInput[]
-    id?: IntFilter<"ApartamentoServicios"> | number
-    apartamentoId?: IntFilter<"ApartamentoServicios"> | number
-    servicioId?: IntFilter<"ApartamentoServicios"> | number
-    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
-    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
-  }
-
-  export type ContratosUpsertWithWhereUniqueWithoutApartamentoInput = {
-    where: ContratosWhereUniqueInput
-    update: XOR<ContratosUpdateWithoutApartamentoInput, ContratosUncheckedUpdateWithoutApartamentoInput>
-    create: XOR<ContratosCreateWithoutApartamentoInput, ContratosUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type ContratosUpdateWithWhereUniqueWithoutApartamentoInput = {
-    where: ContratosWhereUniqueInput
-    data: XOR<ContratosUpdateWithoutApartamentoInput, ContratosUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type ContratosUpdateManyWithWhereWithoutApartamentoInput = {
-    where: ContratosScalarWhereInput
-    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyWithoutApartamentoInput>
-  }
-
-  export type HabitacionesCreateWithoutTipoHabitacionInput = {
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento: ApartamentoCreateNestedOneWithoutApartamentoInput
-  }
-
-  export type HabitacionesUncheckedCreateWithoutTipoHabitacionInput = {
-    id?: number
-    apartamentoId: number
-    cantidad?: number
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type HabitacionesCreateOrConnectWithoutTipoHabitacionInput = {
-    where: HabitacionesWhereUniqueInput
-    create: XOR<HabitacionesCreateWithoutTipoHabitacionInput, HabitacionesUncheckedCreateWithoutTipoHabitacionInput>
-  }
-
-  export type HabitacionesCreateManyTipoHabitacionInputEnvelope = {
-    data: HabitacionesCreateManyTipoHabitacionInput | HabitacionesCreateManyTipoHabitacionInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type HabitacionesUpsertWithWhereUniqueWithoutTipoHabitacionInput = {
-    where: HabitacionesWhereUniqueInput
-    update: XOR<HabitacionesUpdateWithoutTipoHabitacionInput, HabitacionesUncheckedUpdateWithoutTipoHabitacionInput>
-    create: XOR<HabitacionesCreateWithoutTipoHabitacionInput, HabitacionesUncheckedCreateWithoutTipoHabitacionInput>
-  }
-
-  export type HabitacionesUpdateWithWhereUniqueWithoutTipoHabitacionInput = {
-    where: HabitacionesWhereUniqueInput
-    data: XOR<HabitacionesUpdateWithoutTipoHabitacionInput, HabitacionesUncheckedUpdateWithoutTipoHabitacionInput>
-  }
-
-  export type HabitacionesUpdateManyWithWhereWithoutTipoHabitacionInput = {
-    where: HabitacionesScalarWhereInput
-    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyWithoutTipoHabitacionInput>
-  }
-
-  export type ApartamentoServiciosCreateWithoutServicioInput = {
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    apartamento: ApartamentoCreateNestedOneWithoutApartamentoServiciosInput
-  }
-
-  export type ApartamentoServiciosUncheckedCreateWithoutServicioInput = {
-    id?: number
-    apartamentoId: number
-    incluido?: boolean
-    costoAdicional?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type ApartamentoServiciosCreateOrConnectWithoutServicioInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    create: XOR<ApartamentoServiciosCreateWithoutServicioInput, ApartamentoServiciosUncheckedCreateWithoutServicioInput>
-  }
-
-  export type ApartamentoServiciosCreateManyServicioInputEnvelope = {
-    data: ApartamentoServiciosCreateManyServicioInput | ApartamentoServiciosCreateManyServicioInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ApartamentoServiciosUpsertWithWhereUniqueWithoutServicioInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    update: XOR<ApartamentoServiciosUpdateWithoutServicioInput, ApartamentoServiciosUncheckedUpdateWithoutServicioInput>
-    create: XOR<ApartamentoServiciosCreateWithoutServicioInput, ApartamentoServiciosUncheckedCreateWithoutServicioInput>
-  }
-
-  export type ApartamentoServiciosUpdateWithWhereUniqueWithoutServicioInput = {
-    where: ApartamentoServiciosWhereUniqueInput
-    data: XOR<ApartamentoServiciosUpdateWithoutServicioInput, ApartamentoServiciosUncheckedUpdateWithoutServicioInput>
-  }
-
-  export type ApartamentoServiciosUpdateManyWithWhereWithoutServicioInput = {
-    where: ApartamentoServiciosScalarWhereInput
-    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyWithoutServicioInput>
-  }
-
-  export type ApartamentoCreateWithoutApartamentoServiciosInput = {
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoUncheckedCreateWithoutApartamentoServiciosInput = {
-    id?: number
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoCreateOrConnectWithoutApartamentoServiciosInput = {
-    where: ApartamentoWhereUniqueInput
-    create: XOR<ApartamentoCreateWithoutApartamentoServiciosInput, ApartamentoUncheckedCreateWithoutApartamentoServiciosInput>
-  }
-
-  export type ServiciosCreateWithoutApartamentoServiciosInput = {
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type ServiciosUncheckedCreateWithoutApartamentoServiciosInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type ServiciosCreateOrConnectWithoutApartamentoServiciosInput = {
-    where: ServiciosWhereUniqueInput
-    create: XOR<ServiciosCreateWithoutApartamentoServiciosInput, ServiciosUncheckedCreateWithoutApartamentoServiciosInput>
-  }
-
-  export type ApartamentoUpsertWithoutApartamentoServiciosInput = {
-    update: XOR<ApartamentoUpdateWithoutApartamentoServiciosInput, ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput>
-    create: XOR<ApartamentoCreateWithoutApartamentoServiciosInput, ApartamentoUncheckedCreateWithoutApartamentoServiciosInput>
-    where?: ApartamentoWhereInput
-  }
-
-  export type ApartamentoUpdateToOneWithWhereWithoutApartamentoServiciosInput = {
-    where?: ApartamentoWhereInput
-    data: XOR<ApartamentoUpdateWithoutApartamentoServiciosInput, ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput>
-  }
-
-  export type ApartamentoUpdateWithoutApartamentoServiciosInput = {
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ServiciosUpsertWithoutApartamentoServiciosInput = {
-    update: XOR<ServiciosUpdateWithoutApartamentoServiciosInput, ServiciosUncheckedUpdateWithoutApartamentoServiciosInput>
-    create: XOR<ServiciosCreateWithoutApartamentoServiciosInput, ServiciosUncheckedCreateWithoutApartamentoServiciosInput>
-    where?: ServiciosWhereInput
-  }
-
-  export type ServiciosUpdateToOneWithWhereWithoutApartamentoServiciosInput = {
-    where?: ServiciosWhereInput
-    data: XOR<ServiciosUpdateWithoutApartamentoServiciosInput, ServiciosUncheckedUpdateWithoutApartamentoServiciosInput>
-  }
-
-  export type ServiciosUpdateWithoutApartamentoServiciosInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ServiciosUncheckedUpdateWithoutApartamentoServiciosInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type InquilinoCreateWithoutContratosInput = {
-    id?: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    Acompañante?: AcompañanteCreateNestedManyWithoutInquilinoInput
-  }
-
-  export type InquilinoUncheckedCreateWithoutContratosInput = {
-    id?: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    Acompañante?: AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput
-  }
-
-  export type InquilinoCreateOrConnectWithoutContratosInput = {
-    where: InquilinoWhereUniqueInput
-    create: XOR<InquilinoCreateWithoutContratosInput, InquilinoUncheckedCreateWithoutContratosInput>
-  }
-
-  export type ApartamentoCreateWithoutContratosInput = {
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
-    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoUncheckedCreateWithoutContratosInput = {
-    id?: number
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
-    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoCreateOrConnectWithoutContratosInput = {
-    where: ApartamentoWhereUniqueInput
-    create: XOR<ApartamentoCreateWithoutContratosInput, ApartamentoUncheckedCreateWithoutContratosInput>
-  }
-
-  export type RecibosCreateWithoutContratoInput = {
-    fechaPago: Date | string
-    total?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    detalles?: ReciboDetallesCreateNestedManyWithoutReciboInput
-  }
-
-  export type RecibosUncheckedCreateWithoutContratoInput = {
-    id?: number
-    fechaPago: Date | string
-    total?: Decimal | DecimalJsLike | number | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    detalles?: ReciboDetallesUncheckedCreateNestedManyWithoutReciboInput
-  }
-
-  export type RecibosCreateOrConnectWithoutContratoInput = {
-    where: RecibosWhereUniqueInput
-    create: XOR<RecibosCreateWithoutContratoInput, RecibosUncheckedCreateWithoutContratoInput>
-  }
-
-  export type RecibosCreateManyContratoInputEnvelope = {
-    data: RecibosCreateManyContratoInput | RecibosCreateManyContratoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type InquilinoUpsertWithoutContratosInput = {
-    update: XOR<InquilinoUpdateWithoutContratosInput, InquilinoUncheckedUpdateWithoutContratosInput>
-    create: XOR<InquilinoCreateWithoutContratosInput, InquilinoUncheckedCreateWithoutContratosInput>
-    where?: InquilinoWhereInput
-  }
-
-  export type InquilinoUpdateToOneWithWhereWithoutContratosInput = {
-    where?: InquilinoWhereInput
-    data: XOR<InquilinoUpdateWithoutContratosInput, InquilinoUncheckedUpdateWithoutContratosInput>
-  }
-
-  export type InquilinoUpdateWithoutContratosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    Acompañante?: AcompañanteUpdateManyWithoutInquilinoNestedInput
-  }
-
-  export type InquilinoUncheckedUpdateWithoutContratosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    Acompañante?: AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput
-  }
-
-  export type ApartamentoUpsertWithoutContratosInput = {
-    update: XOR<ApartamentoUpdateWithoutContratosInput, ApartamentoUncheckedUpdateWithoutContratosInput>
-    create: XOR<ApartamentoCreateWithoutContratosInput, ApartamentoUncheckedCreateWithoutContratosInput>
-    where?: ApartamentoWhereInput
-  }
-
-  export type ApartamentoUpdateToOneWithWhereWithoutContratosInput = {
-    where?: ApartamentoWhereInput
-    data: XOR<ApartamentoUpdateWithoutContratosInput, ApartamentoUncheckedUpdateWithoutContratosInput>
-  }
-
-  export type ApartamentoUpdateWithoutContratosInput = {
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
-    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ApartamentoUncheckedUpdateWithoutContratosInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
-    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type RecibosUpsertWithWhereUniqueWithoutContratoInput = {
-    where: RecibosWhereUniqueInput
-    update: XOR<RecibosUpdateWithoutContratoInput, RecibosUncheckedUpdateWithoutContratoInput>
-    create: XOR<RecibosCreateWithoutContratoInput, RecibosUncheckedCreateWithoutContratoInput>
-  }
-
-  export type RecibosUpdateWithWhereUniqueWithoutContratoInput = {
-    where: RecibosWhereUniqueInput
-    data: XOR<RecibosUpdateWithoutContratoInput, RecibosUncheckedUpdateWithoutContratoInput>
-  }
-
-  export type RecibosUpdateManyWithWhereWithoutContratoInput = {
-    where: RecibosScalarWhereInput
-    data: XOR<RecibosUpdateManyMutationInput, RecibosUncheckedUpdateManyWithoutContratoInput>
-  }
-
-  export type RecibosScalarWhereInput = {
-    AND?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
-    OR?: RecibosScalarWhereInput[]
-    NOT?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
-    id?: IntFilter<"Recibos"> | number
-    contratoId?: IntFilter<"Recibos"> | number
-    fechaPago?: DateTimeFilter<"Recibos"> | Date | string
-    total?: DecimalFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
-    createAt?: DateTimeFilter<"Recibos"> | Date | string
-    updateAt?: DateTimeFilter<"Recibos"> | Date | string
-  }
-
-  export type ApartamentoCreateWithoutApartamentoInput = {
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoUncheckedCreateWithoutApartamentoInput = {
-    id?: number
-    numero: string
-    direccion?: string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    disponible?: boolean
-    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
-    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
-  }
-
-  export type ApartamentoCreateOrConnectWithoutApartamentoInput = {
-    where: ApartamentoWhereUniqueInput
-    create: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type TiposHabitacionCreateWithoutApartamentoInput = {
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type TiposHabitacionUncheckedCreateWithoutApartamentoInput = {
-    id?: number
-    nombre: string
-    createAt?: Date | string
-    updateAt?: Date | string
-  }
-
-  export type TiposHabitacionCreateOrConnectWithoutApartamentoInput = {
-    where: TiposHabitacionWhereUniqueInput
-    create: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
-  }
-
-  export type ApartamentoUpsertWithoutApartamentoInput = {
-    update: XOR<ApartamentoUpdateWithoutApartamentoInput, ApartamentoUncheckedUpdateWithoutApartamentoInput>
-    create: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
-    where?: ApartamentoWhereInput
-  }
-
-  export type ApartamentoUpdateToOneWithWhereWithoutApartamentoInput = {
-    where?: ApartamentoWhereInput
-    data: XOR<ApartamentoUpdateWithoutApartamentoInput, ApartamentoUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type ApartamentoUpdateWithoutApartamentoInput = {
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type ApartamentoUncheckedUpdateWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    numero?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    disponible?: BoolFieldUpdateOperationsInput | boolean
-    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
-    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
-  }
-
-  export type TiposHabitacionUpsertWithoutApartamentoInput = {
-    update: XOR<TiposHabitacionUpdateWithoutApartamentoInput, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
-    create: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
-    where?: TiposHabitacionWhereInput
-  }
-
-  export type TiposHabitacionUpdateToOneWithWhereWithoutApartamentoInput = {
-    where?: TiposHabitacionWhereInput
-    data: XOR<TiposHabitacionUpdateWithoutApartamentoInput, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
-  }
-
-  export type TiposHabitacionUpdateWithoutApartamentoInput = {
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TiposHabitacionUncheckedUpdateWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nombre?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InquilinoCreateWithoutAcompañanteInput = {
@@ -21029,7 +20358,672 @@ export namespace Prisma {
     Contratos?: ContratosUncheckedUpdateManyWithoutInquilinoNestedInput
   }
 
+  export type HabitacionesCreateWithoutApartamentoInput = {
+    id?: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+    tipoHabitacion: TiposHabitacionCreateNestedOneWithoutApartamentoInput
+  }
+
+  export type HabitacionesUncheckedCreateWithoutApartamentoInput = {
+    id?: string
+    tipoHabitacionId: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+  }
+
+  export type HabitacionesCreateOrConnectWithoutApartamentoInput = {
+    where: HabitacionesWhereUniqueInput
+    create: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type HabitacionesCreateManyApartamentoInputEnvelope = {
+    data: HabitacionesCreateManyApartamentoInput | HabitacionesCreateManyApartamentoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApartamentoServiciosCreateWithoutApartamentoInput = {
+    id?: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    servicio: ServiciosCreateNestedOneWithoutApartamentoServiciosInput
+  }
+
+  export type ApartamentoServiciosUncheckedCreateWithoutApartamentoInput = {
+    id?: string
+    servicioId: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+  }
+
+  export type ApartamentoServiciosCreateOrConnectWithoutApartamentoInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    create: XOR<ApartamentoServiciosCreateWithoutApartamentoInput, ApartamentoServiciosUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type ApartamentoServiciosCreateManyApartamentoInputEnvelope = {
+    data: ApartamentoServiciosCreateManyApartamentoInput | ApartamentoServiciosCreateManyApartamentoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContratosCreateWithoutApartamentoInput = {
+    id?: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    inquilino: InquilinoCreateNestedOneWithoutContratosInput
+    recibos?: RecibosCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosUncheckedCreateWithoutApartamentoInput = {
+    id?: string
+    inquilinoId: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosCreateOrConnectWithoutApartamentoInput = {
+    where: ContratosWhereUniqueInput
+    create: XOR<ContratosCreateWithoutApartamentoInput, ContratosUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type ContratosCreateManyApartamentoInputEnvelope = {
+    data: ContratosCreateManyApartamentoInput | ContratosCreateManyApartamentoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HabitacionesUpsertWithWhereUniqueWithoutApartamentoInput = {
+    where: HabitacionesWhereUniqueInput
+    update: XOR<HabitacionesUpdateWithoutApartamentoInput, HabitacionesUncheckedUpdateWithoutApartamentoInput>
+    create: XOR<HabitacionesCreateWithoutApartamentoInput, HabitacionesUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type HabitacionesUpdateWithWhereUniqueWithoutApartamentoInput = {
+    where: HabitacionesWhereUniqueInput
+    data: XOR<HabitacionesUpdateWithoutApartamentoInput, HabitacionesUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type HabitacionesUpdateManyWithWhereWithoutApartamentoInput = {
+    where: HabitacionesScalarWhereInput
+    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyWithoutApartamentoInput>
+  }
+
+  export type HabitacionesScalarWhereInput = {
+    AND?: HabitacionesScalarWhereInput | HabitacionesScalarWhereInput[]
+    OR?: HabitacionesScalarWhereInput[]
+    NOT?: HabitacionesScalarWhereInput | HabitacionesScalarWhereInput[]
+    id?: StringFilter<"Habitaciones"> | string
+    apartamentoId?: StringFilter<"Habitaciones"> | string
+    tipoHabitacionId?: StringFilter<"Habitaciones"> | string
+    cantidad?: IntFilter<"Habitaciones"> | number
+    createAt?: DateTimeFilter<"Habitaciones"> | Date | string
+    activo?: BoolFilter<"Habitaciones"> | boolean
+    updateAt?: DateTimeFilter<"Habitaciones"> | Date | string
+  }
+
+  export type ApartamentoServiciosUpsertWithWhereUniqueWithoutApartamentoInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    update: XOR<ApartamentoServiciosUpdateWithoutApartamentoInput, ApartamentoServiciosUncheckedUpdateWithoutApartamentoInput>
+    create: XOR<ApartamentoServiciosCreateWithoutApartamentoInput, ApartamentoServiciosUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type ApartamentoServiciosUpdateWithWhereUniqueWithoutApartamentoInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    data: XOR<ApartamentoServiciosUpdateWithoutApartamentoInput, ApartamentoServiciosUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type ApartamentoServiciosUpdateManyWithWhereWithoutApartamentoInput = {
+    where: ApartamentoServiciosScalarWhereInput
+    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoInput>
+  }
+
+  export type ApartamentoServiciosScalarWhereInput = {
+    AND?: ApartamentoServiciosScalarWhereInput | ApartamentoServiciosScalarWhereInput[]
+    OR?: ApartamentoServiciosScalarWhereInput[]
+    NOT?: ApartamentoServiciosScalarWhereInput | ApartamentoServiciosScalarWhereInput[]
+    id?: StringFilter<"ApartamentoServicios"> | string
+    apartamentoId?: StringFilter<"ApartamentoServicios"> | string
+    servicioId?: StringFilter<"ApartamentoServicios"> | string
+    incluido?: BoolFilter<"ApartamentoServicios"> | boolean
+    costoAdicional?: DecimalFilter<"ApartamentoServicios"> | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+    updateAt?: DateTimeFilter<"ApartamentoServicios"> | Date | string
+  }
+
+  export type ContratosUpsertWithWhereUniqueWithoutApartamentoInput = {
+    where: ContratosWhereUniqueInput
+    update: XOR<ContratosUpdateWithoutApartamentoInput, ContratosUncheckedUpdateWithoutApartamentoInput>
+    create: XOR<ContratosCreateWithoutApartamentoInput, ContratosUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type ContratosUpdateWithWhereUniqueWithoutApartamentoInput = {
+    where: ContratosWhereUniqueInput
+    data: XOR<ContratosUpdateWithoutApartamentoInput, ContratosUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type ContratosUpdateManyWithWhereWithoutApartamentoInput = {
+    where: ContratosScalarWhereInput
+    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyWithoutApartamentoInput>
+  }
+
+  export type HabitacionesCreateWithoutTipoHabitacionInput = {
+    id?: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+    apartamento: ApartamentoCreateNestedOneWithoutApartamentoInput
+  }
+
+  export type HabitacionesUncheckedCreateWithoutTipoHabitacionInput = {
+    id?: string
+    apartamentoId: string
+    cantidad?: number
+    createAt?: Date | string
+    activo: boolean
+    updateAt?: Date | string
+  }
+
+  export type HabitacionesCreateOrConnectWithoutTipoHabitacionInput = {
+    where: HabitacionesWhereUniqueInput
+    create: XOR<HabitacionesCreateWithoutTipoHabitacionInput, HabitacionesUncheckedCreateWithoutTipoHabitacionInput>
+  }
+
+  export type HabitacionesCreateManyTipoHabitacionInputEnvelope = {
+    data: HabitacionesCreateManyTipoHabitacionInput | HabitacionesCreateManyTipoHabitacionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HabitacionesUpsertWithWhereUniqueWithoutTipoHabitacionInput = {
+    where: HabitacionesWhereUniqueInput
+    update: XOR<HabitacionesUpdateWithoutTipoHabitacionInput, HabitacionesUncheckedUpdateWithoutTipoHabitacionInput>
+    create: XOR<HabitacionesCreateWithoutTipoHabitacionInput, HabitacionesUncheckedCreateWithoutTipoHabitacionInput>
+  }
+
+  export type HabitacionesUpdateWithWhereUniqueWithoutTipoHabitacionInput = {
+    where: HabitacionesWhereUniqueInput
+    data: XOR<HabitacionesUpdateWithoutTipoHabitacionInput, HabitacionesUncheckedUpdateWithoutTipoHabitacionInput>
+  }
+
+  export type HabitacionesUpdateManyWithWhereWithoutTipoHabitacionInput = {
+    where: HabitacionesScalarWhereInput
+    data: XOR<HabitacionesUpdateManyMutationInput, HabitacionesUncheckedUpdateManyWithoutTipoHabitacionInput>
+  }
+
+  export type ApartamentoCreateWithoutApartamentoInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoUncheckedCreateWithoutApartamentoInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoCreateOrConnectWithoutApartamentoInput = {
+    where: ApartamentoWhereUniqueInput
+    create: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type TiposHabitacionCreateWithoutApartamentoInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type TiposHabitacionUncheckedCreateWithoutApartamentoInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type TiposHabitacionCreateOrConnectWithoutApartamentoInput = {
+    where: TiposHabitacionWhereUniqueInput
+    create: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
+  }
+
+  export type ApartamentoUpsertWithoutApartamentoInput = {
+    update: XOR<ApartamentoUpdateWithoutApartamentoInput, ApartamentoUncheckedUpdateWithoutApartamentoInput>
+    create: XOR<ApartamentoCreateWithoutApartamentoInput, ApartamentoUncheckedCreateWithoutApartamentoInput>
+    where?: ApartamentoWhereInput
+  }
+
+  export type ApartamentoUpdateToOneWithWhereWithoutApartamentoInput = {
+    where?: ApartamentoWhereInput
+    data: XOR<ApartamentoUpdateWithoutApartamentoInput, ApartamentoUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type ApartamentoUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ApartamentoUncheckedUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type TiposHabitacionUpsertWithoutApartamentoInput = {
+    update: XOR<TiposHabitacionUpdateWithoutApartamentoInput, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
+    create: XOR<TiposHabitacionCreateWithoutApartamentoInput, TiposHabitacionUncheckedCreateWithoutApartamentoInput>
+    where?: TiposHabitacionWhereInput
+  }
+
+  export type TiposHabitacionUpdateToOneWithWhereWithoutApartamentoInput = {
+    where?: TiposHabitacionWhereInput
+    data: XOR<TiposHabitacionUpdateWithoutApartamentoInput, TiposHabitacionUncheckedUpdateWithoutApartamentoInput>
+  }
+
+  export type TiposHabitacionUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TiposHabitacionUncheckedUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ApartamentoServiciosCreateWithoutServicioInput = {
+    id?: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    apartamento: ApartamentoCreateNestedOneWithoutApartamentoServiciosInput
+  }
+
+  export type ApartamentoServiciosUncheckedCreateWithoutServicioInput = {
+    id?: string
+    apartamentoId: string
+    incluido?: boolean
+    costoAdicional?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+  }
+
+  export type ApartamentoServiciosCreateOrConnectWithoutServicioInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    create: XOR<ApartamentoServiciosCreateWithoutServicioInput, ApartamentoServiciosUncheckedCreateWithoutServicioInput>
+  }
+
+  export type ApartamentoServiciosCreateManyServicioInputEnvelope = {
+    data: ApartamentoServiciosCreateManyServicioInput | ApartamentoServiciosCreateManyServicioInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ApartamentoServiciosUpsertWithWhereUniqueWithoutServicioInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    update: XOR<ApartamentoServiciosUpdateWithoutServicioInput, ApartamentoServiciosUncheckedUpdateWithoutServicioInput>
+    create: XOR<ApartamentoServiciosCreateWithoutServicioInput, ApartamentoServiciosUncheckedCreateWithoutServicioInput>
+  }
+
+  export type ApartamentoServiciosUpdateWithWhereUniqueWithoutServicioInput = {
+    where: ApartamentoServiciosWhereUniqueInput
+    data: XOR<ApartamentoServiciosUpdateWithoutServicioInput, ApartamentoServiciosUncheckedUpdateWithoutServicioInput>
+  }
+
+  export type ApartamentoServiciosUpdateManyWithWhereWithoutServicioInput = {
+    where: ApartamentoServiciosScalarWhereInput
+    data: XOR<ApartamentoServiciosUpdateManyMutationInput, ApartamentoServiciosUncheckedUpdateManyWithoutServicioInput>
+  }
+
+  export type ApartamentoCreateWithoutApartamentoServiciosInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoUncheckedCreateWithoutApartamentoServiciosInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
+    Contratos?: ContratosUncheckedCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoCreateOrConnectWithoutApartamentoServiciosInput = {
+    where: ApartamentoWhereUniqueInput
+    create: XOR<ApartamentoCreateWithoutApartamentoServiciosInput, ApartamentoUncheckedCreateWithoutApartamentoServiciosInput>
+  }
+
+  export type ServiciosCreateWithoutApartamentoServiciosInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type ServiciosUncheckedCreateWithoutApartamentoServiciosInput = {
+    id?: string
+    nombre: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type ServiciosCreateOrConnectWithoutApartamentoServiciosInput = {
+    where: ServiciosWhereUniqueInput
+    create: XOR<ServiciosCreateWithoutApartamentoServiciosInput, ServiciosUncheckedCreateWithoutApartamentoServiciosInput>
+  }
+
+  export type ApartamentoUpsertWithoutApartamentoServiciosInput = {
+    update: XOR<ApartamentoUpdateWithoutApartamentoServiciosInput, ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput>
+    create: XOR<ApartamentoCreateWithoutApartamentoServiciosInput, ApartamentoUncheckedCreateWithoutApartamentoServiciosInput>
+    where?: ApartamentoWhereInput
+  }
+
+  export type ApartamentoUpdateToOneWithWhereWithoutApartamentoServiciosInput = {
+    where?: ApartamentoWhereInput
+    data: XOR<ApartamentoUpdateWithoutApartamentoServiciosInput, ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput>
+  }
+
+  export type ApartamentoUpdateWithoutApartamentoServiciosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ApartamentoUncheckedUpdateWithoutApartamentoServiciosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
+    Contratos?: ContratosUncheckedUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ServiciosUpsertWithoutApartamentoServiciosInput = {
+    update: XOR<ServiciosUpdateWithoutApartamentoServiciosInput, ServiciosUncheckedUpdateWithoutApartamentoServiciosInput>
+    create: XOR<ServiciosCreateWithoutApartamentoServiciosInput, ServiciosUncheckedCreateWithoutApartamentoServiciosInput>
+    where?: ServiciosWhereInput
+  }
+
+  export type ServiciosUpdateToOneWithWhereWithoutApartamentoServiciosInput = {
+    where?: ServiciosWhereInput
+    data: XOR<ServiciosUpdateWithoutApartamentoServiciosInput, ServiciosUncheckedUpdateWithoutApartamentoServiciosInput>
+  }
+
+  export type ServiciosUpdateWithoutApartamentoServiciosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ServiciosUncheckedUpdateWithoutApartamentoServiciosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombre?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type InquilinoCreateWithoutContratosInput = {
+    id?: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    Acompañante?: AcompañanteCreateNestedManyWithoutInquilinoInput
+  }
+
+  export type InquilinoUncheckedCreateWithoutContratosInput = {
+    id?: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    Acompañante?: AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput
+  }
+
+  export type InquilinoCreateOrConnectWithoutContratosInput = {
+    where: InquilinoWhereUniqueInput
+    create: XOR<InquilinoCreateWithoutContratosInput, InquilinoUncheckedCreateWithoutContratosInput>
+  }
+
+  export type ApartamentoCreateWithoutContratosInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesCreateNestedManyWithoutApartamentoInput
+    ApartamentoServicios?: ApartamentoServiciosCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoUncheckedCreateWithoutContratosInput = {
+    id?: string
+    numero: string
+    direccion?: string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    disponible?: boolean
+    activo: boolean
+    apartamento?: HabitacionesUncheckedCreateNestedManyWithoutApartamentoInput
+    ApartamentoServicios?: ApartamentoServiciosUncheckedCreateNestedManyWithoutApartamentoInput
+  }
+
+  export type ApartamentoCreateOrConnectWithoutContratosInput = {
+    where: ApartamentoWhereUniqueInput
+    create: XOR<ApartamentoCreateWithoutContratosInput, ApartamentoUncheckedCreateWithoutContratosInput>
+  }
+
+  export type RecibosCreateWithoutContratoInput = {
+    id?: string
+    fechaPago: Date | string
+    total?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    detalles?: ReciboDetallesCreateNestedManyWithoutReciboInput
+  }
+
+  export type RecibosUncheckedCreateWithoutContratoInput = {
+    id?: string
+    fechaPago: Date | string
+    total?: Decimal | DecimalJsLike | number | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    detalles?: ReciboDetallesUncheckedCreateNestedManyWithoutReciboInput
+  }
+
+  export type RecibosCreateOrConnectWithoutContratoInput = {
+    where: RecibosWhereUniqueInput
+    create: XOR<RecibosCreateWithoutContratoInput, RecibosUncheckedCreateWithoutContratoInput>
+  }
+
+  export type RecibosCreateManyContratoInputEnvelope = {
+    data: RecibosCreateManyContratoInput | RecibosCreateManyContratoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InquilinoUpsertWithoutContratosInput = {
+    update: XOR<InquilinoUpdateWithoutContratosInput, InquilinoUncheckedUpdateWithoutContratosInput>
+    create: XOR<InquilinoCreateWithoutContratosInput, InquilinoUncheckedCreateWithoutContratosInput>
+    where?: InquilinoWhereInput
+  }
+
+  export type InquilinoUpdateToOneWithWhereWithoutContratosInput = {
+    where?: InquilinoWhereInput
+    data: XOR<InquilinoUpdateWithoutContratosInput, InquilinoUncheckedUpdateWithoutContratosInput>
+  }
+
+  export type InquilinoUpdateWithoutContratosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    Acompañante?: AcompañanteUpdateManyWithoutInquilinoNestedInput
+  }
+
+  export type InquilinoUncheckedUpdateWithoutContratosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    Acompañante?: AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput
+  }
+
+  export type ApartamentoUpsertWithoutContratosInput = {
+    update: XOR<ApartamentoUpdateWithoutContratosInput, ApartamentoUncheckedUpdateWithoutContratosInput>
+    create: XOR<ApartamentoCreateWithoutContratosInput, ApartamentoUncheckedCreateWithoutContratosInput>
+    where?: ApartamentoWhereInput
+  }
+
+  export type ApartamentoUpdateToOneWithWhereWithoutContratosInput = {
+    where?: ApartamentoWhereInput
+    data: XOR<ApartamentoUpdateWithoutContratosInput, ApartamentoUncheckedUpdateWithoutContratosInput>
+  }
+
+  export type ApartamentoUpdateWithoutContratosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUpdateManyWithoutApartamentoNestedInput
+    ApartamentoServicios?: ApartamentoServiciosUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type ApartamentoUncheckedUpdateWithoutContratosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    disponible?: BoolFieldUpdateOperationsInput | boolean
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: HabitacionesUncheckedUpdateManyWithoutApartamentoNestedInput
+    ApartamentoServicios?: ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoNestedInput
+  }
+
+  export type RecibosUpsertWithWhereUniqueWithoutContratoInput = {
+    where: RecibosWhereUniqueInput
+    update: XOR<RecibosUpdateWithoutContratoInput, RecibosUncheckedUpdateWithoutContratoInput>
+    create: XOR<RecibosCreateWithoutContratoInput, RecibosUncheckedCreateWithoutContratoInput>
+  }
+
+  export type RecibosUpdateWithWhereUniqueWithoutContratoInput = {
+    where: RecibosWhereUniqueInput
+    data: XOR<RecibosUpdateWithoutContratoInput, RecibosUncheckedUpdateWithoutContratoInput>
+  }
+
+  export type RecibosUpdateManyWithWhereWithoutContratoInput = {
+    where: RecibosScalarWhereInput
+    data: XOR<RecibosUpdateManyMutationInput, RecibosUncheckedUpdateManyWithoutContratoInput>
+  }
+
+  export type RecibosScalarWhereInput = {
+    AND?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
+    OR?: RecibosScalarWhereInput[]
+    NOT?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
+    id?: StringFilter<"Recibos"> | string
+    contratoId?: StringFilter<"Recibos"> | string
+    fechaPago?: DateTimeFilter<"Recibos"> | Date | string
+    total?: DecimalFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
+    createAt?: DateTimeFilter<"Recibos"> | Date | string
+    updateAt?: DateTimeFilter<"Recibos"> | Date | string
+  }
+
   export type ContratosCreateWithoutRecibosInput = {
+    id?: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
     createAt?: Date | string
@@ -21041,9 +21035,9 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedCreateWithoutRecibosInput = {
-    id?: number
+    id?: string
     inquilinoId: string
-    apartamentoId: number
+    apartamentoId: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
     createAt?: Date | string
@@ -21058,6 +21052,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesCreateWithoutReciboInput = {
+    id?: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21065,7 +21060,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedCreateWithoutReciboInput = {
-    id?: number
+    id?: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21094,6 +21089,7 @@ export namespace Prisma {
   }
 
   export type ContratosUpdateWithoutRecibosInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21105,9 +21101,9 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedUpdateWithoutRecibosInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     inquilinoId?: StringFieldUpdateOperationsInput | string
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21136,8 +21132,8 @@ export namespace Prisma {
     AND?: ReciboDetallesScalarWhereInput | ReciboDetallesScalarWhereInput[]
     OR?: ReciboDetallesScalarWhereInput[]
     NOT?: ReciboDetallesScalarWhereInput | ReciboDetallesScalarWhereInput[]
-    id?: IntFilter<"ReciboDetalles"> | number
-    reciboId?: IntFilter<"ReciboDetalles"> | number
+    id?: StringFilter<"ReciboDetalles"> | string
+    reciboId?: StringFilter<"ReciboDetalles"> | string
     descripcion?: StringFilter<"ReciboDetalles"> | string
     monto?: DecimalFilter<"ReciboDetalles"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"ReciboDetalles"> | Date | string
@@ -21145,6 +21141,7 @@ export namespace Prisma {
   }
 
   export type RecibosCreateWithoutDetallesInput = {
+    id?: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21153,8 +21150,8 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedCreateWithoutDetallesInput = {
-    id?: number
-    contratoId: number
+    id?: string
+    contratoId: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21178,6 +21175,7 @@ export namespace Prisma {
   }
 
   export type RecibosUpdateWithoutDetallesInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21186,8 +21184,8 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedUpdateWithoutDetallesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    contratoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    contratoId?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21474,8 +21472,8 @@ export namespace Prisma {
   }
 
   export type ContratosCreateManyInquilinoInput = {
-    id?: number
-    apartamentoId: number
+    id?: string
+    apartamentoId: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
     createAt?: Date | string
@@ -21512,6 +21510,7 @@ export namespace Prisma {
   }
 
   export type ContratosUpdateWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21523,8 +21522,8 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedUpdateWithoutInquilinoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21535,8 +21534,8 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedUpdateManyWithoutInquilinoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21546,16 +21545,17 @@ export namespace Prisma {
   }
 
   export type HabitacionesCreateManyApartamentoInput = {
-    id?: number
-    tipoHabitacionId: number
+    id?: string
+    tipoHabitacionId: string
     cantidad?: number
     createAt?: Date | string
+    activo: boolean
     updateAt?: Date | string
   }
 
   export type ApartamentoServiciosCreateManyApartamentoInput = {
-    id?: number
-    servicioId: number
+    id?: string
+    servicioId: string
     incluido?: boolean
     costoAdicional?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21563,7 +21563,7 @@ export namespace Prisma {
   }
 
   export type ContratosCreateManyApartamentoInput = {
-    id?: number
+    id?: string
     inquilinoId: string
     fechaInicio: Date | string
     fechaFin?: Date | string | null
@@ -21574,29 +21574,34 @@ export namespace Prisma {
   }
 
   export type HabitacionesUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tipoHabitacion?: TiposHabitacionUpdateOneRequiredWithoutApartamentoNestedInput
   }
 
   export type HabitacionesUncheckedUpdateWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    tipoHabitacionId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    tipoHabitacionId?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HabitacionesUncheckedUpdateManyWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    tipoHabitacionId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    tipoHabitacionId?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ApartamentoServiciosUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21605,8 +21610,8 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosUncheckedUpdateWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    servicioId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    servicioId?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21614,8 +21619,8 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosUncheckedUpdateManyWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    servicioId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    servicioId?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21623,6 +21628,7 @@ export namespace Prisma {
   }
 
   export type ContratosUpdateWithoutApartamentoInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21634,7 +21640,7 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedUpdateWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     inquilinoId?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21646,7 +21652,7 @@ export namespace Prisma {
   }
 
   export type ContratosUncheckedUpdateManyWithoutApartamentoInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     inquilinoId?: StringFieldUpdateOperationsInput | string
     fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -21657,39 +21663,44 @@ export namespace Prisma {
   }
 
   export type HabitacionesCreateManyTipoHabitacionInput = {
-    id?: number
-    apartamentoId: number
+    id?: string
+    apartamentoId: string
     cantidad?: number
     createAt?: Date | string
+    activo: boolean
     updateAt?: Date | string
   }
 
   export type HabitacionesUpdateWithoutTipoHabitacionInput = {
+    id?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartamento?: ApartamentoUpdateOneRequiredWithoutApartamentoNestedInput
   }
 
   export type HabitacionesUncheckedUpdateWithoutTipoHabitacionInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HabitacionesUncheckedUpdateManyWithoutTipoHabitacionInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     cantidad?: IntFieldUpdateOperationsInput | number
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ApartamentoServiciosCreateManyServicioInput = {
-    id?: number
-    apartamentoId: number
+    id?: string
+    apartamentoId: string
     incluido?: boolean
     costoAdicional?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21697,6 +21708,7 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosUpdateWithoutServicioInput = {
+    id?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21705,8 +21717,8 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosUncheckedUpdateWithoutServicioInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21714,8 +21726,8 @@ export namespace Prisma {
   }
 
   export type ApartamentoServiciosUncheckedUpdateManyWithoutServicioInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    apartamentoId?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
     incluido?: BoolFieldUpdateOperationsInput | boolean
     costoAdicional?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21723,7 +21735,7 @@ export namespace Prisma {
   }
 
   export type RecibosCreateManyContratoInput = {
-    id?: number
+    id?: string
     fechaPago: Date | string
     total?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21731,6 +21743,7 @@ export namespace Prisma {
   }
 
   export type RecibosUpdateWithoutContratoInput = {
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21739,7 +21752,7 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedUpdateWithoutContratoInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21748,7 +21761,7 @@ export namespace Prisma {
   }
 
   export type RecibosUncheckedUpdateManyWithoutContratoInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     fechaPago?: DateTimeFieldUpdateOperationsInput | Date | string
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21756,7 +21769,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesCreateManyReciboInput = {
-    id?: number
+    id?: string
     descripcion: string
     monto?: Decimal | DecimalJsLike | number | string
     createAt?: Date | string
@@ -21764,6 +21777,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUpdateWithoutReciboInput = {
+    id?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21771,7 +21785,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedUpdateWithoutReciboInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21779,7 +21793,7 @@ export namespace Prisma {
   }
 
   export type ReciboDetallesUncheckedUpdateManyWithoutReciboInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
     monto?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string

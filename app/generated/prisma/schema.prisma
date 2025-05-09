@@ -33,8 +33,19 @@ model Inquilino {
   Contratos       Contratos[]
 }
 
+model Acompañante {
+  id             String    @id @default(uuid())
+  nombreCompleto String
+  inquilinoId    String
+  Parentesco     String
+  createAt       DateTime  @default(now())
+  updateAt       DateTime  @updatedAt
+  activo         Boolean
+  inquilino      Inquilino @relation(fields: [inquilinoId], references: [id])
+}
+
 model Apartamento {
-  id                   Int                    @id @default(autoincrement())
+  id                   String                 @id @default(uuid())
   numero               String                 @unique
   direccion            String?
   createAt             DateTime               @default(now())
@@ -42,19 +53,36 @@ model Apartamento {
   disponible           Boolean                @default(true)
   apartamento          Habitaciones[]
   ApartamentoServicios ApartamentoServicios[]
+  activo               Boolean
   Contratos            Contratos[]
 }
 
 model TiposHabitacion {
-  id          Int            @id @default(autoincrement())
+  id          String         @id @default(uuid())
   nombre      String         @unique
   createAt    DateTime       @default(now())
   updateAt    DateTime       @updatedAt
+  activo      Boolean
   apartamento Habitaciones[]
 }
 
+model Habitaciones {
+  id               String          @id @default(uuid())
+  apartamentoId    String
+  tipoHabitacionId String
+  cantidad         Int             @default(1)
+  apartamento      Apartamento     @relation(fields: [apartamentoId], references: [id])
+  tipoHabitacion   TiposHabitacion @relation(fields: [tipoHabitacionId], references: [id])
+  createAt         DateTime        @default(now())
+  activo           Boolean
+  updateAt         DateTime        @updatedAt
+
+  @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
+  @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
+}
+
 model Servicios {
-  id                   Int                    @id @default(autoincrement())
+  id                   String                 @id @default(uuid())
   nombre               String                 @unique
   createAt             DateTime               @default(now())
   updateAt             DateTime               @updatedAt
@@ -63,9 +91,9 @@ model Servicios {
 }
 
 model ApartamentoServicios {
-  id             Int         @id @default(autoincrement())
-  apartamentoId  Int
-  servicioId     Int
+  id             String      @id @default(uuid())
+  apartamentoId  String
+  servicioId     String
   incluido       Boolean     @default(true)
   costoAdicional Decimal     @default(0.00)
   apartamento    Apartamento @relation(fields: [apartamentoId], references: [id])
@@ -78,9 +106,9 @@ model ApartamentoServicios {
 }
 
 model Contratos {
-  id            Int         @id @default(autoincrement())
+  id            String      @id @default(uuid())
   inquilinoId   String
-  apartamentoId Int
+  apartamentoId String
   fechaInicio   DateTime
   fechaFin      DateTime?
   createAt      DateTime    @default(now())
@@ -95,34 +123,9 @@ model Contratos {
   @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
 }
 
-model Habitaciones {
-  id               Int             @id @default(autoincrement())
-  apartamentoId    Int
-  tipoHabitacionId Int
-  cantidad         Int             @default(1)
-  apartamento      Apartamento     @relation(fields: [apartamentoId], references: [id])
-  tipoHabitacion   TiposHabitacion @relation(fields: [tipoHabitacionId], references: [id])
-  createAt         DateTime        @default(now())
-  updateAt         DateTime        @updatedAt
-
-  @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
-  @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
-}
-
-model Acompañante {
-  id             String    @id @default(uuid())
-  nombreCompleto String
-  inquilinoId    String
-  Parentesco     String
-  createAt       DateTime  @default(now())
-  updateAt       DateTime  @updatedAt
-  activo         Boolean
-  inquilino      Inquilino @relation(fields: [inquilinoId], references: [id])
-}
-
 model Recibos {
-  id         Int              @id @default(autoincrement())
-  contratoId Int
+  id         String           @id @default(uuid())
+  contratoId String
   fechaPago  DateTime
   total      Decimal          @default(0.00)
   createAt   DateTime         @default(now())
@@ -134,8 +137,8 @@ model Recibos {
 }
 
 model ReciboDetalles {
-  id          Int      @id @default(autoincrement())
-  reciboId    Int
+  id          String   @id @default(uuid())
+  reciboId    String
   descripcion String
   monto       Decimal  @default(0.00)
   createAt    DateTime @default(now())

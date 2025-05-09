@@ -27,88 +27,6 @@ CREATE TABLE `Inquilino` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Apartamento` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `numero` VARCHAR(191) NOT NULL,
-    `direccion` VARCHAR(191) NULL,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-    `disponible` BOOLEAN NOT NULL DEFAULT true,
-
-    UNIQUE INDEX `Apartamento_numero_key`(`numero`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `TiposHabitacion` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(191) NOT NULL,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `TiposHabitacion_nombre_key`(`nombre`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Servicios` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `nombre` VARCHAR(191) NOT NULL,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-    `activo` BOOLEAN NOT NULL,
-
-    UNIQUE INDEX `Servicios_nombre_key`(`nombre`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `ApartamentoServicios` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `apartamentoId` INTEGER NOT NULL,
-    `servicioId` INTEGER NOT NULL,
-    `incluido` BOOLEAN NOT NULL DEFAULT true,
-    `costoAdicional` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-
-    INDEX `ApartamentoServicios_apartamentoId_fkey`(`apartamentoId`),
-    INDEX `ApartamentoServicios_servicioId_fkey`(`servicioId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Contratos` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `inquilinoId` VARCHAR(191) NOT NULL,
-    `apartamentoId` INTEGER NOT NULL,
-    `fechaInicio` DATETIME(3) NOT NULL,
-    `fechaFin` DATETIME(3) NULL,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-    `montoMensual` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
-    `activo` BOOLEAN NOT NULL DEFAULT true,
-
-    INDEX `Contratos_inquilinoId_fkey`(`inquilinoId`),
-    INDEX `Contratos_apartamentoId_fkey`(`apartamentoId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Habitaciones` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `apartamentoId` INTEGER NOT NULL,
-    `tipoHabitacionId` INTEGER NOT NULL,
-    `cantidad` INTEGER NOT NULL DEFAULT 1,
-    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updateAt` DATETIME(3) NOT NULL,
-
-    INDEX `Habitaciones_apartamentoId_fkey`(`apartamentoId`),
-    INDEX `Habitaciones_tipoHabitacionId_fkey`(`tipoHabitacionId`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Acompañante` (
     `id` VARCHAR(191) NOT NULL,
     `nombreCompleto` VARCHAR(191) NOT NULL,
@@ -122,9 +40,94 @@ CREATE TABLE `Acompañante` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Apartamento` (
+    `id` VARCHAR(191) NOT NULL,
+    `numero` VARCHAR(191) NOT NULL,
+    `direccion` VARCHAR(191) NULL,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+    `disponible` BOOLEAN NOT NULL DEFAULT true,
+    `activo` BOOLEAN NOT NULL,
+
+    UNIQUE INDEX `Apartamento_numero_key`(`numero`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `TiposHabitacion` (
+    `id` VARCHAR(191) NOT NULL,
+    `nombre` VARCHAR(191) NOT NULL,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+    `activo` BOOLEAN NOT NULL,
+
+    UNIQUE INDEX `TiposHabitacion_nombre_key`(`nombre`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Habitaciones` (
+    `id` VARCHAR(191) NOT NULL,
+    `apartamentoId` VARCHAR(191) NOT NULL,
+    `tipoHabitacionId` VARCHAR(191) NOT NULL,
+    `cantidad` INTEGER NOT NULL DEFAULT 1,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `activo` BOOLEAN NOT NULL,
+    `updateAt` DATETIME(3) NOT NULL,
+
+    INDEX `Habitaciones_apartamentoId_fkey`(`apartamentoId`),
+    INDEX `Habitaciones_tipoHabitacionId_fkey`(`tipoHabitacionId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Servicios` (
+    `id` VARCHAR(191) NOT NULL,
+    `nombre` VARCHAR(191) NOT NULL,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+    `activo` BOOLEAN NOT NULL,
+
+    UNIQUE INDEX `Servicios_nombre_key`(`nombre`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ApartamentoServicios` (
+    `id` VARCHAR(191) NOT NULL,
+    `apartamentoId` VARCHAR(191) NOT NULL,
+    `servicioId` VARCHAR(191) NOT NULL,
+    `incluido` BOOLEAN NOT NULL DEFAULT true,
+    `costoAdicional` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+
+    INDEX `ApartamentoServicios_apartamentoId_fkey`(`apartamentoId`),
+    INDEX `ApartamentoServicios_servicioId_fkey`(`servicioId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Contratos` (
+    `id` VARCHAR(191) NOT NULL,
+    `inquilinoId` VARCHAR(191) NOT NULL,
+    `apartamentoId` VARCHAR(191) NOT NULL,
+    `fechaInicio` DATETIME(3) NOT NULL,
+    `fechaFin` DATETIME(3) NULL,
+    `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updateAt` DATETIME(3) NOT NULL,
+    `montoMensual` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
+    `activo` BOOLEAN NOT NULL DEFAULT true,
+
+    INDEX `Contratos_inquilinoId_fkey`(`inquilinoId`),
+    INDEX `Contratos_apartamentoId_fkey`(`apartamentoId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Recibos` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `contratoId` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `contratoId` VARCHAR(191) NOT NULL,
     `fechaPago` DATETIME(3) NOT NULL,
     `total` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
     `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -136,8 +139,8 @@ CREATE TABLE `Recibos` (
 
 -- CreateTable
 CREATE TABLE `ReciboDetalles` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `reciboId` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `reciboId` VARCHAR(191) NOT NULL,
     `descripcion` VARCHAR(191) NOT NULL,
     `monto` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
     `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -190,6 +193,15 @@ CREATE TABLE `Usuario` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
+ALTER TABLE `Acompañante` ADD CONSTRAINT `Acompañante_inquilinoId_fkey` FOREIGN KEY (`inquilinoId`) REFERENCES `Inquilino`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Habitaciones` ADD CONSTRAINT `Habitaciones_apartamentoId_fkey` FOREIGN KEY (`apartamentoId`) REFERENCES `Apartamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Habitaciones` ADD CONSTRAINT `Habitaciones_tipoHabitacionId_fkey` FOREIGN KEY (`tipoHabitacionId`) REFERENCES `TiposHabitacion`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `ApartamentoServicios` ADD CONSTRAINT `ApartamentoServicios_apartamentoId_fkey` FOREIGN KEY (`apartamentoId`) REFERENCES `Apartamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -200,15 +212,6 @@ ALTER TABLE `Contratos` ADD CONSTRAINT `Contratos_inquilinoId_fkey` FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE `Contratos` ADD CONSTRAINT `Contratos_apartamentoId_fkey` FOREIGN KEY (`apartamentoId`) REFERENCES `Apartamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Habitaciones` ADD CONSTRAINT `Habitaciones_apartamentoId_fkey` FOREIGN KEY (`apartamentoId`) REFERENCES `Apartamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Habitaciones` ADD CONSTRAINT `Habitaciones_tipoHabitacionId_fkey` FOREIGN KEY (`tipoHabitacionId`) REFERENCES `TiposHabitacion`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Acompañante` ADD CONSTRAINT `Acompañante_inquilinoId_fkey` FOREIGN KEY (`inquilinoId`) REFERENCES `Inquilino`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Recibos` ADD CONSTRAINT `Recibos_contratoId_fkey` FOREIGN KEY (`contratoId`) REFERENCES `Contratos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
