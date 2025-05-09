@@ -57,15 +57,6 @@ model Apartamento {
   Contratos            Contratos[]
 }
 
-model TiposHabitacion {
-  id          String         @id @default(uuid())
-  nombre      String         @unique
-  createAt    DateTime       @default(now())
-  updateAt    DateTime       @updatedAt
-  activo      Boolean
-  apartamento Habitaciones[]
-}
-
 model Habitaciones {
   id               String           @id @default(uuid())
   apartamentoId    String
@@ -80,6 +71,16 @@ model Habitaciones {
   @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
   @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
 }
+
+model TiposHabitacion {
+  id          String         @id @default(uuid())
+  nombre      String         @unique
+  createAt    DateTime       @default(now())
+  updateAt    DateTime       @updatedAt
+  activo      Boolean
+  apartamento Habitaciones[]
+}
+
 
 model Servicios {
   id                   String                @id @default(uuid())

@@ -41,28 +41,34 @@ export function FormularioTipoHabitacion({
     };
 
     try {
+      let success = false;
+
       if (isUpdate) {
-        await putTipoHabitacion(tipoHabitacionData);
+        success = await putTipoHabitacion(tipoHabitacionData);
       } else {
-        await postTipoHabitacion(tipoHabitacionData);
+        success = await postTipoHabitacion(tipoHabitacionData);
       }
 
-      // Notificación de éxito
-      toast({
-        title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
-        description: isUpdate
-          ? "El tipo de habitación ha sido actualizado."
-          : "El tipo de habitación ha sido creado.",
-      });
+      if (success) {
+        // Notificación de éxito
+        toast({
+          title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
+          description: isUpdate
+            ? "El tipo de habitación ha sido actualizado."
+            : "El tipo de habitación ha sido creado.",
+        });
 
-      router.push("/tipo-habitacion"); // Redirige después de la acción
-      router.refresh();
+        router.push("/tipo-habitacion"); // Redirige después de la acción
+        router.refresh();
+      } else {
+        throw new Error("Operación fallida");
+      }
     } catch (error) {
       // Manejo de error
       console.error("Error en la operación:", error);
       toast({
         title: "Error",
-        description: `Hubo un problema:`,
+        description: `Hubo un problema al ${isUpdate ? "actualizar" : "crear"} el tipo de habitación.`,
       });
     }
   }

@@ -42,9 +42,9 @@ export async function putTipoHabitacion({
   tipoHabitacion,
 }: {
   tipoHabitacion: TipoHabitacion;
-}): Promise<TipoHabitacion | null> {
+}): Promise<boolean> {
   try {
-    const updated = await prisma.tiposHabitacion.update({
+    await prisma.tiposHabitacion.update({
       where: { id: tipoHabitacion.id! },
       data: {
         nombre: tipoHabitacion.nombre,
@@ -52,14 +52,29 @@ export async function putTipoHabitacion({
       },
     });
 
-    return {
-      id: updated.id,
-      nombre: updated.nombre,
-      activo: updated.activo,
-    };
+    return true;
   } catch (error) {
     console.error("Error al actualizar el tipo de habitación:", error);
-    return null;
+    return false;
+  }
+}
+
+export async function postTipoHabitacion({
+  tipoHabitacion,
+}: {
+  tipoHabitacion: TipoHabitacion;
+}): Promise<boolean> {
+  try {
+    await prisma.tiposHabitacion.create({
+      data: {
+        nombre: tipoHabitacion.nombre,
+        activo: tipoHabitacion.activo ?? true,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error al crear el tipo de habitación:", error);
+    return false;
   }
 }
 
@@ -85,27 +100,4 @@ export async function getTipoHabitacionById(id: string): Promise<TipoHabitacion 
   }
 }
 
-export async function postTipoHabitacion({
-  tipoHabitacion,
-}: {
-  tipoHabitacion: TipoHabitacion;
-}): Promise<TipoHabitacion | null> {
-  try {
-    const created = await prisma.tiposHabitacion.create({
-      data: {
-        nombre: tipoHabitacion.nombre,
-        activo: tipoHabitacion.activo ?? true,
-      },
-    });
-    console.log("🚀 ~ created:", created)
 
-    return {
-      id: created.id,
-      nombre: created.nombre,
-      activo: created.activo,
-    };
-  } catch (error) {
-    console.error("Error al crear el tipo de habitación:", error);
-    return null;
-  }
-}
