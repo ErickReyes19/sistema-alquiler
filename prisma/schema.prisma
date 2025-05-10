@@ -44,18 +44,7 @@ model Acompañante {
   inquilino      Inquilino @relation(fields: [inquilinoId], references: [id])
 }
 
-model Apartamento {
-  id                   String                @id @default(uuid())
-  numero               String                @unique
-  direccion            String?
-  createAt             DateTime              @default(now())
-  updateAt             DateTime              @updatedAt
-  disponible           Boolean               @default(true)
-  apartamento          Habitaciones[]
-  ApartamentoServicios ApartamentoServicios[]
-  activo               Boolean
-  Contratos            Contratos[]
-}
+
 
 model Habitaciones {
   id               String           @id @default(uuid())
@@ -81,6 +70,18 @@ model TiposHabitacion {
   apartamento Habitaciones[]
 }
 
+model Apartamento {
+  id                   String                @id @default(uuid())
+  numero               String                @unique
+  direccion            String?
+  createAt             DateTime              @default(now())
+  updateAt             DateTime              @updatedAt
+  disponible           Boolean               @default(true)
+  apartamento          Habitaciones[]
+  ApartamentoServicios ApartamentoServicios[]
+  activo               Boolean
+  Contratos            Contratos[]
+}
 
 model Servicios {
   id                   String                @id @default(uuid())

@@ -16,7 +16,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Calculator, ChevronDown, ChevronUp, File, FileCheck2, Files, LayersIcon, ListOrderedIcon, LucideFilePen, Settings, UserIcon, UserRoundCheck, UsersIcon } from 'lucide-react';
+import { Calculator, ChevronDown, ChevronUp, File, FileCheck2, Files, HouseIcon, LayersIcon, ListOrderedIcon, LucideFilePen, Settings, User, UserIcon, UserRoundCheck, Users2, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -51,24 +51,18 @@ const mantenimientoItems = [
 const items = [
 
   {
-    title: "Solicitudes",
-    url: "/solicitudes",
-    icon: Files,
-    permiso: "ver_usuarios",
+    title: "Apartamentos",
+    url: "/apartamentos",
+    icon: HouseIcon,
+    permiso: "ver_apartamentos",
   },
 
   {
-    title: "Contabilidad",
-    url: "/contabilidad",
-    icon: Calculator,
-    permiso: "ver_contabilidad",
+    title: "Inquilinos",
+    url: "/inquilinos",
+    icon: Users2,
+    permiso: "ver_inquilinos",
   },
-  {
-    title: "Voucher de Pago",
-    url: "/voucher-pago",
-    icon: File,
-    permiso: "ver_voucher_pago",
-  }
 ];
 
 export async function AppSidebar() {
