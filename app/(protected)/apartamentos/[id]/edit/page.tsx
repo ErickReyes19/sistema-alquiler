@@ -5,7 +5,7 @@ import HeaderComponent from "@/components/HeaderComponent";
 import NoAcceso from "@/components/noAccess";
 import { Pencil } from "lucide-react";
 import ApartamentoForm from "../../components/Formulario";
-import { getApartamentoById } from "../../actions"; // Asegúrate de tener esta función implementada
+import { getApartamentoCompletoById, getApartamentoCompletoConId, getServiciosActivos } from "../../actions"; // Asegúrate de tener esta función implementada
 import { getTiposHabitacionActivos } from "../../../tipo-habitacion/actions";
 import { redirect } from "next/navigation";
 
@@ -16,13 +16,14 @@ export default async function EditApartamentoPage({ params }: { params: { id: st
     return <NoAcceso />;
   }
 
-  const apartamento = await getApartamentoById(params.id); // Debe incluir las habitaciones también
+  const apartamento = await getApartamentoCompletoById(params.id);
+
   if (!apartamento) {
     redirect("/apartamento");
   }
 
   const tipoHabitaciones = await getTiposHabitacionActivos();
-
+  const serviciosActivos = await getServiciosActivos(); // Asegúrate de tener esta función para obtener los tipos de habitaciones
   return (
     <div>
       <HeaderComponent
@@ -34,6 +35,7 @@ export default async function EditApartamentoPage({ params }: { params: { id: st
         isUpdate={true}
         initialData={apartamento}
         tipoHabitaciones={tipoHabitaciones}
+        serviciosDisponibles={serviciosActivos}
       />
     </div>
   );

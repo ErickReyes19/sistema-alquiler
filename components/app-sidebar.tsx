@@ -63,6 +63,12 @@ const items = [
     icon: Users2,
     permiso: "ver_inquilinos",
   },
+  {
+    title: "Servicios",
+    url: "/servicios",
+    icon: ListOrderedIcon,
+    permiso: "ver_servicios",
+  },
 ];
 
 export async function AppSidebar() {

@@ -67,7 +67,7 @@ async function main() {
   console.log("✅ TiposHabitacion seed completado");
 
   // Seed Servicios
-  const serviciosNames = ["Agua", "Luz", "Internet", "Cable"];
+  const serviciosNames = ["Agua", "Internet"];
   const servicios = await Promise.all(
     serviciosNames.map(nombre => prisma.servicios.upsert({ where: { nombre }, update: {}, create: { nombre, activo: true } }))
   );

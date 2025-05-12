@@ -91,6 +91,9 @@ export const columns: ColumnDef<Apartamento & { habitaciones: Habitacion[] }>[] 
             <Link href={`/apartamentos/${apt.id}/edit`}>
               <DropdownMenuItem>Editar</DropdownMenuItem>
             </Link>
+            <Link href={`/apartamentos/${apt.id}/view`}>
+              <DropdownMenuItem>Ver Detalle</DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

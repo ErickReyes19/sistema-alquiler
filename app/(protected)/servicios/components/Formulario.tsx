@@ -59,7 +59,7 @@ export function FormularioServicio({
             : "El tipo de habitación ha sido creado.",
         });
 
-        router.push("/tipo-habitacion"); // Redirige después de la acción
+        router.push("/servicios"); // Redirige después de la acción
         router.refresh();
       } else {
         throw new Error("Operación fallida");
