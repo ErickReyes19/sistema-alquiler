@@ -24,6 +24,28 @@ export async function getInquilinos(): Promise<Inquilino[]> {
     })),
   }));
 }
+export async function getInquilinosActivos(): Promise<Inquilino[]> {
+  const inquilinos = await prisma.inquilino.findMany({
+    where: { activo: true },
+    include: { Acompañante: true },
+  });
+  return inquilinos.map((r) => ({
+    id:       r.id,
+    nombreCompleto:  r.nombreCompleto,
+    dni:      r.dni,
+    activo:   r.activo,
+    telefono: r.numero,
+    correo:   r.correo,
+    fechaNacimiento: r.fechaNacimiento.toISOString(),
+    acompanantes: r.Acompañante.map(a => ({
+      id:             a.id,
+      nombreCompleto: a.nombreCompleto,
+      parentesco:     a.Parentesco,
+      fechaNacimiento:a.createAt.toISOString(), // si guardas la fecha real, ajústalo
+      activo:         a.activo,
+    })),
+  }));
+}
 
 export async function getInquilinoById(id: string): Promise<Inquilino | null> {
   const r = await prisma.inquilino.findUnique({

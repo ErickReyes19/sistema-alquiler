@@ -16,7 +16,7 @@ async function main() {
     "ver_acompanantes", "editar_tipo_habitacion",
     "ver_tipos_habitacion", "crear_tipo_habitacion", "ver_apartamentos",
     "crear_apartamento","editar_apartamento","crear_servicio","ver_servicios",
-    "editar_servicio"
+    "editar_servicio","ver_contratos","crear_contrato","editar_contrato",
   ];
 
   // Seed Permisos

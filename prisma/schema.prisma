@@ -29,7 +29,7 @@ model Inquilino {
   createAt        DateTime       @default(now())
   updateAt        DateTime       @updatedAt
   activo          Boolean
-  Acompañante     Acompañante[]
+  Acompañante    Acompañante[]
   Contratos       Contratos[]
 }
 
@@ -44,18 +44,16 @@ model Acompañante {
   inquilino      Inquilino @relation(fields: [inquilinoId], references: [id])
 }
 
-
-
 model Habitaciones {
-  id               String           @id @default(uuid())
+  id               String          @id @default(uuid())
   apartamentoId    String
   tipoHabitacionId String
-  cantidad         Int              @default(1)
-  apartamento      Apartamento      @relation(fields: [apartamentoId], references: [id])
-  tipoHabitacion   TiposHabitacion  @relation(fields: [tipoHabitacionId], references: [id])
-  createAt         DateTime         @default(now())
+  cantidad         Int             @default(1)
+  apartamento      Apartamento     @relation(fields: [apartamentoId], references: [id])
+  tipoHabitacion   TiposHabitacion @relation(fields: [tipoHabitacionId], references: [id])
+  createAt         DateTime        @default(now())
   activo           Boolean
-  updateAt         DateTime         @updatedAt
+  updateAt         DateTime        @updatedAt
 
   @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
   @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
@@ -71,12 +69,12 @@ model TiposHabitacion {
 }
 
 model Apartamento {
-  id                   String                @id @default(uuid())
-  numero               String                @unique
+  id                   String                 @id @default(uuid())
+  numero               String                 @unique
   direccion            String?
-  createAt             DateTime              @default(now())
-  updateAt             DateTime              @updatedAt
-  disponible           Boolean               @default(true)
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
+  disponible           Boolean                @default(true)
   apartamento          Habitaciones[]
   ApartamentoServicios ApartamentoServicios[]
   activo               Boolean
@@ -84,10 +82,10 @@ model Apartamento {
 }
 
 model Servicios {
-  id                   String                @id @default(uuid())
-  nombre               String                @unique
-  createAt             DateTime              @default(now())
-  updateAt             DateTime              @updatedAt
+  id                   String                 @id @default(uuid())
+  nombre               String                 @unique
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
   activo               Boolean
   ApartamentoServicios ApartamentoServicios[]
 }
