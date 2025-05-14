@@ -53,7 +53,7 @@ export default function ResetPassword() {
                 return;
             }
             // Ya está la cookie con el nuevo token, el middleware lo verá correcto
-            router.push("/profile");
+            router.push("/inquilinos");
         });
     };
 

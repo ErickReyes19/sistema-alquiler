@@ -27,7 +27,7 @@ export default function Login() {
   const [mounted, setMounted] = useState(false);
 
   // Ruta a redirigir tras login exitoso
-  const redirectTo = searchParams.get("redirect") ?? "/profile";
+  const redirectTo = searchParams.get("redirect") ?? "/inquilinos";
 
   useEffect(() => {
     setMounted(true);

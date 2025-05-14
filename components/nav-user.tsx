@@ -60,10 +60,10 @@ export function NavUser({
                 >
                     <DropdownMenuItem asChild></DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="/profile" className="flex justify-between">
+                        {/* <Link href="/profile" className="flex justify-between">
                             <span>Perfil</span>
                             <User className="ml-2 h-4 w-40 text-muted-foreground" />
-                        </Link>
+                        </Link> */}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <LogoutButton />
