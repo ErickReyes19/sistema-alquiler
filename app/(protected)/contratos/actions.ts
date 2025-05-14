@@ -159,6 +159,7 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
       fechaFin: contrato.fechaFin?.toISOString() ?? null,
       montoMensual: parseFloat(contrato.montoMensual.toString()),
       activo: contrato.activo,
+      inquiliniIdentidad : contrato.inquilino.dni,
       inquilino: contrato.inquilino?.nombreCompleto ?? "",
       apartamento: {
         numero: contrato.apartamento.numero,

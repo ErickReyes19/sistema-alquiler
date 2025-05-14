@@ -29,9 +29,9 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
     new Intl.NumberFormat("es", { style: "currency", currency: "HNL" }).format(amt);
 
   return (
-    <div className="print-container mx-auto bg-white text-black text-sm">
+    <div className="print-container  mx-auto bg-white text-black text-sm">
       {/* ───────────── CUERPO PRINCIPAL ───────────── */}
-      <div className="print-body flex-grow">
+      <div className="print-body flex-grow mx-8">
         {/* Encabezado */}
         <div className="text-center mb-2 border-b pb-1">
           <h1 className="text-lg font-bold">CONTRATO DE ARRENDAMIENTO</h1>
@@ -47,7 +47,7 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
               <span className="font-semibold">Nombre:</span> {contrato.inquilino}
             </p>
             <p className="text-base">
-              <span className="font-semibold">ID:</span> {contrato.inquilinoId}
+              <span className="font-semibold">ID:</span> {contrato.inquiliniIdentidad}
             </p>
           </div>
           <div>
@@ -125,7 +125,7 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
                   <td className="border p-1 text-right">
                     {s.costoAdicional > 0
                       ? formatCurrency(s.costoAdicional)
-                      : "-"}
+                      : "SIn costo"}
                   </td>
                 </tr>
               ))}
@@ -157,12 +157,13 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
         @media print {
           html,
           body {
-            margin: 0;
+            margin-top: 50px;
+            margin: 30px;
             padding: 0;
             font-size: 12pt; /* Aumenta el tamaño base */
           }
           @page {
-            margin: 0.5cm; /* Deja un pequeño margen alrededor */
+            margin: 10cm; /* Deja un pequeño margen alrededor */
           }
           .print-container {
             display: flex;

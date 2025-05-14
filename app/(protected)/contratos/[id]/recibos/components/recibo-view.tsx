@@ -23,26 +23,21 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
   }
 
   const calcularSubtotales = () => {
-    const detalleRenta = recibo.detalles.find((detalle) => detalle.descripcion.toLowerCase().includes("renta mensual"))
-
-    const montoRenta = detalleRenta ? detalleRenta.monto : recibo.contrato.montoMensual
-
-    const montosAdicionales = recibo.detalles
-      .filter((detalle) => !detalle.descripcion.toLowerCase().includes("renta mensual"))
-      .reduce((sum, detalle) => sum + detalle.monto, 0)
+    const montosDetalles = recibo.detalles.reduce((sum, detalle) => sum + detalle.monto, 0);
 
     return {
-      montoRenta,
-      montosAdicionales,
-      total: montoRenta + montosAdicionales,
-    }
-  }
+      totalDetalles: montosDetalles,
+    };
+  };
 
-  const subtotales = calcularSubtotales()
+  const subtotales = calcularSubtotales();
 
   const handlePrint = () => {
-    window.print()
-  }
+    window.open(
+        `/recibo/${recibo.id}/imprimir/`,
+        "_blank"
+    )
+}
 
   return (
     <Card className="w-full mx-auto print:shadow-none">
@@ -158,38 +153,19 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm">Renta mensual base</span>
-                <span>{formatCurrency(subtotales.montoRenta)}</span>
+                <span>{formatCurrency(subtotales.totalDetalles)}</span>
               </div>
-
-              {subtotales.montosAdicionales > 0 && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Cargos adicionales</span>
-                  <span>{formatCurrency(subtotales.montosAdicionales)}</span>
-                </div>
-              )}
-
-              {recibo.detalles
-                .filter((detalle) => !detalle.descripcion.toLowerCase().includes("renta mensual"))
-                .map((detalle) => (
-                  <div
-                    key={detalle.id}
-                    className="flex justify-between items-center pl-4 text-xs text-muted-foreground"
-                  >
-                    <span>{detalle.descripcion}</span>
-                    <span>{formatCurrency(detalle.monto)}</span>
-                  </div>
-                ))}
 
               <Separator className="my-2" />
 
               <div className="flex justify-between items-center font-medium">
                 <span>Subtotal</span>
-                <span>{formatCurrency(subtotales.total)}</span>
+                <span>{formatCurrency(subtotales.totalDetalles)}</span>
               </div>
 
               <div className="flex justify-between items-center pt-2 text-lg font-bold">
                 <span>Total a pagar</span>
-                <span className="text-primary">{formatCurrency(subtotales.total)}</span>
+                <span className="text-primary">{formatCurrency(subtotales.totalDetalles)}</span>
               </div>
             </div>
           </CardContent>

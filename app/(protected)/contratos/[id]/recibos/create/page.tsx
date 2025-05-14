@@ -46,6 +46,7 @@ export default async function CreateReciboPage({ params }: CreateReciboPageProps
       />
 
       <FormularioRecibo
+      
         isUpdate={false}
         initialData={initialData}
         contratoId={detalles.contratoId}

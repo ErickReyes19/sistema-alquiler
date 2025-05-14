@@ -16,6 +16,7 @@ export type Contrato = {
   export interface ContratoView {
     id: string;
     inquilinoId: string;
+    inquiliniIdentidad: string
     apartamentoId: string;
     fechaInicio: string;
     fechaFin: string | null;

@@ -28,7 +28,7 @@ import { postReciboConDetalles, putReciboConDetalles } from "../actions";
 
 interface FormularioReciboProps {
   isUpdate: boolean;
-  initialData?: Recibo & { detalles: ReciboDetalle[] };
+  initialData?: Recibo & { detalles: ReciboDetalle[]; montoMensual?: number };
   contratoId: string;
 }
 
@@ -59,14 +59,21 @@ export default function FormularioRecibo({
 
   // Carga inicial de detalles
   useEffect(() => {
-    if (initialData?.detalles) {
-      replace(
-        initialData.detalles.map(d => ({
+    if (initialData) {
+      const detallesConMontoMensual = [
+        {
+          descripcion: "Monto Mensual",
+          monto: initialData.total || 0,
+          reciboId: contratoId,
+        },
+        ...(initialData.detalles || []).map((d) => ({
           ...d,
           monto: Number(d.monto),
-          reciboId: contratoId ?? "", // Ensure reciboId is a string
-        }))
-      );
+          reciboId: contratoId ?? "",
+        })),
+      ];
+
+      replace(detallesConMontoMensual);
     }
   }, [initialData, replace]);
 
@@ -81,24 +88,27 @@ export default function FormularioRecibo({
     setValue("total", total, { shouldValidate: true, shouldDirty: true });
   }, [detalles, setValue]);
 
-  // const { formState } = form;
-
-  // // //forma de saber si un form esta valido o no
-  // const isValid = formState.errors;
-  // console.log("🚀 ~ isValid:", isValid)
   async function onSubmit(data: z.infer<typeof ReciboSchema>) {
-      // Verificación de validez antes del submit
     try {
       const payloadRecibo = {
         contratoId: data.contratoId,
         fechaPago: data.fechaPago.toISOString(),
         total: data.total,
       };
-      const detallesPayload = data.detalles.map(d => ({ descripcion: d.descripcion, monto: d.monto }));
+      const detallesPayload = data.detalles.map((d) => ({
+        descripcion: d.descripcion,
+        monto: d.monto,
+      }));
 
       const result = isUpdate
-        ? await putReciboConDetalles({ recibo: { id: data.id!, ...payloadRecibo }, detalles: detallesPayload })
-        : await postReciboConDetalles({ recibo: payloadRecibo, detalles: detallesPayload });
+        ? await putReciboConDetalles({
+            recibo: { id: data.id!, ...payloadRecibo },
+            detalles: detallesPayload,
+          })
+        : await postReciboConDetalles({
+            recibo: payloadRecibo,
+            detalles: detallesPayload,
+          });
 
       toast({
         title: isUpdate ? "Recibo actualizado" : "Recibo creado",
@@ -107,7 +117,11 @@ export default function FormularioRecibo({
       router.push(`/contratos/${contratoId}/recibos`);
       router.refresh();
     } catch (err) {
-      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
+      toast({
+        title: "Error",
+        description: (err as Error).message,
+        variant: "destructive",
+      });
     }
   }
 
@@ -124,14 +138,26 @@ export default function FormularioRecibo({
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
-                    <Button variant="outline" className={cn("w-full text-left", !field.value && "text-muted-foreground") }>
-                      {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha" }
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full text-left",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? format(field.value, "PPP", { locale: es })
+                        : "Selecciona fecha"}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} />
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                  />
                 </PopoverContent>
               </Popover>
               <FormMessage />
@@ -182,20 +208,30 @@ export default function FormularioRecibo({
                         type="number"
                         step="0.01"
                         {...field}
-                        onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="button" variant="destructive" onClick={() => remove(idx)} className="h-10">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => remove(idx)}
+                className="h-10"
+              >
                 Eliminar
               </Button>
             </div>
           ))}
           <div className="text-right">
-            <Button type="button" onClick={() => append({ reciboId: contratoId, descripcion: "", monto: 0 })}>
+            <Button
+              type="button"
+              onClick={() =>
+                append({ reciboId: contratoId, descripcion: "", monto: 0 })
+              }
+            >
               Añadir Concepto
             </Button>
           </div>
