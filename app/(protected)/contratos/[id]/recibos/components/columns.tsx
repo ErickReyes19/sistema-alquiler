@@ -97,9 +97,9 @@ export const columns: ColumnDef<Recibo>[] = [
             </Link>
 
             {/* Si vas a permitir editar recibos */}
-            {/* <Link href={`/recibos/${recibo.id}/edit`}>
+            <Link href={`recibos/${recibo.id}/edit`}>
               <DropdownMenuItem>Editar</DropdownMenuItem>
-            </Link> */}
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

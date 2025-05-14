@@ -2,39 +2,47 @@ import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
 import { File } from "lucide-react";
 import NoAcceso from "@/components/noAccess";
-import { redirect } from "next/navigation";// Asegúrate de que el formulario esté preparado para manejar recibos
-import { getReciboById } from "../../actions";
-import { getContratoById } from "@/app/(protected)/contratos/actions";
+import { redirect } from "next/navigation";
+
+import { getDetallesParaNuevoRecibo, getReciboById } from "../../actions";
 import FormularioRecibo from "../../components/Form";
 
-export default async function Edit({ params }: { params: { id: string } }) {
-  // Verificar permisos de sesión
+export default async function Edit({ params }: { params: { idrecibo: string } }) {
+  // 1) Verificar permisos
   const permisos = await getSessionPermisos();
   if (!permisos?.includes("editar_recibo")) {
     return <NoAcceso />;
   }
-
-  // Obtener recibo por ID
-  const recibo = await getReciboById(params.id);
-
-  // Si no se encuentra el recibo, redirigir a la lista de recibos
+  
+  // 2) Obtener el recibo por ID
+  const recibo = await getReciboById(params.idrecibo);
+  console.log("🚀 ~ Edit ~ recibo:", recibo);
   if (!recibo) {
-    redirect("/contratos"); // Redirige si no encuentra el recibo
+    redirect("/contratos");
   }
-
-  // Obtener el contrato asociado al recibo (si es necesario)
-  const contrato = await getContratoById(recibo.contratoId);
-
-  // Definir datos iniciales para el formulario
+  
+  // 3) Obtener los detalles del contrato asociado
+  const contratoData = await getDetallesParaNuevoRecibo(recibo.contratoId);
+  if (!contratoData) {
+    redirect("/contratos");
+  }
+  
+  // 4) Verificar si el recibo contiene el "monto mensual"
+  const tieneMontoMensual = recibo.detalles.some(
+    
+    (d) => d.descripcion.toLowerCase() === "monto mensual"
+  );
+  
+  // 5) Preparar los detalles iniciales para el formulario
   const initialData = {
-    id: recibo.id,
-    contratoId: recibo.contratoId,
-    fechaPago: new Date(recibo.fechaPago).toISOString(), // Convertir a ISO string
-    total: recibo.total,
-    detalles: recibo.detalles.map(d => ({
-      descripcion: d.descripcion,
-      monto: d.monto,
-    })),
+    id: recibo.id, // ID del recibo que estamos editando
+    contratoId: recibo.contratoId, // ID del contrato asociado
+    fechaPago: new Date(recibo.fechaPago).toISOString(), // Fecha de pago
+    total: recibo.total, // Total del recibo
+    detalles: [
+      ...recibo.detalles, // Detalles del recibo
+
+    ],
   };
 
   return (
@@ -44,11 +52,10 @@ export default async function Edit({ params }: { params: { id: string } }) {
         description="En este apartado podrás editar un recibo existente"
         screenName="Recibos"
       />
-
       <FormularioRecibo
-        isUpdate={true} 
-        initialData={initialData}  // Pasamos los datos iniciales para el recibo
-        contratoId={params.id}  // Puedes pasar el contrato si es necesario mostrarlo o asociarlo
+        isUpdate={true} // Indicamos que estamos actualizando un recibo existente
+        initialData={initialData} // Pasamos los datos iniciales al formulario
+        contratoId={recibo.contratoId} // ID del contrato
       />
     </div>
   );

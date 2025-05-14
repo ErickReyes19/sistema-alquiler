@@ -3,7 +3,7 @@ import { z } from "zod";
 // Esquema para un detalle de recibo
 export const ReciboDetalleSchema = z.object({
   id: z.string().uuid().optional(),
-  reciboId: z.string().uuid({ message: "El ID de recibo es requerido" }),
+  reciboId: z.string(),
   descripcion: z.string().min(1, { message: "La descripción es requerida" }),
   monto: z.coerce
     .number({ invalid_type_error: "El monto debe ser un número" })

@@ -35,6 +35,7 @@ export interface ReciboView {
   fechaPago: string;
   total: number;
   detalles: {
+    reciboId: string
     id: string;
     descripcion: string;
     monto: number;

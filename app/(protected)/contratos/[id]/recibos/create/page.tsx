@@ -23,7 +23,7 @@ export default async function CreateReciboPage({ params }: CreateReciboPageProps
     return <p>Contrato no encontrado o sin datos suficientes.</p>;
   }
 
-  // 3) Preparar detalles iniciales con los servicios del apartamento
+  // 3) Preparar detalles iniciales con los detalles del apartamento (sin servicios)
   const detallesIniciales = detalles.servicios.map((servicio) => ({
     descripcion: servicio.nombre,
     monto: parseFloat(servicio.costoAdicional),
@@ -34,7 +34,7 @@ export default async function CreateReciboPage({ params }: CreateReciboPageProps
     contratoId: detalles.contratoId,
     total: parseFloat(detalles.montoMensual),
     fechaPago: new Date().toISOString(),
-    detalles: detallesIniciales,
+    detalles: detallesIniciales, // Aquí solo pasamos los detalles sin servicios
   };
 
   return (
@@ -46,9 +46,8 @@ export default async function CreateReciboPage({ params }: CreateReciboPageProps
       />
 
       <FormularioRecibo
-      
         isUpdate={false}
-        initialData={initialData}
+        initialData={initialData} // Solo pasamos los detalles iniciales
         contratoId={detalles.contratoId}
       />
     </div>

@@ -27,6 +27,7 @@ function mapRecibo(data: any): Recibo {
 function mapReciboView(data: any): ReciboView {
   return {
     id: data.id,
+
     contratoId: data.contratoId,
     fechaPago: data.fechaPago.toISOString(),
     total: parseFloat(data.total.toString()),
@@ -93,6 +94,8 @@ export async function postReciboConDetalles({
 }
 
 // Actualizar un recibo y reemplazar sus detalles
+
+
 export async function putReciboConDetalles({
   recibo,
   detalles,
@@ -100,42 +103,75 @@ export async function putReciboConDetalles({
   recibo: ReciboUpdate;
   detalles: ReciboDetalleUpdate[];
 }): Promise<ReciboView | null> {
+  console.log("🚀 ~ detalles: action", detalles)
+  console.log("🚀 ~ recibo: action ", recibo)
   try {
-    // Recalcula total
+    // 1) Recalcular el total
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
 
-    // Borra detalles existentes
-    await prisma.reciboDetalles.deleteMany({
-      where: { reciboId: recibo.id },
-    });
+    // 2) Extraer IDs entrantes
+    const idsEntrantes = detalles
+      .filter((d) => !!d.id)
+      .map((d) => d.id!) as string[];
 
-    // Actualiza el recibo
-    const updated = await prisma.recibos.update({
-      where: { id: recibo.id },
-      data: {
-        fechaPago: new Date(recibo.fechaPago),
-        total,
-        detalles: {
-          create: detalles.map((d) => ({
-            descripcion: d.descripcion,
-            monto: d.monto,
-          })),
+    // 3) Ejecutar transacción
+    const [_, __] = await prisma.$transaction([
+      // 3.1) Actualizar recibo
+      prisma.recibos.update({
+        where: { id: recibo.id },
+        data: {
+          fechaPago: new Date(recibo.fechaPago),
+          total,
         },
-      },
+      }),
+      // 3.2) Eliminar detalles que ya no vienen
+      prisma.reciboDetalles.deleteMany({
+        where: {
+          reciboId: recibo.id,
+          id: { notIn: idsEntrantes },
+        },
+      }),
+      // 3.3) Actualizar detalles existentes
+      ...detalles
+        .filter((d) => d.id)
+        .map((d) =>
+          prisma.reciboDetalles.update({
+            where: { id: d.id! },
+            data: {
+              descripcion: d.descripcion,
+              monto: d.monto,
+            },
+          })
+        ),
+      // 3.4) Crear los nuevos
+      ...detalles
+        .filter((d) => !d.id)
+        .map((d) =>
+          prisma.reciboDetalles.create({
+            data: {
+              descripcion: d.descripcion,
+              monto: d.monto,
+              recibo: { connect: { id: recibo.id } },
+            },
+          })
+        ),
+    ]);
+
+    // 4) Leer y devolver el recibo actualizado con sus detalles
+    const updated = await prisma.recibos.findUnique({
+      where: { id: recibo.id },
       include: { detalles: true },
     });
-
-    return mapReciboView(updated);
+    return updated ? mapReciboView(updated) : null;
   } catch (error) {
     console.error("Error al actualizar recibo:", error);
     return null;
   }
 }
 
+
 // Obtener un recibo por su ID (con detalles)
-export async function getReciboById(
-  id: string
-): Promise<ReciboView | null> {
+export async function getReciboById(id: string): Promise<ReciboView | null> {
   try {
     const recibo = await prisma.recibos.findUnique({
       where: { id },
@@ -148,6 +184,7 @@ export async function getReciboById(
     return null;
   }
 }
+
 
 export async function getDetallesParaNuevoRecibo(contratoId: string): Promise<DetallesParaNuevoRecibo | null> {
   const contrato = await prisma.contratos.findUnique({
