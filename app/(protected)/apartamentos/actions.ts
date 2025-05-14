@@ -103,6 +103,7 @@ export async function getApartamentosCompleto(): Promise<
 > {
   try {
     const list = await prisma.apartamento.findMany({
+      where: { activo: true },
       include: { apartamento: true, ApartamentoServicios: true },
     })
     return list.map((a) => ({

@@ -182,10 +182,16 @@ export function FormularioInquilino({
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
-                        mode="single"
-                        selected={field.value ? new Date(field.value) : undefined}
-                        onSelect={(date) => field.onChange(date?.toISOString().split("T")[0])}
-                        initialFocus
+                      mode="single"
+                      selected={field.value ? new Date(field.value) : new Date()}
+                      onSelect={(date) => {
+                        if (date) {
+                        const localDate = new Date(date.getTime() - date.getTimezoneOffset());
+                        const adjustedDate = new Date(localDate.getTime() + 6 * 60 * 60 * 1000); // Add 6 hours
+                        field.onChange(adjustedDate);
+                        }
+                      }}
+                      initialFocus
                       />
                     </PopoverContent>
                   </Popover>

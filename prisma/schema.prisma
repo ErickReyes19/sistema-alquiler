@@ -19,19 +19,7 @@ model Rol {
   Usuario     Usuario[]
 }
 
-model Inquilino {
-  id              String         @id @default(uuid())
-  nombreCompleto  String
-  dni             String
-  numero          String
-  correo          String
-  fechaNacimiento DateTime
-  createAt        DateTime       @default(now())
-  updateAt        DateTime       @updatedAt
-  activo          Boolean
-  Acompañante    Acompañante[]
-  Contratos       Contratos[]
-}
+
 
 model Acompañante {
   id             String    @id @default(uuid())
@@ -121,6 +109,19 @@ model Contratos {
 
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
   @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
+}
+model Inquilino {
+  id              String         @id @default(uuid())
+  nombreCompleto  String
+  dni             String
+  numero          String
+  correo          String
+  fechaNacimiento DateTime
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
+  activo          Boolean
+  Acompañante    Acompañante[]
+  Contratos       Contratos[]
 }
 
 model Recibos {

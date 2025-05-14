@@ -68,7 +68,6 @@ export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Prom
         rol: true, 
       },
     });
-    console.log("🚀 ~ postUsuario ~ newUsuario:", newUsuario)
 
     // Mapeamos el nuevo usuario a nuestro tipo Usuario
     return mapUsuario(newUsuario);

@@ -134,6 +134,9 @@ export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
             <Link href={`/contratos/${contrato.id}/view`}>
               <DropdownMenuItem>Visualizar</DropdownMenuItem>
             </Link>
+            <Link href={`/contratos/${contrato.id}/recibos`}>
+              <DropdownMenuItem>Recibos</DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

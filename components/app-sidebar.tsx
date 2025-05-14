@@ -56,6 +56,12 @@ const items = [
     icon: HouseIcon,
     permiso: "ver_apartamentos",
   },
+  {
+    title: "Tipo de habitaciones",
+    url: "/tipo-habitacion",
+    icon: HouseIcon,
+    permiso: "ver_tipos_habitacion",
+  },
 
   {
     title: "Inquilinos",

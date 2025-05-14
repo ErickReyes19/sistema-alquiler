@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="w-full md:max-w-sm"
         />
-        <Link href={`/servicio/create`} className="w-full md:w-auto">
+        <Link href={`/servicios/create`} className="w-full md:w-auto">
           <Button className="w-full md:w-auto flex items-center gap-2">
             Nuevo Servicio
             <Plus />

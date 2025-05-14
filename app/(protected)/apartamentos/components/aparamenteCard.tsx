@@ -133,11 +133,11 @@ export function ApartamentoCard({ apartamento }: ApartamentoCardProps) {
                                     <TableCell className="text-right">
                                         {servicio.incluido ? (
                                             <Badge variant="default" className="">
-                                                <Check className="h-3 w-3 mr-1" /> Activo
+                                                <Check className="h-3 w-3 mr-1" /> Incluido
                                             </Badge>
                                         ) : (
                                             <Badge variant="destructive" className="">
-                                                <X className="h-3 w-3 mr-1" /> Inactivo
+                                                <X className="h-3 w-3 mr-1" /> No incluido
                                             </Badge>
                                         )}
                                     </TableCell>

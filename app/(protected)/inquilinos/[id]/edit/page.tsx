@@ -33,8 +33,8 @@ export default async function Edit({ params }: { params: { id: string } }) {
     <div>
       <HeaderComponent
         Icon={Pencil}
-        description="En este apartado podrá editar un rol y asignarle permisos"
-        screenName="Editar Rol"
+        description="En este apartado podrá editar un inquilino y asignarle acompañantes."
+        screenName="Editar Inquilino"
       />
       <FormularioInquilino
         isUpdate={true}

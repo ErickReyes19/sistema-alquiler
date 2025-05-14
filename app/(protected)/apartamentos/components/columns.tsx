@@ -21,20 +21,21 @@ export const columns: ColumnDef<Apartamento & { habitaciones: Habitacion[] }>[] 
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        className="text-left"
+        className="text-center"
       >
         Número
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
-        ),
-      },
-      {
-        accessorKey: 'direccion',
-        header: 'Dirección',
-      },
-      {
-        accessorKey: 'disponible',
-        header: ({ column }) => (
+    ),
+    cell: ({ row }) => `APT-${row.getValue('numero')}`,
+  },
+  {
+    accessorKey: 'direccion',
+    header: 'Dirección',
+  },
+  {
+    accessorKey: 'disponible',
+    header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -43,18 +44,18 @@ export const columns: ColumnDef<Apartamento & { habitaciones: Habitacion[] }>[] 
         Disponible
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
-        ),
-        cell: ({ row }) => (
+    ),
+    cell: ({ row }) => (
       row.getValue('disponible') ? (
         <div className="flex gap-2 text-green-500"><CheckCircleIcon /> Disponible</div>
       ) : (
         <div className="flex gap-2 text-red-500"><XCircleIcon /> No Disponible</div>
       )
-        ),
-      },
-      {
-        accessorKey: 'activo',
-        header: ({ column }) => (
+    ),
+  },
+  {
+    accessorKey: 'activo',
+    header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -63,20 +64,20 @@ export const columns: ColumnDef<Apartamento & { habitaciones: Habitacion[] }>[] 
         Activo
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
-        ),
-        cell: ({ row }) => (
+    ),
+    cell: ({ row }) => (
       row.getValue('activo') ? (
         <div className="flex gap-2 text-green-500"><CheckCircleIcon /> Activo</div>
       ) : (
         <div className="flex gap-2 text-red-500"><XCircleIcon /> Inactivo</div>
       )
-        ),
-      },
+    ),
+  },
 
-      {
-        id: 'actions',
-        header: 'Acciones',
-        cell: ({ row }) => {
+  {
+    id: 'actions',
+    header: 'Acciones',
+    cell: ({ row }) => {
       const apt = row.original;
       return (
         <DropdownMenu>

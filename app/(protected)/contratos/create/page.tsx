@@ -1,9 +1,9 @@
 import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
-import { PlusCircle } from "lucide-react";
+import { FilePlus, PlusCircle } from "lucide-react";
 import { getRolesPermisosActivos } from "../../roles/actions";
 import { Formulario } from "../components/Form";
-import { getInquilinosActivos } from "../../inquilinos/actions"; // Función para obtener inquilinos activos
+import { getInquilinosActivosSinContrato } from "../../inquilinos/actions"; // Función para obtener inquilinos activos
 import { getApartamentosCompleto, getServiciosActivos } from "../../apartamentos/actions"; // Función para obtener apartamentos activos
 import NoAcceso from "@/components/noAccess";
 
@@ -16,7 +16,7 @@ export default async function Create() {
 
 
   // Obtener inquilinos y apartamentos activos
-  const inquilinosActivos = await getInquilinosActivos(); // Función para obtener inquilinos activos
+  const inquilinosActivos = await getInquilinosActivosSinContrato(); // Función para obtener inquilinos activos
   const apartamentosActivos = await getApartamentosCompleto(); // Función para obtener apartamentos activos
 
   // Definir datos iniciales para el formulario (en este caso para un nuevo usuario)
@@ -35,9 +35,9 @@ export default async function Create() {
   return (
     <div>
       <HeaderComponent
-        Icon={PlusCircle}
-        description="En este apartado podrás crear un nuevo usuario"
-        screenName="Usuarios"
+        Icon={FilePlus}
+        description="En este apartado podrás crear un nuevo contrato"
+        screenName="Contrato"
       />
       
       <Formulario 

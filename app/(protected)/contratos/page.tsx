@@ -15,7 +15,6 @@ export default async function ContratosPage() {
   }
 
   const data = await getContratos();
-  console.log("🚀 ~ ContratosPage ~ data:", data)
 
   return (
     <div className="container mx-auto py-2">

@@ -151,14 +151,14 @@ exports.Prisma.AcompañanteScalarFieldEnum = {
   activo: 'activo'
 };
 
-exports.Prisma.ApartamentoScalarFieldEnum = {
+exports.Prisma.HabitacionesScalarFieldEnum = {
   id: 'id',
-  numero: 'numero',
-  direccion: 'direccion',
+  apartamentoId: 'apartamentoId',
+  tipoHabitacionId: 'tipoHabitacionId',
+  cantidad: 'cantidad',
   createAt: 'createAt',
-  updateAt: 'updateAt',
-  disponible: 'disponible',
-  activo: 'activo'
+  activo: 'activo',
+  updateAt: 'updateAt'
 };
 
 exports.Prisma.TiposHabitacionScalarFieldEnum = {
@@ -169,14 +169,14 @@ exports.Prisma.TiposHabitacionScalarFieldEnum = {
   activo: 'activo'
 };
 
-exports.Prisma.HabitacionesScalarFieldEnum = {
+exports.Prisma.ApartamentoScalarFieldEnum = {
   id: 'id',
-  apartamentoId: 'apartamentoId',
-  tipoHabitacionId: 'tipoHabitacionId',
-  cantidad: 'cantidad',
+  numero: 'numero',
+  direccion: 'direccion',
   createAt: 'createAt',
-  activo: 'activo',
-  updateAt: 'updateAt'
+  updateAt: 'updateAt',
+  disponible: 'disponible',
+  activo: 'activo'
 };
 
 exports.Prisma.ServiciosScalarFieldEnum = {
@@ -281,6 +281,17 @@ exports.Prisma.AcompañanteOrderByRelevanceFieldEnum = {
   Parentesco: 'Parentesco'
 };
 
+exports.Prisma.HabitacionesOrderByRelevanceFieldEnum = {
+  id: 'id',
+  apartamentoId: 'apartamentoId',
+  tipoHabitacionId: 'tipoHabitacionId'
+};
+
+exports.Prisma.TiposHabitacionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nombre: 'nombre'
+};
+
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
@@ -290,17 +301,6 @@ exports.Prisma.ApartamentoOrderByRelevanceFieldEnum = {
   id: 'id',
   numero: 'numero',
   direccion: 'direccion'
-};
-
-exports.Prisma.TiposHabitacionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  nombre: 'nombre'
-};
-
-exports.Prisma.HabitacionesOrderByRelevanceFieldEnum = {
-  id: 'id',
-  apartamentoId: 'apartamentoId',
-  tipoHabitacionId: 'tipoHabitacionId'
 };
 
 exports.Prisma.ServiciosOrderByRelevanceFieldEnum = {
@@ -356,9 +356,9 @@ exports.Prisma.ModelName = {
   Rol: 'Rol',
   Inquilino: 'Inquilino',
   Acompañante: 'Acompañante',
-  Apartamento: 'Apartamento',
-  TiposHabitacion: 'TiposHabitacion',
   Habitaciones: 'Habitaciones',
+  TiposHabitacion: 'TiposHabitacion',
+  Apartamento: 'Apartamento',
   Servicios: 'Servicios',
   ApartamentoServicios: 'ApartamentoServicios',
   Contratos: 'Contratos',

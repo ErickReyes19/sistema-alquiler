@@ -24,9 +24,11 @@ export async function getInquilinos(): Promise<Inquilino[]> {
     })),
   }));
 }
-export async function getInquilinosActivos(): Promise<Inquilino[]> {
+export async function getInquilinosActivosSinContrato(): Promise<Inquilino[]> {
   const inquilinos = await prisma.inquilino.findMany({
-    where: { activo: true },
+    where: {
+      activo: true,
+    },
     include: { Acompañante: true },
   });
   return inquilinos.map((r) => ({
@@ -41,7 +43,7 @@ export async function getInquilinosActivos(): Promise<Inquilino[]> {
       id:             a.id,
       nombreCompleto: a.nombreCompleto,
       parentesco:     a.Parentesco,
-      fechaNacimiento:a.createAt.toISOString(), // si guardas la fecha real, ajústalo
+      fechaNacimiento:a.createAt.toISOString(),
       activo:         a.activo,
     })),
   }));

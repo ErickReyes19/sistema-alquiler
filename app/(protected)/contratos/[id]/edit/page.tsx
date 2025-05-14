@@ -3,7 +3,7 @@ import HeaderComponent from "@/components/HeaderComponent";
 import { File, PlusCircle } from "lucide-react";
 import NoAcceso from "@/components/noAccess";
 import { getApartamentosCompleto } from "@/app/(protected)/apartamentos/actions";
-import { getInquilinosActivos } from "@/app/(protected)/inquilinos/actions";
+import {  getInquilinosActivosSinContrato } from "@/app/(protected)/inquilinos/actions";
 import { Formulario } from "../../components/Form";
 import { getContratoById } from "../../actions";
 import { redirect } from "next/navigation";
@@ -17,15 +17,15 @@ export default async function Edit({ params }: { params: { id: string } }) {
   }
 
   const contrato = await getContratoById(params.id);
-
+  
   // Si no se encuentra el tipo de habitación, redirigir
   if (!contrato) {
     redirect("/constratos"); // Redirige si no encuentra el tipo de habitación
   }
   // Obtener inquilinos y apartamentos activos
-  const inquilinosActivos = await getInquilinosActivos(); // Función para obtener inquilinos activos
+  const inquilinosActivos = await getInquilinosActivosSinContrato(); // Función para obtener inquilinos activos
   const apartamentosActivos = await getApartamentosCompleto(); // Función para obtener apartamentos activos
-
+  
   // Definir datos iniciales para el formulario (en este caso para un nuevo usuario)
   const initialData = {
     id: contrato.id,
@@ -36,7 +36,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
     montoMensual: contrato.montoMensual,
     activo : contrato.activo,
   };
-
+  
   return (
     <div>
       <HeaderComponent
