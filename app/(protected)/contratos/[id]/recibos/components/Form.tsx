@@ -37,7 +37,6 @@ export default function FormularioRecibo({
   contratoId,
   initialData,
 }: FormularioReciboProps) {
-  console.log("🚀 ~ initialData:", initialData)
   const { toast } = useToast();
   const router = useRouter();
 
@@ -58,44 +57,39 @@ export default function FormularioRecibo({
     name: "detalles",
   });
 
-  // Carga inicial de detalles
-  useEffect(() => {
+  // Función para inicializar los detalles
+  const initializeDetalles = () => {
     if (!initialData) return;
 
-    // Para edit: reciboId = initialData.id
-    // Para create: reciboId = "" (aún no existe)
     const baseReciboId = isUpdate ? initialData.id! : "";
-    console.log("🚀 ~ useEffect ~ baseReciboId:", baseReciboId)
-
-    // Mapeamos TODOS los detalles añadiendo reciboId
     const detallesParsed = (initialData.detalles || []).map((d) => ({
-      // Si tienes un campo `id` en el detalle, mantenlo:
       ...(d.id ? { id: d.id } : {}),
       descripcion: d.descripcion,
       monto: Number(d.monto),
       reciboId: baseReciboId,
     }));
 
-    // En create, anteponemos el "Monto Mensual"
     const detallesFinal = !isUpdate
       ? [
-        {
-          descripcion: "Monto Mensual",
-          monto: initialData.total,
-          reciboId: baseReciboId || "",
-        },
-        ...detallesParsed,
-      ]
+          {
+            descripcion: "Monto Mensual",
+            monto: initialData.total,
+            reciboId: baseReciboId || "",
+          },
+          ...detallesParsed,
+        ]
       : detallesParsed;
 
     replace(detallesFinal);
+  };
+
+  // Inicializar detalles al cargar el componente
+  useEffect(() => {
+    initializeDetalles();
   }, [initialData, isUpdate, replace]);
 
-
-  // Suscribirse a cambios en 'detalles' con useWatch
+  // Recalcular el total automáticamente
   const detalles = useWatch({ control, name: "detalles" });
-
-  // Recalcular total en cada cambio de detalles
   useEffect(() => {
     const total = Array.isArray(detalles)
       ? detalles.reduce((sum, d) => sum + (Number(d.monto) || 0), 0)
@@ -103,59 +97,33 @@ export default function FormularioRecibo({
     setValue("total", total, { shouldValidate: true, shouldDirty: true });
   }, [detalles, setValue]);
 
-  // Verificación de validez antes del submit
-  const { formState } = form;
-  console.log("🚀 ~ formState:", formState.defaultValues)
-
-  // //forma de saber si un form esta valido o no
-  const isValid = formState.errors;
-  console.log("🚀 ~ isValid:", isValid)
-
-  async function onSubmit(data: z.infer<typeof ReciboSchema>) {
+  // Manejo del submit
+  const onSubmit = async (data: z.infer<typeof ReciboSchema>) => {
     try {
-      // 1) Armar payloadRecibo, incluyendo `id` solo en update
-      const reciboPayload = isUpdate
-        ? {
-          id: initialData?.id ?? "",                // ← aquí está el id
-          contratoId: data.contratoId,
-          fechaPago: data.fechaPago.toISOString(),
-          total: data.total,
-        }
-        : {
-          id: data.id!,
-          contratoId: data.contratoId,
-          fechaPago: data.fechaPago.toISOString(),
-          total: data.total,
-        }
+      const reciboPayload = {
+        id: isUpdate ? initialData?.id ?? "" : data.id!,
+        contratoId: data.contratoId,
+        fechaPago: data.fechaPago.toISOString(),
+        total: data.total,
+      };
 
-      // 2) Mapeo de detalles, siempre asegurando que reciboId venga bien
       const detallesPayload = data.detalles.map((d) => ({
-        id: d.id,                                // para upsert/update
-        reciboId: isUpdate ? data.id! : "",      // en create se deja vacío
+        id: d.id,
+        reciboId: isUpdate ? data.id! : "",
         descripcion: d.descripcion,
         monto: d.monto,
       }));
 
-      console.log("🚀 ~ onSubmit ~ reciboPayload:", reciboPayload)
-      // 3) Llamada al action correspondiente
       const result = isUpdate
-        ? await putReciboConDetalles({
-          recibo: reciboPayload,
-          detalles: detallesPayload,
-        })
-        : await postReciboConDetalles({
-          recibo: reciboPayload,
-          detalles: detallesPayload,
-        });
+        ? await putReciboConDetalles({ recibo: reciboPayload, detalles: detallesPayload })
+        : await postReciboConDetalles({ recibo: reciboPayload, detalles: detallesPayload });
 
-      // 4) Feedback y navegación
       toast({
         title: isUpdate ? "Recibo actualizado" : "Recibo creado",
         description: "Operación exitosa",
       });
       router.push(`/contratos/${contratoId}/recibos`);
       router.refresh();
-
     } catch (err) {
       toast({
         title: "Error",
@@ -163,8 +131,7 @@ export default function FormularioRecibo({
         variant: "destructive",
       });
     }
-  }
-
+  };
 
   return (
     <Form {...form}>
@@ -270,7 +237,7 @@ export default function FormularioRecibo({
             <Button
               type="button"
               onClick={() =>
-                append({ reciboId: initialData!.id || "", descripcion: "", monto: 0 })
+                append({ reciboId: initialData?.id || "", descripcion: "", monto: 0 })
               }
             >
               Añadir Concepto

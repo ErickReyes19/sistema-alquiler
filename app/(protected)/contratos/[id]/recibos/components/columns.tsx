@@ -49,31 +49,7 @@ export const columns: ColumnDef<Recibo>[] = [
       return <span>L. {total.toFixed(2)}</span>;
     },
   },
-  {
-    accessorKey: "activo",
-    header: "Estado",
-    cell: ({ row }) => {
-      const isActive = row.getValue("activo");
-      return isActive ? (
-        <div className="flex gap-2 items-center">
-          <CheckCircleIcon className="text-green-600" size={16} /> Activo
-        </div>
-      ) : (
-        <div className="flex gap-2 items-center">
-          <XCircleIcon className="text-red-600" size={16} /> Inactivo
-        </div>
-      );
-    },
-  },
-  // Opcional: mostrar info del contrato si lo tenés
-  // {
-  //   accessorKey: "contratoId",
-  //   header: "Contrato",
-  //   cell: ({ row }) => {
-  //     const contratoId = row.getValue<string>("contratoId");
-  //     return <span>{contratoId}</span>;
-  //   },
-  // },
+
 
   {
     id: "actions",
