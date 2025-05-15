@@ -1,19 +1,6 @@
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: alquiler-app
-    ports:
-      - "0.0.0.0:8082:3000"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-    depends_on:
-      - db
-    restart: always
-    networks:
-      - alquiler-network
+version: "3.9"
 
+services:
   db:
     image: mysql:8.0
     container_name: alquiler-db
