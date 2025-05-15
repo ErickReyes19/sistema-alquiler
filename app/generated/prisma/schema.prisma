@@ -19,20 +19,6 @@ model Rol {
   Usuario     Usuario[]
 }
 
-model Inquilino {
-  id              String         @id @default(uuid())
-  nombreCompleto  String
-  dni             String
-  numero          String
-  correo          String
-  fechaNacimiento DateTime
-  createAt        DateTime       @default(now())
-  updateAt        DateTime       @updatedAt
-  activo          Boolean
-  Acompañante    Acompañante[]
-  Contratos       Contratos[]
-}
-
 model Acompañante {
   id             String    @id @default(uuid())
   nombreCompleto String
@@ -42,28 +28,6 @@ model Acompañante {
   updateAt       DateTime  @updatedAt
   activo         Boolean
   inquilino      Inquilino @relation(fields: [inquilinoId], references: [id])
-}
-
-model Apartamento {
-  id                   String                 @id @default(uuid())
-  numero               String                 @unique
-  direccion            String?
-  createAt             DateTime               @default(now())
-  updateAt             DateTime               @updatedAt
-  disponible           Boolean                @default(true)
-  apartamento          Habitaciones[]
-  ApartamentoServicios ApartamentoServicios[]
-  activo               Boolean
-  Contratos            Contratos[]
-}
-
-model TiposHabitacion {
-  id          String         @id @default(uuid())
-  nombre      String         @unique
-  createAt    DateTime       @default(now())
-  updateAt    DateTime       @updatedAt
-  activo      Boolean
-  apartamento Habitaciones[]
 }
 
 model Habitaciones {
@@ -79,6 +43,28 @@ model Habitaciones {
 
   @@index([apartamentoId], map: "Habitaciones_apartamentoId_fkey")
   @@index([tipoHabitacionId], map: "Habitaciones_tipoHabitacionId_fkey")
+}
+
+model TiposHabitacion {
+  id          String         @id @default(uuid())
+  nombre      String         @unique
+  createAt    DateTime       @default(now())
+  updateAt    DateTime       @updatedAt
+  activo      Boolean
+  apartamento Habitaciones[]
+}
+
+model Apartamento {
+  id                   String                 @id @default(uuid())
+  numero               String                 @unique
+  direccion            String?
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
+  disponible           Boolean                @default(true)
+  apartamento          Habitaciones[]
+  ApartamentoServicios ApartamentoServicios[]
+  activo               Boolean
+  Contratos            Contratos[]
 }
 
 model Servicios {
@@ -121,6 +107,20 @@ model Contratos {
 
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
   @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
+}
+
+model Inquilino {
+  id              String         @id @default(uuid())
+  nombreCompleto  String
+  dni             String
+  numero          String
+  correo          String
+  fechaNacimiento DateTime
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
+  activo          Boolean
+  Acompañante    Acompañante[]
+  Contratos       Contratos[]
 }
 
 model Recibos {

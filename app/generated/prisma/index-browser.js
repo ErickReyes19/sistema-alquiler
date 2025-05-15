@@ -129,18 +129,6 @@ exports.Prisma.RolScalarFieldEnum = {
   activo: 'activo'
 };
 
-exports.Prisma.InquilinoScalarFieldEnum = {
-  id: 'id',
-  nombreCompleto: 'nombreCompleto',
-  dni: 'dni',
-  numero: 'numero',
-  correo: 'correo',
-  fechaNacimiento: 'fechaNacimiento',
-  createAt: 'createAt',
-  updateAt: 'updateAt',
-  activo: 'activo'
-};
-
 exports.Prisma.AcompañanteScalarFieldEnum = {
   id: 'id',
   nombreCompleto: 'nombreCompleto',
@@ -209,6 +197,18 @@ exports.Prisma.ContratosScalarFieldEnum = {
   activo: 'activo'
 };
 
+exports.Prisma.InquilinoScalarFieldEnum = {
+  id: 'id',
+  nombreCompleto: 'nombreCompleto',
+  dni: 'dni',
+  numero: 'numero',
+  correo: 'correo',
+  fechaNacimiento: 'fechaNacimiento',
+  createAt: 'createAt',
+  updateAt: 'updateAt',
+  activo: 'activo'
+};
+
 exports.Prisma.RecibosScalarFieldEnum = {
   id: 'id',
   contratoId: 'contratoId',
@@ -266,14 +266,6 @@ exports.Prisma.RolOrderByRelevanceFieldEnum = {
   descripcion: 'descripcion'
 };
 
-exports.Prisma.InquilinoOrderByRelevanceFieldEnum = {
-  id: 'id',
-  nombreCompleto: 'nombreCompleto',
-  dni: 'dni',
-  numero: 'numero',
-  correo: 'correo'
-};
-
 exports.Prisma.AcompañanteOrderByRelevanceFieldEnum = {
   id: 'id',
   nombreCompleto: 'nombreCompleto',
@@ -320,6 +312,14 @@ exports.Prisma.ContratosOrderByRelevanceFieldEnum = {
   apartamentoId: 'apartamentoId'
 };
 
+exports.Prisma.InquilinoOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nombreCompleto: 'nombreCompleto',
+  dni: 'dni',
+  numero: 'numero',
+  correo: 'correo'
+};
+
 exports.Prisma.RecibosOrderByRelevanceFieldEnum = {
   id: 'id',
   contratoId: 'contratoId'
@@ -354,7 +354,6 @@ exports.Prisma.UsuarioOrderByRelevanceFieldEnum = {
 
 exports.Prisma.ModelName = {
   Rol: 'Rol',
-  Inquilino: 'Inquilino',
   Acompañante: 'Acompañante',
   Habitaciones: 'Habitaciones',
   TiposHabitacion: 'TiposHabitacion',
@@ -362,6 +361,7 @@ exports.Prisma.ModelName = {
   Servicios: 'Servicios',
   ApartamentoServicios: 'ApartamentoServicios',
   Contratos: 'Contratos',
+  Inquilino: 'Inquilino',
   Recibos: 'Recibos',
   ReciboDetalles: 'ReciboDetalles',
   Permiso: 'Permiso',

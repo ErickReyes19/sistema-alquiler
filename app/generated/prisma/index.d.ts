@@ -19,11 +19,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Rol = $Result.DefaultSelection<Prisma.$RolPayload>
 /**
- * Model Inquilino
- * 
- */
-export type Inquilino = $Result.DefaultSelection<Prisma.$InquilinoPayload>
-/**
  * Model Acompañante
  * 
  */
@@ -58,6 +53,11 @@ export type ApartamentoServicios = $Result.DefaultSelection<Prisma.$ApartamentoS
  * 
  */
 export type Contratos = $Result.DefaultSelection<Prisma.$ContratosPayload>
+/**
+ * Model Inquilino
+ * 
+ */
+export type Inquilino = $Result.DefaultSelection<Prisma.$InquilinoPayload>
 /**
  * Model Recibos
  * 
@@ -220,16 +220,6 @@ export class PrismaClient<
   get rol(): Prisma.RolDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.inquilino`: Exposes CRUD operations for the **Inquilino** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Inquilinos
-    * const inquilinos = await prisma.inquilino.findMany()
-    * ```
-    */
-  get inquilino(): Prisma.InquilinoDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.acompañante`: Exposes CRUD operations for the **Acompañante** model.
     * Example usage:
     * ```ts
@@ -298,6 +288,16 @@ export class PrismaClient<
     * ```
     */
   get contratos(): Prisma.ContratosDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.inquilino`: Exposes CRUD operations for the **Inquilino** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Inquilinos
+    * const inquilinos = await prisma.inquilino.findMany()
+    * ```
+    */
+  get inquilino(): Prisma.InquilinoDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.recibos`: Exposes CRUD operations for the **Recibos** model.
@@ -789,7 +789,6 @@ export namespace Prisma {
 
   export const ModelName: {
     Rol: 'Rol',
-    Inquilino: 'Inquilino',
     Acompañante: 'Acompañante',
     Habitaciones: 'Habitaciones',
     TiposHabitacion: 'TiposHabitacion',
@@ -797,6 +796,7 @@ export namespace Prisma {
     Servicios: 'Servicios',
     ApartamentoServicios: 'ApartamentoServicios',
     Contratos: 'Contratos',
+    Inquilino: 'Inquilino',
     Recibos: 'Recibos',
     ReciboDetalles: 'ReciboDetalles',
     Permiso: 'Permiso',
@@ -820,7 +820,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "rol" | "inquilino" | "acompañante" | "habitaciones" | "tiposHabitacion" | "apartamento" | "servicios" | "apartamentoServicios" | "contratos" | "recibos" | "reciboDetalles" | "permiso" | "rolPermiso" | "usuario"
+      modelProps: "rol" | "acompañante" | "habitaciones" | "tiposHabitacion" | "apartamento" | "servicios" | "apartamentoServicios" | "contratos" | "inquilino" | "recibos" | "reciboDetalles" | "permiso" | "rolPermiso" | "usuario"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -887,72 +887,6 @@ export namespace Prisma {
           count: {
             args: Prisma.RolCountArgs<ExtArgs>
             result: $Utils.Optional<RolCountAggregateOutputType> | number
-          }
-        }
-      }
-      Inquilino: {
-        payload: Prisma.$InquilinoPayload<ExtArgs>
-        fields: Prisma.InquilinoFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.InquilinoFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.InquilinoFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          findFirst: {
-            args: Prisma.InquilinoFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.InquilinoFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          findMany: {
-            args: Prisma.InquilinoFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>[]
-          }
-          create: {
-            args: Prisma.InquilinoCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          createMany: {
-            args: Prisma.InquilinoCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.InquilinoDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          update: {
-            args: Prisma.InquilinoUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          deleteMany: {
-            args: Prisma.InquilinoDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.InquilinoUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.InquilinoUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
-          }
-          aggregate: {
-            args: Prisma.InquilinoAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateInquilino>
-          }
-          groupBy: {
-            args: Prisma.InquilinoGroupByArgs<ExtArgs>
-            result: $Utils.Optional<InquilinoGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.InquilinoCountArgs<ExtArgs>
-            result: $Utils.Optional<InquilinoCountAggregateOutputType> | number
           }
         }
       }
@@ -1418,6 +1352,72 @@ export namespace Prisma {
           }
         }
       }
+      Inquilino: {
+        payload: Prisma.$InquilinoPayload<ExtArgs>
+        fields: Prisma.InquilinoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InquilinoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InquilinoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          findFirst: {
+            args: Prisma.InquilinoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InquilinoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          findMany: {
+            args: Prisma.InquilinoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>[]
+          }
+          create: {
+            args: Prisma.InquilinoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          createMany: {
+            args: Prisma.InquilinoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.InquilinoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          update: {
+            args: Prisma.InquilinoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          deleteMany: {
+            args: Prisma.InquilinoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InquilinoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.InquilinoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InquilinoPayload>
+          }
+          aggregate: {
+            args: Prisma.InquilinoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInquilino>
+          }
+          groupBy: {
+            args: Prisma.InquilinoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InquilinoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InquilinoCountArgs<ExtArgs>
+            result: $Utils.Optional<InquilinoCountAggregateOutputType> | number
+          }
+        }
+      }
       Recibos: {
         payload: Prisma.$RecibosPayload<ExtArgs>
         fields: Prisma.RecibosFieldRefs
@@ -1833,7 +1833,6 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     rol?: RolOmit
-    inquilino?: InquilinoOmit
     acompañante?: AcompañanteOmit
     habitaciones?: HabitacionesOmit
     tiposHabitacion?: TiposHabitacionOmit
@@ -1841,6 +1840,7 @@ export namespace Prisma {
     servicios?: ServiciosOmit
     apartamentoServicios?: ApartamentoServiciosOmit
     contratos?: ContratosOmit
+    inquilino?: InquilinoOmit
     recibos?: RecibosOmit
     reciboDetalles?: ReciboDetallesOmit
     permiso?: PermisoOmit
@@ -1972,46 +1972,6 @@ export namespace Prisma {
    */
   export type RolCountOutputTypeCountUsuarioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UsuarioWhereInput
-  }
-
-
-  /**
-   * Count Type InquilinoCountOutputType
-   */
-
-  export type InquilinoCountOutputType = {
-    Acompañante: number
-    Contratos: number
-  }
-
-  export type InquilinoCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Acompañante?: boolean | InquilinoCountOutputTypeCountAcompañanteArgs
-    Contratos?: boolean | InquilinoCountOutputTypeCountContratosArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * InquilinoCountOutputType without action
-   */
-  export type InquilinoCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the InquilinoCountOutputType
-     */
-    select?: InquilinoCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * InquilinoCountOutputType without action
-   */
-  export type InquilinoCountOutputTypeCountAcompañanteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: AcompañanteWhereInput
-  }
-
-  /**
-   * InquilinoCountOutputType without action
-   */
-  export type InquilinoCountOutputTypeCountContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ContratosWhereInput
   }
 
 
@@ -2154,6 +2114,46 @@ export namespace Prisma {
    */
   export type ContratosCountOutputTypeCountRecibosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecibosWhereInput
+  }
+
+
+  /**
+   * Count Type InquilinoCountOutputType
+   */
+
+  export type InquilinoCountOutputType = {
+    Acompañante: number
+    Contratos: number
+  }
+
+  export type InquilinoCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Acompañante?: boolean | InquilinoCountOutputTypeCountAcompañanteArgs
+    Contratos?: boolean | InquilinoCountOutputTypeCountContratosArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * InquilinoCountOutputType without action
+   */
+  export type InquilinoCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InquilinoCountOutputType
+     */
+    select?: InquilinoCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * InquilinoCountOutputType without action
+   */
+  export type InquilinoCountOutputTypeCountAcompañanteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AcompañanteWhereInput
+  }
+
+  /**
+   * InquilinoCountOutputType without action
+   */
+  export type InquilinoCountOutputTypeCountContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContratosWhereInput
   }
 
 
@@ -3214,1033 +3214,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RolInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Inquilino
-   */
-
-  export type AggregateInquilino = {
-    _count: InquilinoCountAggregateOutputType | null
-    _min: InquilinoMinAggregateOutputType | null
-    _max: InquilinoMaxAggregateOutputType | null
-  }
-
-  export type InquilinoMinAggregateOutputType = {
-    id: string | null
-    nombreCompleto: string | null
-    dni: string | null
-    numero: string | null
-    correo: string | null
-    fechaNacimiento: Date | null
-    createAt: Date | null
-    updateAt: Date | null
-    activo: boolean | null
-  }
-
-  export type InquilinoMaxAggregateOutputType = {
-    id: string | null
-    nombreCompleto: string | null
-    dni: string | null
-    numero: string | null
-    correo: string | null
-    fechaNacimiento: Date | null
-    createAt: Date | null
-    updateAt: Date | null
-    activo: boolean | null
-  }
-
-  export type InquilinoCountAggregateOutputType = {
-    id: number
-    nombreCompleto: number
-    dni: number
-    numero: number
-    correo: number
-    fechaNacimiento: number
-    createAt: number
-    updateAt: number
-    activo: number
-    _all: number
-  }
-
-
-  export type InquilinoMinAggregateInputType = {
-    id?: true
-    nombreCompleto?: true
-    dni?: true
-    numero?: true
-    correo?: true
-    fechaNacimiento?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-  }
-
-  export type InquilinoMaxAggregateInputType = {
-    id?: true
-    nombreCompleto?: true
-    dni?: true
-    numero?: true
-    correo?: true
-    fechaNacimiento?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-  }
-
-  export type InquilinoCountAggregateInputType = {
-    id?: true
-    nombreCompleto?: true
-    dni?: true
-    numero?: true
-    correo?: true
-    fechaNacimiento?: true
-    createAt?: true
-    updateAt?: true
-    activo?: true
-    _all?: true
-  }
-
-  export type InquilinoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Inquilino to aggregate.
-     */
-    where?: InquilinoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Inquilinos to fetch.
-     */
-    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: InquilinoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Inquilinos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Inquilinos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Inquilinos
-    **/
-    _count?: true | InquilinoCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: InquilinoMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: InquilinoMaxAggregateInputType
-  }
-
-  export type GetInquilinoAggregateType<T extends InquilinoAggregateArgs> = {
-        [P in keyof T & keyof AggregateInquilino]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateInquilino[P]>
-      : GetScalarType<T[P], AggregateInquilino[P]>
-  }
-
-
-
-
-  export type InquilinoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: InquilinoWhereInput
-    orderBy?: InquilinoOrderByWithAggregationInput | InquilinoOrderByWithAggregationInput[]
-    by: InquilinoScalarFieldEnum[] | InquilinoScalarFieldEnum
-    having?: InquilinoScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: InquilinoCountAggregateInputType | true
-    _min?: InquilinoMinAggregateInputType
-    _max?: InquilinoMaxAggregateInputType
-  }
-
-  export type InquilinoGroupByOutputType = {
-    id: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date
-    createAt: Date
-    updateAt: Date
-    activo: boolean
-    _count: InquilinoCountAggregateOutputType | null
-    _min: InquilinoMinAggregateOutputType | null
-    _max: InquilinoMaxAggregateOutputType | null
-  }
-
-  type GetInquilinoGroupByPayload<T extends InquilinoGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<InquilinoGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof InquilinoGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], InquilinoGroupByOutputType[P]>
-            : GetScalarType<T[P], InquilinoGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type InquilinoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nombreCompleto?: boolean
-    dni?: boolean
-    numero?: boolean
-    correo?: boolean
-    fechaNacimiento?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    activo?: boolean
-    Acompañante?: boolean | Inquilino$AcompañanteArgs<ExtArgs>
-    Contratos?: boolean | Inquilino$ContratosArgs<ExtArgs>
-    _count?: boolean | InquilinoCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["inquilino"]>
-
-
-
-  export type InquilinoSelectScalar = {
-    id?: boolean
-    nombreCompleto?: boolean
-    dni?: boolean
-    numero?: boolean
-    correo?: boolean
-    fechaNacimiento?: boolean
-    createAt?: boolean
-    updateAt?: boolean
-    activo?: boolean
-  }
-
-  export type InquilinoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombreCompleto" | "dni" | "numero" | "correo" | "fechaNacimiento" | "createAt" | "updateAt" | "activo", ExtArgs["result"]["inquilino"]>
-  export type InquilinoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Acompañante?: boolean | Inquilino$AcompañanteArgs<ExtArgs>
-    Contratos?: boolean | Inquilino$ContratosArgs<ExtArgs>
-    _count?: boolean | InquilinoCountOutputTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $InquilinoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Inquilino"
-    objects: {
-      Acompañante: Prisma.$AcompañantePayload<ExtArgs>[]
-      Contratos: Prisma.$ContratosPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      nombreCompleto: string
-      dni: string
-      numero: string
-      correo: string
-      fechaNacimiento: Date
-      createAt: Date
-      updateAt: Date
-      activo: boolean
-    }, ExtArgs["result"]["inquilino"]>
-    composites: {}
-  }
-
-  type InquilinoGetPayload<S extends boolean | null | undefined | InquilinoDefaultArgs> = $Result.GetResult<Prisma.$InquilinoPayload, S>
-
-  type InquilinoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<InquilinoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: InquilinoCountAggregateInputType | true
-    }
-
-  export interface InquilinoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Inquilino'], meta: { name: 'Inquilino' } }
-    /**
-     * Find zero or one Inquilino that matches the filter.
-     * @param {InquilinoFindUniqueArgs} args - Arguments to find a Inquilino
-     * @example
-     * // Get one Inquilino
-     * const inquilino = await prisma.inquilino.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends InquilinoFindUniqueArgs>(args: SelectSubset<T, InquilinoFindUniqueArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Inquilino that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {InquilinoFindUniqueOrThrowArgs} args - Arguments to find a Inquilino
-     * @example
-     * // Get one Inquilino
-     * const inquilino = await prisma.inquilino.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends InquilinoFindUniqueOrThrowArgs>(args: SelectSubset<T, InquilinoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Inquilino that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoFindFirstArgs} args - Arguments to find a Inquilino
-     * @example
-     * // Get one Inquilino
-     * const inquilino = await prisma.inquilino.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends InquilinoFindFirstArgs>(args?: SelectSubset<T, InquilinoFindFirstArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Inquilino that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoFindFirstOrThrowArgs} args - Arguments to find a Inquilino
-     * @example
-     * // Get one Inquilino
-     * const inquilino = await prisma.inquilino.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends InquilinoFindFirstOrThrowArgs>(args?: SelectSubset<T, InquilinoFindFirstOrThrowArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Inquilinos that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Inquilinos
-     * const inquilinos = await prisma.inquilino.findMany()
-     * 
-     * // Get first 10 Inquilinos
-     * const inquilinos = await prisma.inquilino.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const inquilinoWithIdOnly = await prisma.inquilino.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends InquilinoFindManyArgs>(args?: SelectSubset<T, InquilinoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Inquilino.
-     * @param {InquilinoCreateArgs} args - Arguments to create a Inquilino.
-     * @example
-     * // Create one Inquilino
-     * const Inquilino = await prisma.inquilino.create({
-     *   data: {
-     *     // ... data to create a Inquilino
-     *   }
-     * })
-     * 
-     */
-    create<T extends InquilinoCreateArgs>(args: SelectSubset<T, InquilinoCreateArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Inquilinos.
-     * @param {InquilinoCreateManyArgs} args - Arguments to create many Inquilinos.
-     * @example
-     * // Create many Inquilinos
-     * const inquilino = await prisma.inquilino.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends InquilinoCreateManyArgs>(args?: SelectSubset<T, InquilinoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Inquilino.
-     * @param {InquilinoDeleteArgs} args - Arguments to delete one Inquilino.
-     * @example
-     * // Delete one Inquilino
-     * const Inquilino = await prisma.inquilino.delete({
-     *   where: {
-     *     // ... filter to delete one Inquilino
-     *   }
-     * })
-     * 
-     */
-    delete<T extends InquilinoDeleteArgs>(args: SelectSubset<T, InquilinoDeleteArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Inquilino.
-     * @param {InquilinoUpdateArgs} args - Arguments to update one Inquilino.
-     * @example
-     * // Update one Inquilino
-     * const inquilino = await prisma.inquilino.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends InquilinoUpdateArgs>(args: SelectSubset<T, InquilinoUpdateArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Inquilinos.
-     * @param {InquilinoDeleteManyArgs} args - Arguments to filter Inquilinos to delete.
-     * @example
-     * // Delete a few Inquilinos
-     * const { count } = await prisma.inquilino.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends InquilinoDeleteManyArgs>(args?: SelectSubset<T, InquilinoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Inquilinos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Inquilinos
-     * const inquilino = await prisma.inquilino.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends InquilinoUpdateManyArgs>(args: SelectSubset<T, InquilinoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Inquilino.
-     * @param {InquilinoUpsertArgs} args - Arguments to update or create a Inquilino.
-     * @example
-     * // Update or create a Inquilino
-     * const inquilino = await prisma.inquilino.upsert({
-     *   create: {
-     *     // ... data to create a Inquilino
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Inquilino we want to update
-     *   }
-     * })
-     */
-    upsert<T extends InquilinoUpsertArgs>(args: SelectSubset<T, InquilinoUpsertArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Inquilinos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoCountArgs} args - Arguments to filter Inquilinos to count.
-     * @example
-     * // Count the number of Inquilinos
-     * const count = await prisma.inquilino.count({
-     *   where: {
-     *     // ... the filter for the Inquilinos we want to count
-     *   }
-     * })
-    **/
-    count<T extends InquilinoCountArgs>(
-      args?: Subset<T, InquilinoCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], InquilinoCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Inquilino.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends InquilinoAggregateArgs>(args: Subset<T, InquilinoAggregateArgs>): Prisma.PrismaPromise<GetInquilinoAggregateType<T>>
-
-    /**
-     * Group by Inquilino.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {InquilinoGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends InquilinoGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: InquilinoGroupByArgs['orderBy'] }
-        : { orderBy?: InquilinoGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, InquilinoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInquilinoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Inquilino model
-   */
-  readonly fields: InquilinoFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Inquilino.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__InquilinoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    Acompañante<T extends Inquilino$AcompañanteArgs<ExtArgs> = {}>(args?: Subset<T, Inquilino$AcompañanteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AcompañantePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Contratos<T extends Inquilino$ContratosArgs<ExtArgs> = {}>(args?: Subset<T, Inquilino$ContratosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Inquilino model
-   */
-  interface InquilinoFieldRefs {
-    readonly id: FieldRef<"Inquilino", 'String'>
-    readonly nombreCompleto: FieldRef<"Inquilino", 'String'>
-    readonly dni: FieldRef<"Inquilino", 'String'>
-    readonly numero: FieldRef<"Inquilino", 'String'>
-    readonly correo: FieldRef<"Inquilino", 'String'>
-    readonly fechaNacimiento: FieldRef<"Inquilino", 'DateTime'>
-    readonly createAt: FieldRef<"Inquilino", 'DateTime'>
-    readonly updateAt: FieldRef<"Inquilino", 'DateTime'>
-    readonly activo: FieldRef<"Inquilino", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Inquilino findUnique
-   */
-  export type InquilinoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter, which Inquilino to fetch.
-     */
-    where: InquilinoWhereUniqueInput
-  }
-
-  /**
-   * Inquilino findUniqueOrThrow
-   */
-  export type InquilinoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter, which Inquilino to fetch.
-     */
-    where: InquilinoWhereUniqueInput
-  }
-
-  /**
-   * Inquilino findFirst
-   */
-  export type InquilinoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter, which Inquilino to fetch.
-     */
-    where?: InquilinoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Inquilinos to fetch.
-     */
-    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Inquilinos.
-     */
-    cursor?: InquilinoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Inquilinos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Inquilinos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Inquilinos.
-     */
-    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
-  }
-
-  /**
-   * Inquilino findFirstOrThrow
-   */
-  export type InquilinoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter, which Inquilino to fetch.
-     */
-    where?: InquilinoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Inquilinos to fetch.
-     */
-    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Inquilinos.
-     */
-    cursor?: InquilinoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Inquilinos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Inquilinos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Inquilinos.
-     */
-    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
-  }
-
-  /**
-   * Inquilino findMany
-   */
-  export type InquilinoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter, which Inquilinos to fetch.
-     */
-    where?: InquilinoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Inquilinos to fetch.
-     */
-    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Inquilinos.
-     */
-    cursor?: InquilinoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Inquilinos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Inquilinos.
-     */
-    skip?: number
-    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
-  }
-
-  /**
-   * Inquilino create
-   */
-  export type InquilinoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Inquilino.
-     */
-    data: XOR<InquilinoCreateInput, InquilinoUncheckedCreateInput>
-  }
-
-  /**
-   * Inquilino createMany
-   */
-  export type InquilinoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Inquilinos.
-     */
-    data: InquilinoCreateManyInput | InquilinoCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Inquilino update
-   */
-  export type InquilinoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Inquilino.
-     */
-    data: XOR<InquilinoUpdateInput, InquilinoUncheckedUpdateInput>
-    /**
-     * Choose, which Inquilino to update.
-     */
-    where: InquilinoWhereUniqueInput
-  }
-
-  /**
-   * Inquilino updateMany
-   */
-  export type InquilinoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Inquilinos.
-     */
-    data: XOR<InquilinoUpdateManyMutationInput, InquilinoUncheckedUpdateManyInput>
-    /**
-     * Filter which Inquilinos to update
-     */
-    where?: InquilinoWhereInput
-    /**
-     * Limit how many Inquilinos to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Inquilino upsert
-   */
-  export type InquilinoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Inquilino to update in case it exists.
-     */
-    where: InquilinoWhereUniqueInput
-    /**
-     * In case the Inquilino found by the `where` argument doesn't exist, create a new Inquilino with this data.
-     */
-    create: XOR<InquilinoCreateInput, InquilinoUncheckedCreateInput>
-    /**
-     * In case the Inquilino was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<InquilinoUpdateInput, InquilinoUncheckedUpdateInput>
-  }
-
-  /**
-   * Inquilino delete
-   */
-  export type InquilinoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
-    /**
-     * Filter which Inquilino to delete.
-     */
-    where: InquilinoWhereUniqueInput
-  }
-
-  /**
-   * Inquilino deleteMany
-   */
-  export type InquilinoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Inquilinos to delete
-     */
-    where?: InquilinoWhereInput
-    /**
-     * Limit how many Inquilinos to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Inquilino.Acompañante
-   */
-  export type Inquilino$AcompañanteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Acompañante
-     */
-    select?: AcompañanteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Acompañante
-     */
-    omit?: AcompañanteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AcompañanteInclude<ExtArgs> | null
-    where?: AcompañanteWhereInput
-    orderBy?: AcompañanteOrderByWithRelationInput | AcompañanteOrderByWithRelationInput[]
-    cursor?: AcompañanteWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: AcompañanteScalarFieldEnum | AcompañanteScalarFieldEnum[]
-  }
-
-  /**
-   * Inquilino.Contratos
-   */
-  export type Inquilino$ContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Contratos
-     */
-    select?: ContratosSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Contratos
-     */
-    omit?: ContratosOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ContratosInclude<ExtArgs> | null
-    where?: ContratosWhereInput
-    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
-    cursor?: ContratosWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
-  }
-
-  /**
-   * Inquilino without action
-   */
-  export type InquilinoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Inquilino
-     */
-    select?: InquilinoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Inquilino
-     */
-    omit?: InquilinoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: InquilinoInclude<ExtArgs> | null
   }
 
 
@@ -11158,6 +10131,1033 @@ export namespace Prisma {
 
 
   /**
+   * Model Inquilino
+   */
+
+  export type AggregateInquilino = {
+    _count: InquilinoCountAggregateOutputType | null
+    _min: InquilinoMinAggregateOutputType | null
+    _max: InquilinoMaxAggregateOutputType | null
+  }
+
+  export type InquilinoMinAggregateOutputType = {
+    id: string | null
+    nombreCompleto: string | null
+    dni: string | null
+    numero: string | null
+    correo: string | null
+    fechaNacimiento: Date | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type InquilinoMaxAggregateOutputType = {
+    id: string | null
+    nombreCompleto: string | null
+    dni: string | null
+    numero: string | null
+    correo: string | null
+    fechaNacimiento: Date | null
+    createAt: Date | null
+    updateAt: Date | null
+    activo: boolean | null
+  }
+
+  export type InquilinoCountAggregateOutputType = {
+    id: number
+    nombreCompleto: number
+    dni: number
+    numero: number
+    correo: number
+    fechaNacimiento: number
+    createAt: number
+    updateAt: number
+    activo: number
+    _all: number
+  }
+
+
+  export type InquilinoMinAggregateInputType = {
+    id?: true
+    nombreCompleto?: true
+    dni?: true
+    numero?: true
+    correo?: true
+    fechaNacimiento?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type InquilinoMaxAggregateInputType = {
+    id?: true
+    nombreCompleto?: true
+    dni?: true
+    numero?: true
+    correo?: true
+    fechaNacimiento?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+  }
+
+  export type InquilinoCountAggregateInputType = {
+    id?: true
+    nombreCompleto?: true
+    dni?: true
+    numero?: true
+    correo?: true
+    fechaNacimiento?: true
+    createAt?: true
+    updateAt?: true
+    activo?: true
+    _all?: true
+  }
+
+  export type InquilinoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Inquilino to aggregate.
+     */
+    where?: InquilinoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Inquilinos to fetch.
+     */
+    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InquilinoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Inquilinos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Inquilinos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Inquilinos
+    **/
+    _count?: true | InquilinoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InquilinoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InquilinoMaxAggregateInputType
+  }
+
+  export type GetInquilinoAggregateType<T extends InquilinoAggregateArgs> = {
+        [P in keyof T & keyof AggregateInquilino]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInquilino[P]>
+      : GetScalarType<T[P], AggregateInquilino[P]>
+  }
+
+
+
+
+  export type InquilinoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InquilinoWhereInput
+    orderBy?: InquilinoOrderByWithAggregationInput | InquilinoOrderByWithAggregationInput[]
+    by: InquilinoScalarFieldEnum[] | InquilinoScalarFieldEnum
+    having?: InquilinoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InquilinoCountAggregateInputType | true
+    _min?: InquilinoMinAggregateInputType
+    _max?: InquilinoMaxAggregateInputType
+  }
+
+  export type InquilinoGroupByOutputType = {
+    id: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date
+    createAt: Date
+    updateAt: Date
+    activo: boolean
+    _count: InquilinoCountAggregateOutputType | null
+    _min: InquilinoMinAggregateOutputType | null
+    _max: InquilinoMaxAggregateOutputType | null
+  }
+
+  type GetInquilinoGroupByPayload<T extends InquilinoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InquilinoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InquilinoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InquilinoGroupByOutputType[P]>
+            : GetScalarType<T[P], InquilinoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InquilinoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombreCompleto?: boolean
+    dni?: boolean
+    numero?: boolean
+    correo?: boolean
+    fechaNacimiento?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+    Acompañante?: boolean | Inquilino$AcompañanteArgs<ExtArgs>
+    Contratos?: boolean | Inquilino$ContratosArgs<ExtArgs>
+    _count?: boolean | InquilinoCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["inquilino"]>
+
+
+
+  export type InquilinoSelectScalar = {
+    id?: boolean
+    nombreCompleto?: boolean
+    dni?: boolean
+    numero?: boolean
+    correo?: boolean
+    fechaNacimiento?: boolean
+    createAt?: boolean
+    updateAt?: boolean
+    activo?: boolean
+  }
+
+  export type InquilinoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombreCompleto" | "dni" | "numero" | "correo" | "fechaNacimiento" | "createAt" | "updateAt" | "activo", ExtArgs["result"]["inquilino"]>
+  export type InquilinoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Acompañante?: boolean | Inquilino$AcompañanteArgs<ExtArgs>
+    Contratos?: boolean | Inquilino$ContratosArgs<ExtArgs>
+    _count?: boolean | InquilinoCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $InquilinoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Inquilino"
+    objects: {
+      Acompañante: Prisma.$AcompañantePayload<ExtArgs>[]
+      Contratos: Prisma.$ContratosPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      nombreCompleto: string
+      dni: string
+      numero: string
+      correo: string
+      fechaNacimiento: Date
+      createAt: Date
+      updateAt: Date
+      activo: boolean
+    }, ExtArgs["result"]["inquilino"]>
+    composites: {}
+  }
+
+  type InquilinoGetPayload<S extends boolean | null | undefined | InquilinoDefaultArgs> = $Result.GetResult<Prisma.$InquilinoPayload, S>
+
+  type InquilinoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InquilinoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InquilinoCountAggregateInputType | true
+    }
+
+  export interface InquilinoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Inquilino'], meta: { name: 'Inquilino' } }
+    /**
+     * Find zero or one Inquilino that matches the filter.
+     * @param {InquilinoFindUniqueArgs} args - Arguments to find a Inquilino
+     * @example
+     * // Get one Inquilino
+     * const inquilino = await prisma.inquilino.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InquilinoFindUniqueArgs>(args: SelectSubset<T, InquilinoFindUniqueArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Inquilino that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InquilinoFindUniqueOrThrowArgs} args - Arguments to find a Inquilino
+     * @example
+     * // Get one Inquilino
+     * const inquilino = await prisma.inquilino.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InquilinoFindUniqueOrThrowArgs>(args: SelectSubset<T, InquilinoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Inquilino that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoFindFirstArgs} args - Arguments to find a Inquilino
+     * @example
+     * // Get one Inquilino
+     * const inquilino = await prisma.inquilino.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InquilinoFindFirstArgs>(args?: SelectSubset<T, InquilinoFindFirstArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Inquilino that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoFindFirstOrThrowArgs} args - Arguments to find a Inquilino
+     * @example
+     * // Get one Inquilino
+     * const inquilino = await prisma.inquilino.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InquilinoFindFirstOrThrowArgs>(args?: SelectSubset<T, InquilinoFindFirstOrThrowArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Inquilinos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Inquilinos
+     * const inquilinos = await prisma.inquilino.findMany()
+     * 
+     * // Get first 10 Inquilinos
+     * const inquilinos = await prisma.inquilino.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const inquilinoWithIdOnly = await prisma.inquilino.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InquilinoFindManyArgs>(args?: SelectSubset<T, InquilinoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Inquilino.
+     * @param {InquilinoCreateArgs} args - Arguments to create a Inquilino.
+     * @example
+     * // Create one Inquilino
+     * const Inquilino = await prisma.inquilino.create({
+     *   data: {
+     *     // ... data to create a Inquilino
+     *   }
+     * })
+     * 
+     */
+    create<T extends InquilinoCreateArgs>(args: SelectSubset<T, InquilinoCreateArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Inquilinos.
+     * @param {InquilinoCreateManyArgs} args - Arguments to create many Inquilinos.
+     * @example
+     * // Create many Inquilinos
+     * const inquilino = await prisma.inquilino.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InquilinoCreateManyArgs>(args?: SelectSubset<T, InquilinoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Inquilino.
+     * @param {InquilinoDeleteArgs} args - Arguments to delete one Inquilino.
+     * @example
+     * // Delete one Inquilino
+     * const Inquilino = await prisma.inquilino.delete({
+     *   where: {
+     *     // ... filter to delete one Inquilino
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InquilinoDeleteArgs>(args: SelectSubset<T, InquilinoDeleteArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Inquilino.
+     * @param {InquilinoUpdateArgs} args - Arguments to update one Inquilino.
+     * @example
+     * // Update one Inquilino
+     * const inquilino = await prisma.inquilino.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InquilinoUpdateArgs>(args: SelectSubset<T, InquilinoUpdateArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Inquilinos.
+     * @param {InquilinoDeleteManyArgs} args - Arguments to filter Inquilinos to delete.
+     * @example
+     * // Delete a few Inquilinos
+     * const { count } = await prisma.inquilino.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InquilinoDeleteManyArgs>(args?: SelectSubset<T, InquilinoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Inquilinos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Inquilinos
+     * const inquilino = await prisma.inquilino.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InquilinoUpdateManyArgs>(args: SelectSubset<T, InquilinoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Inquilino.
+     * @param {InquilinoUpsertArgs} args - Arguments to update or create a Inquilino.
+     * @example
+     * // Update or create a Inquilino
+     * const inquilino = await prisma.inquilino.upsert({
+     *   create: {
+     *     // ... data to create a Inquilino
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Inquilino we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InquilinoUpsertArgs>(args: SelectSubset<T, InquilinoUpsertArgs<ExtArgs>>): Prisma__InquilinoClient<$Result.GetResult<Prisma.$InquilinoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Inquilinos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoCountArgs} args - Arguments to filter Inquilinos to count.
+     * @example
+     * // Count the number of Inquilinos
+     * const count = await prisma.inquilino.count({
+     *   where: {
+     *     // ... the filter for the Inquilinos we want to count
+     *   }
+     * })
+    **/
+    count<T extends InquilinoCountArgs>(
+      args?: Subset<T, InquilinoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InquilinoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Inquilino.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InquilinoAggregateArgs>(args: Subset<T, InquilinoAggregateArgs>): Prisma.PrismaPromise<GetInquilinoAggregateType<T>>
+
+    /**
+     * Group by Inquilino.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InquilinoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InquilinoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InquilinoGroupByArgs['orderBy'] }
+        : { orderBy?: InquilinoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InquilinoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInquilinoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Inquilino model
+   */
+  readonly fields: InquilinoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Inquilino.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InquilinoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Acompañante<T extends Inquilino$AcompañanteArgs<ExtArgs> = {}>(args?: Subset<T, Inquilino$AcompañanteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AcompañantePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Contratos<T extends Inquilino$ContratosArgs<ExtArgs> = {}>(args?: Subset<T, Inquilino$ContratosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContratosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Inquilino model
+   */
+  interface InquilinoFieldRefs {
+    readonly id: FieldRef<"Inquilino", 'String'>
+    readonly nombreCompleto: FieldRef<"Inquilino", 'String'>
+    readonly dni: FieldRef<"Inquilino", 'String'>
+    readonly numero: FieldRef<"Inquilino", 'String'>
+    readonly correo: FieldRef<"Inquilino", 'String'>
+    readonly fechaNacimiento: FieldRef<"Inquilino", 'DateTime'>
+    readonly createAt: FieldRef<"Inquilino", 'DateTime'>
+    readonly updateAt: FieldRef<"Inquilino", 'DateTime'>
+    readonly activo: FieldRef<"Inquilino", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Inquilino findUnique
+   */
+  export type InquilinoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter, which Inquilino to fetch.
+     */
+    where: InquilinoWhereUniqueInput
+  }
+
+  /**
+   * Inquilino findUniqueOrThrow
+   */
+  export type InquilinoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter, which Inquilino to fetch.
+     */
+    where: InquilinoWhereUniqueInput
+  }
+
+  /**
+   * Inquilino findFirst
+   */
+  export type InquilinoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter, which Inquilino to fetch.
+     */
+    where?: InquilinoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Inquilinos to fetch.
+     */
+    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Inquilinos.
+     */
+    cursor?: InquilinoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Inquilinos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Inquilinos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Inquilinos.
+     */
+    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
+  }
+
+  /**
+   * Inquilino findFirstOrThrow
+   */
+  export type InquilinoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter, which Inquilino to fetch.
+     */
+    where?: InquilinoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Inquilinos to fetch.
+     */
+    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Inquilinos.
+     */
+    cursor?: InquilinoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Inquilinos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Inquilinos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Inquilinos.
+     */
+    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
+  }
+
+  /**
+   * Inquilino findMany
+   */
+  export type InquilinoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter, which Inquilinos to fetch.
+     */
+    where?: InquilinoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Inquilinos to fetch.
+     */
+    orderBy?: InquilinoOrderByWithRelationInput | InquilinoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Inquilinos.
+     */
+    cursor?: InquilinoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Inquilinos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Inquilinos.
+     */
+    skip?: number
+    distinct?: InquilinoScalarFieldEnum | InquilinoScalarFieldEnum[]
+  }
+
+  /**
+   * Inquilino create
+   */
+  export type InquilinoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Inquilino.
+     */
+    data: XOR<InquilinoCreateInput, InquilinoUncheckedCreateInput>
+  }
+
+  /**
+   * Inquilino createMany
+   */
+  export type InquilinoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Inquilinos.
+     */
+    data: InquilinoCreateManyInput | InquilinoCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Inquilino update
+   */
+  export type InquilinoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Inquilino.
+     */
+    data: XOR<InquilinoUpdateInput, InquilinoUncheckedUpdateInput>
+    /**
+     * Choose, which Inquilino to update.
+     */
+    where: InquilinoWhereUniqueInput
+  }
+
+  /**
+   * Inquilino updateMany
+   */
+  export type InquilinoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Inquilinos.
+     */
+    data: XOR<InquilinoUpdateManyMutationInput, InquilinoUncheckedUpdateManyInput>
+    /**
+     * Filter which Inquilinos to update
+     */
+    where?: InquilinoWhereInput
+    /**
+     * Limit how many Inquilinos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Inquilino upsert
+   */
+  export type InquilinoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Inquilino to update in case it exists.
+     */
+    where: InquilinoWhereUniqueInput
+    /**
+     * In case the Inquilino found by the `where` argument doesn't exist, create a new Inquilino with this data.
+     */
+    create: XOR<InquilinoCreateInput, InquilinoUncheckedCreateInput>
+    /**
+     * In case the Inquilino was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InquilinoUpdateInput, InquilinoUncheckedUpdateInput>
+  }
+
+  /**
+   * Inquilino delete
+   */
+  export type InquilinoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+    /**
+     * Filter which Inquilino to delete.
+     */
+    where: InquilinoWhereUniqueInput
+  }
+
+  /**
+   * Inquilino deleteMany
+   */
+  export type InquilinoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Inquilinos to delete
+     */
+    where?: InquilinoWhereInput
+    /**
+     * Limit how many Inquilinos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Inquilino.Acompañante
+   */
+  export type Inquilino$AcompañanteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Acompañante
+     */
+    select?: AcompañanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Acompañante
+     */
+    omit?: AcompañanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AcompañanteInclude<ExtArgs> | null
+    where?: AcompañanteWhereInput
+    orderBy?: AcompañanteOrderByWithRelationInput | AcompañanteOrderByWithRelationInput[]
+    cursor?: AcompañanteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AcompañanteScalarFieldEnum | AcompañanteScalarFieldEnum[]
+  }
+
+  /**
+   * Inquilino.Contratos
+   */
+  export type Inquilino$ContratosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contratos
+     */
+    select?: ContratosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contratos
+     */
+    omit?: ContratosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContratosInclude<ExtArgs> | null
+    where?: ContratosWhereInput
+    orderBy?: ContratosOrderByWithRelationInput | ContratosOrderByWithRelationInput[]
+    cursor?: ContratosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContratosScalarFieldEnum | ContratosScalarFieldEnum[]
+  }
+
+  /**
+   * Inquilino without action
+   */
+  export type InquilinoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Inquilino
+     */
+    select?: InquilinoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Inquilino
+     */
+    omit?: InquilinoOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InquilinoInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Recibos
    */
 
@@ -16022,21 +16022,6 @@ export namespace Prisma {
   export type RolScalarFieldEnum = (typeof RolScalarFieldEnum)[keyof typeof RolScalarFieldEnum]
 
 
-  export const InquilinoScalarFieldEnum: {
-    id: 'id',
-    nombreCompleto: 'nombreCompleto',
-    dni: 'dni',
-    numero: 'numero',
-    correo: 'correo',
-    fechaNacimiento: 'fechaNacimiento',
-    createAt: 'createAt',
-    updateAt: 'updateAt',
-    activo: 'activo'
-  };
-
-  export type InquilinoScalarFieldEnum = (typeof InquilinoScalarFieldEnum)[keyof typeof InquilinoScalarFieldEnum]
-
-
   export const AcompañanteScalarFieldEnum: {
     id: 'id',
     nombreCompleto: 'nombreCompleto',
@@ -16126,6 +16111,21 @@ export namespace Prisma {
   export type ContratosScalarFieldEnum = (typeof ContratosScalarFieldEnum)[keyof typeof ContratosScalarFieldEnum]
 
 
+  export const InquilinoScalarFieldEnum: {
+    id: 'id',
+    nombreCompleto: 'nombreCompleto',
+    dni: 'dni',
+    numero: 'numero',
+    correo: 'correo',
+    fechaNacimiento: 'fechaNacimiento',
+    createAt: 'createAt',
+    updateAt: 'updateAt',
+    activo: 'activo'
+  };
+
+  export type InquilinoScalarFieldEnum = (typeof InquilinoScalarFieldEnum)[keyof typeof InquilinoScalarFieldEnum]
+
+
   export const RecibosScalarFieldEnum: {
     id: 'id',
     contratoId: 'contratoId',
@@ -16204,17 +16204,6 @@ export namespace Prisma {
   export type RolOrderByRelevanceFieldEnum = (typeof RolOrderByRelevanceFieldEnum)[keyof typeof RolOrderByRelevanceFieldEnum]
 
 
-  export const InquilinoOrderByRelevanceFieldEnum: {
-    id: 'id',
-    nombreCompleto: 'nombreCompleto',
-    dni: 'dni',
-    numero: 'numero',
-    correo: 'correo'
-  };
-
-  export type InquilinoOrderByRelevanceFieldEnum = (typeof InquilinoOrderByRelevanceFieldEnum)[keyof typeof InquilinoOrderByRelevanceFieldEnum]
-
-
   export const AcompañanteOrderByRelevanceFieldEnum: {
     id: 'id',
     nombreCompleto: 'nombreCompleto',
@@ -16283,6 +16272,17 @@ export namespace Prisma {
   };
 
   export type ContratosOrderByRelevanceFieldEnum = (typeof ContratosOrderByRelevanceFieldEnum)[keyof typeof ContratosOrderByRelevanceFieldEnum]
+
+
+  export const InquilinoOrderByRelevanceFieldEnum: {
+    id: 'id',
+    nombreCompleto: 'nombreCompleto',
+    dni: 'dni',
+    numero: 'numero',
+    correo: 'correo'
+  };
+
+  export type InquilinoOrderByRelevanceFieldEnum = (typeof InquilinoOrderByRelevanceFieldEnum)[keyof typeof InquilinoOrderByRelevanceFieldEnum]
 
 
   export const RecibosOrderByRelevanceFieldEnum: {
@@ -16443,85 +16443,6 @@ export namespace Prisma {
     createAt?: DateTimeWithAggregatesFilter<"Rol"> | Date | string
     updateAt?: DateTimeWithAggregatesFilter<"Rol"> | Date | string
     activo?: BoolWithAggregatesFilter<"Rol"> | boolean
-  }
-
-  export type InquilinoWhereInput = {
-    AND?: InquilinoWhereInput | InquilinoWhereInput[]
-    OR?: InquilinoWhereInput[]
-    NOT?: InquilinoWhereInput | InquilinoWhereInput[]
-    id?: StringFilter<"Inquilino"> | string
-    nombreCompleto?: StringFilter<"Inquilino"> | string
-    dni?: StringFilter<"Inquilino"> | string
-    numero?: StringFilter<"Inquilino"> | string
-    correo?: StringFilter<"Inquilino"> | string
-    fechaNacimiento?: DateTimeFilter<"Inquilino"> | Date | string
-    createAt?: DateTimeFilter<"Inquilino"> | Date | string
-    updateAt?: DateTimeFilter<"Inquilino"> | Date | string
-    activo?: BoolFilter<"Inquilino"> | boolean
-    Acompañante?: AcompañanteListRelationFilter
-    Contratos?: ContratosListRelationFilter
-  }
-
-  export type InquilinoOrderByWithRelationInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    dni?: SortOrder
-    numero?: SortOrder
-    correo?: SortOrder
-    fechaNacimiento?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-    Acompañante?: AcompañanteOrderByRelationAggregateInput
-    Contratos?: ContratosOrderByRelationAggregateInput
-    _relevance?: InquilinoOrderByRelevanceInput
-  }
-
-  export type InquilinoWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: InquilinoWhereInput | InquilinoWhereInput[]
-    OR?: InquilinoWhereInput[]
-    NOT?: InquilinoWhereInput | InquilinoWhereInput[]
-    nombreCompleto?: StringFilter<"Inquilino"> | string
-    dni?: StringFilter<"Inquilino"> | string
-    numero?: StringFilter<"Inquilino"> | string
-    correo?: StringFilter<"Inquilino"> | string
-    fechaNacimiento?: DateTimeFilter<"Inquilino"> | Date | string
-    createAt?: DateTimeFilter<"Inquilino"> | Date | string
-    updateAt?: DateTimeFilter<"Inquilino"> | Date | string
-    activo?: BoolFilter<"Inquilino"> | boolean
-    Acompañante?: AcompañanteListRelationFilter
-    Contratos?: ContratosListRelationFilter
-  }, "id">
-
-  export type InquilinoOrderByWithAggregationInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    dni?: SortOrder
-    numero?: SortOrder
-    correo?: SortOrder
-    fechaNacimiento?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-    _count?: InquilinoCountOrderByAggregateInput
-    _max?: InquilinoMaxOrderByAggregateInput
-    _min?: InquilinoMinOrderByAggregateInput
-  }
-
-  export type InquilinoScalarWhereWithAggregatesInput = {
-    AND?: InquilinoScalarWhereWithAggregatesInput | InquilinoScalarWhereWithAggregatesInput[]
-    OR?: InquilinoScalarWhereWithAggregatesInput[]
-    NOT?: InquilinoScalarWhereWithAggregatesInput | InquilinoScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Inquilino"> | string
-    nombreCompleto?: StringWithAggregatesFilter<"Inquilino"> | string
-    dni?: StringWithAggregatesFilter<"Inquilino"> | string
-    numero?: StringWithAggregatesFilter<"Inquilino"> | string
-    correo?: StringWithAggregatesFilter<"Inquilino"> | string
-    fechaNacimiento?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
-    createAt?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
-    updateAt?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
-    activo?: BoolWithAggregatesFilter<"Inquilino"> | boolean
   }
 
   export type AcompañanteWhereInput = {
@@ -17000,6 +16921,85 @@ export namespace Prisma {
     activo?: BoolWithAggregatesFilter<"Contratos"> | boolean
   }
 
+  export type InquilinoWhereInput = {
+    AND?: InquilinoWhereInput | InquilinoWhereInput[]
+    OR?: InquilinoWhereInput[]
+    NOT?: InquilinoWhereInput | InquilinoWhereInput[]
+    id?: StringFilter<"Inquilino"> | string
+    nombreCompleto?: StringFilter<"Inquilino"> | string
+    dni?: StringFilter<"Inquilino"> | string
+    numero?: StringFilter<"Inquilino"> | string
+    correo?: StringFilter<"Inquilino"> | string
+    fechaNacimiento?: DateTimeFilter<"Inquilino"> | Date | string
+    createAt?: DateTimeFilter<"Inquilino"> | Date | string
+    updateAt?: DateTimeFilter<"Inquilino"> | Date | string
+    activo?: BoolFilter<"Inquilino"> | boolean
+    Acompañante?: AcompañanteListRelationFilter
+    Contratos?: ContratosListRelationFilter
+  }
+
+  export type InquilinoOrderByWithRelationInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    dni?: SortOrder
+    numero?: SortOrder
+    correo?: SortOrder
+    fechaNacimiento?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    Acompañante?: AcompañanteOrderByRelationAggregateInput
+    Contratos?: ContratosOrderByRelationAggregateInput
+    _relevance?: InquilinoOrderByRelevanceInput
+  }
+
+  export type InquilinoWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InquilinoWhereInput | InquilinoWhereInput[]
+    OR?: InquilinoWhereInput[]
+    NOT?: InquilinoWhereInput | InquilinoWhereInput[]
+    nombreCompleto?: StringFilter<"Inquilino"> | string
+    dni?: StringFilter<"Inquilino"> | string
+    numero?: StringFilter<"Inquilino"> | string
+    correo?: StringFilter<"Inquilino"> | string
+    fechaNacimiento?: DateTimeFilter<"Inquilino"> | Date | string
+    createAt?: DateTimeFilter<"Inquilino"> | Date | string
+    updateAt?: DateTimeFilter<"Inquilino"> | Date | string
+    activo?: BoolFilter<"Inquilino"> | boolean
+    Acompañante?: AcompañanteListRelationFilter
+    Contratos?: ContratosListRelationFilter
+  }, "id">
+
+  export type InquilinoOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    dni?: SortOrder
+    numero?: SortOrder
+    correo?: SortOrder
+    fechaNacimiento?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+    _count?: InquilinoCountOrderByAggregateInput
+    _max?: InquilinoMaxOrderByAggregateInput
+    _min?: InquilinoMinOrderByAggregateInput
+  }
+
+  export type InquilinoScalarWhereWithAggregatesInput = {
+    AND?: InquilinoScalarWhereWithAggregatesInput | InquilinoScalarWhereWithAggregatesInput[]
+    OR?: InquilinoScalarWhereWithAggregatesInput[]
+    NOT?: InquilinoScalarWhereWithAggregatesInput | InquilinoScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Inquilino"> | string
+    nombreCompleto?: StringWithAggregatesFilter<"Inquilino"> | string
+    dni?: StringWithAggregatesFilter<"Inquilino"> | string
+    numero?: StringWithAggregatesFilter<"Inquilino"> | string
+    correo?: StringWithAggregatesFilter<"Inquilino"> | string
+    fechaNacimiento?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
+    createAt?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
+    updateAt?: DateTimeWithAggregatesFilter<"Inquilino"> | Date | string
+    activo?: BoolWithAggregatesFilter<"Inquilino"> | boolean
+  }
+
   export type RecibosWhereInput = {
     AND?: RecibosWhereInput | RecibosWhereInput[]
     OR?: RecibosWhereInput[]
@@ -17387,98 +17387,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type InquilinoCreateInput = {
-    id?: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    Acompañante?: AcompañanteCreateNestedManyWithoutInquilinoInput
-    Contratos?: ContratosCreateNestedManyWithoutInquilinoInput
-  }
-
-  export type InquilinoUncheckedCreateInput = {
-    id?: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-    Acompañante?: AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput
-    Contratos?: ContratosUncheckedCreateNestedManyWithoutInquilinoInput
-  }
-
-  export type InquilinoUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    Acompañante?: AcompañanteUpdateManyWithoutInquilinoNestedInput
-    Contratos?: ContratosUpdateManyWithoutInquilinoNestedInput
-  }
-
-  export type InquilinoUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    Acompañante?: AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput
-    Contratos?: ContratosUncheckedUpdateManyWithoutInquilinoNestedInput
-  }
-
-  export type InquilinoCreateManyInput = {
-    id?: string
-    nombreCompleto: string
-    dni: string
-    numero: string
-    correo: string
-    fechaNacimiento: Date | string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type InquilinoUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type InquilinoUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    dni?: StringFieldUpdateOperationsInput | string
-    numero?: StringFieldUpdateOperationsInput | string
-    correo?: StringFieldUpdateOperationsInput | string
-    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
     activo?: BoolFieldUpdateOperationsInput | boolean
@@ -17977,6 +17885,98 @@ export namespace Prisma {
     activo?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type InquilinoCreateInput = {
+    id?: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    Acompañante?: AcompañanteCreateNestedManyWithoutInquilinoInput
+    Contratos?: ContratosCreateNestedManyWithoutInquilinoInput
+  }
+
+  export type InquilinoUncheckedCreateInput = {
+    id?: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+    Acompañante?: AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput
+    Contratos?: ContratosUncheckedCreateNestedManyWithoutInquilinoInput
+  }
+
+  export type InquilinoUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    Acompañante?: AcompañanteUpdateManyWithoutInquilinoNestedInput
+    Contratos?: ContratosUpdateManyWithoutInquilinoNestedInput
+  }
+
+  export type InquilinoUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    Acompañante?: AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput
+    Contratos?: ContratosUncheckedUpdateManyWithoutInquilinoNestedInput
+  }
+
+  export type InquilinoCreateManyInput = {
+    id?: string
+    nombreCompleto: string
+    dni: string
+    numero: string
+    correo: string
+    fechaNacimiento: Date | string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type InquilinoUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type InquilinoUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    numero?: StringFieldUpdateOperationsInput | string
+    correo?: StringFieldUpdateOperationsInput | string
+    fechaNacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type RecibosCreateInput = {
     id?: string
     fechaPago: Date | string
@@ -18426,68 +18426,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type AcompañanteListRelationFilter = {
-    every?: AcompañanteWhereInput
-    some?: AcompañanteWhereInput
-    none?: AcompañanteWhereInput
-  }
-
-  export type ContratosListRelationFilter = {
-    every?: ContratosWhereInput
-    some?: ContratosWhereInput
-    none?: ContratosWhereInput
-  }
-
-  export type AcompañanteOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type ContratosOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type InquilinoOrderByRelevanceInput = {
-    fields: InquilinoOrderByRelevanceFieldEnum | InquilinoOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type InquilinoCountOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    dni?: SortOrder
-    numero?: SortOrder
-    correo?: SortOrder
-    fechaNacimiento?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
-  export type InquilinoMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    dni?: SortOrder
-    numero?: SortOrder
-    correo?: SortOrder
-    fechaNacimiento?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
-  export type InquilinoMinOrderByAggregateInput = {
-    id?: SortOrder
-    nombreCompleto?: SortOrder
-    dni?: SortOrder
-    numero?: SortOrder
-    correo?: SortOrder
-    fechaNacimiento?: SortOrder
-    createAt?: SortOrder
-    updateAt?: SortOrder
-    activo?: SortOrder
-  }
-
   export type InquilinoScalarRelationFilter = {
     is?: InquilinoWhereInput
     isNot?: InquilinoWhereInput
@@ -18671,12 +18609,22 @@ export namespace Prisma {
     none?: ApartamentoServiciosWhereInput
   }
 
+  export type ContratosListRelationFilter = {
+    every?: ContratosWhereInput
+    some?: ContratosWhereInput
+    none?: ContratosWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
   }
 
   export type ApartamentoServiciosOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ContratosOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -18923,6 +18871,58 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type AcompañanteListRelationFilter = {
+    every?: AcompañanteWhereInput
+    some?: AcompañanteWhereInput
+    none?: AcompañanteWhereInput
+  }
+
+  export type AcompañanteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type InquilinoOrderByRelevanceInput = {
+    fields: InquilinoOrderByRelevanceFieldEnum | InquilinoOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type InquilinoCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    dni?: SortOrder
+    numero?: SortOrder
+    correo?: SortOrder
+    fechaNacimiento?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+  }
+
+  export type InquilinoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    dni?: SortOrder
+    numero?: SortOrder
+    correo?: SortOrder
+    fechaNacimiento?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
+  }
+
+  export type InquilinoMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombreCompleto?: SortOrder
+    dni?: SortOrder
+    numero?: SortOrder
+    correo?: SortOrder
+    fechaNacimiento?: SortOrder
+    createAt?: SortOrder
+    updateAt?: SortOrder
+    activo?: SortOrder
   }
 
   export type ContratosScalarRelationFilter = {
@@ -19238,90 +19238,6 @@ export namespace Prisma {
     update?: UsuarioUpdateWithWhereUniqueWithoutRolInput | UsuarioUpdateWithWhereUniqueWithoutRolInput[]
     updateMany?: UsuarioUpdateManyWithWhereWithoutRolInput | UsuarioUpdateManyWithWhereWithoutRolInput[]
     deleteMany?: UsuarioScalarWhereInput | UsuarioScalarWhereInput[]
-  }
-
-  export type AcompañanteCreateNestedManyWithoutInquilinoInput = {
-    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
-    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
-    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-  }
-
-  export type ContratosCreateNestedManyWithoutInquilinoInput = {
-    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
-    createMany?: ContratosCreateManyInquilinoInputEnvelope
-    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-  }
-
-  export type AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput = {
-    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
-    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
-    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-  }
-
-  export type ContratosUncheckedCreateNestedManyWithoutInquilinoInput = {
-    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
-    createMany?: ContratosCreateManyInquilinoInputEnvelope
-    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-  }
-
-  export type AcompañanteUpdateManyWithoutInquilinoNestedInput = {
-    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
-    upsert?: AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput | AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput[]
-    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
-    set?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    disconnect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    delete?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    update?: AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput | AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput[]
-    updateMany?: AcompañanteUpdateManyWithWhereWithoutInquilinoInput | AcompañanteUpdateManyWithWhereWithoutInquilinoInput[]
-    deleteMany?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
-  }
-
-  export type ContratosUpdateManyWithoutInquilinoNestedInput = {
-    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
-    upsert?: ContratosUpsertWithWhereUniqueWithoutInquilinoInput | ContratosUpsertWithWhereUniqueWithoutInquilinoInput[]
-    createMany?: ContratosCreateManyInquilinoInputEnvelope
-    set?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    disconnect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    delete?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    update?: ContratosUpdateWithWhereUniqueWithoutInquilinoInput | ContratosUpdateWithWhereUniqueWithoutInquilinoInput[]
-    updateMany?: ContratosUpdateManyWithWhereWithoutInquilinoInput | ContratosUpdateManyWithWhereWithoutInquilinoInput[]
-    deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
-  }
-
-  export type AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput = {
-    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
-    upsert?: AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput | AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput[]
-    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
-    set?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    disconnect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    delete?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
-    update?: AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput | AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput[]
-    updateMany?: AcompañanteUpdateManyWithWhereWithoutInquilinoInput | AcompañanteUpdateManyWithWhereWithoutInquilinoInput[]
-    deleteMany?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
-  }
-
-  export type ContratosUncheckedUpdateManyWithoutInquilinoNestedInput = {
-    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
-    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
-    upsert?: ContratosUpsertWithWhereUniqueWithoutInquilinoInput | ContratosUpsertWithWhereUniqueWithoutInquilinoInput[]
-    createMany?: ContratosCreateManyInquilinoInputEnvelope
-    set?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    disconnect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    delete?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
-    update?: ContratosUpdateWithWhereUniqueWithoutInquilinoInput | ContratosUpdateWithWhereUniqueWithoutInquilinoInput[]
-    updateMany?: ContratosUpdateManyWithWhereWithoutInquilinoInput | ContratosUpdateManyWithWhereWithoutInquilinoInput[]
-    deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
   }
 
   export type InquilinoCreateNestedOneWithoutAcompañanteInput = {
@@ -19696,6 +19612,90 @@ export namespace Prisma {
     update?: RecibosUpdateWithWhereUniqueWithoutContratoInput | RecibosUpdateWithWhereUniqueWithoutContratoInput[]
     updateMany?: RecibosUpdateManyWithWhereWithoutContratoInput | RecibosUpdateManyWithWhereWithoutContratoInput[]
     deleteMany?: RecibosScalarWhereInput | RecibosScalarWhereInput[]
+  }
+
+  export type AcompañanteCreateNestedManyWithoutInquilinoInput = {
+    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
+    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
+    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+  }
+
+  export type ContratosCreateNestedManyWithoutInquilinoInput = {
+    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
+    createMany?: ContratosCreateManyInquilinoInputEnvelope
+    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+  }
+
+  export type AcompañanteUncheckedCreateNestedManyWithoutInquilinoInput = {
+    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
+    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
+    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+  }
+
+  export type ContratosUncheckedCreateNestedManyWithoutInquilinoInput = {
+    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
+    createMany?: ContratosCreateManyInquilinoInputEnvelope
+    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+  }
+
+  export type AcompañanteUpdateManyWithoutInquilinoNestedInput = {
+    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
+    upsert?: AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput | AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput[]
+    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
+    set?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    disconnect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    delete?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    update?: AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput | AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput[]
+    updateMany?: AcompañanteUpdateManyWithWhereWithoutInquilinoInput | AcompañanteUpdateManyWithWhereWithoutInquilinoInput[]
+    deleteMany?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
+  }
+
+  export type ContratosUpdateManyWithoutInquilinoNestedInput = {
+    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
+    upsert?: ContratosUpsertWithWhereUniqueWithoutInquilinoInput | ContratosUpsertWithWhereUniqueWithoutInquilinoInput[]
+    createMany?: ContratosCreateManyInquilinoInputEnvelope
+    set?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    disconnect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    delete?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    update?: ContratosUpdateWithWhereUniqueWithoutInquilinoInput | ContratosUpdateWithWhereUniqueWithoutInquilinoInput[]
+    updateMany?: ContratosUpdateManyWithWhereWithoutInquilinoInput | ContratosUpdateManyWithWhereWithoutInquilinoInput[]
+    deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
+  }
+
+  export type AcompañanteUncheckedUpdateManyWithoutInquilinoNestedInput = {
+    create?: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput> | AcompañanteCreateWithoutInquilinoInput[] | AcompañanteUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: AcompañanteCreateOrConnectWithoutInquilinoInput | AcompañanteCreateOrConnectWithoutInquilinoInput[]
+    upsert?: AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput | AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput[]
+    createMany?: AcompañanteCreateManyInquilinoInputEnvelope
+    set?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    disconnect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    delete?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    connect?: AcompañanteWhereUniqueInput | AcompañanteWhereUniqueInput[]
+    update?: AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput | AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput[]
+    updateMany?: AcompañanteUpdateManyWithWhereWithoutInquilinoInput | AcompañanteUpdateManyWithWhereWithoutInquilinoInput[]
+    deleteMany?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
+  }
+
+  export type ContratosUncheckedUpdateManyWithoutInquilinoNestedInput = {
+    create?: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput> | ContratosCreateWithoutInquilinoInput[] | ContratosUncheckedCreateWithoutInquilinoInput[]
+    connectOrCreate?: ContratosCreateOrConnectWithoutInquilinoInput | ContratosCreateOrConnectWithoutInquilinoInput[]
+    upsert?: ContratosUpsertWithWhereUniqueWithoutInquilinoInput | ContratosUpsertWithWhereUniqueWithoutInquilinoInput[]
+    createMany?: ContratosCreateManyInquilinoInputEnvelope
+    set?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    disconnect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    delete?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    connect?: ContratosWhereUniqueInput | ContratosWhereUniqueInput[]
+    update?: ContratosUpdateWithWhereUniqueWithoutInquilinoInput | ContratosUpdateWithWhereUniqueWithoutInquilinoInput[]
+    updateMany?: ContratosUpdateManyWithWhereWithoutInquilinoInput | ContratosUpdateManyWithWhereWithoutInquilinoInput[]
+    deleteMany?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
   }
 
   export type ContratosCreateNestedOneWithoutRecibosInput = {
@@ -20168,128 +20168,6 @@ export namespace Prisma {
     DebeCambiar?: BoolFilter<"Usuario"> | boolean
   }
 
-  export type AcompañanteCreateWithoutInquilinoInput = {
-    id?: string
-    nombreCompleto: string
-    Parentesco: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type AcompañanteUncheckedCreateWithoutInquilinoInput = {
-    id?: string
-    nombreCompleto: string
-    Parentesco: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type AcompañanteCreateOrConnectWithoutInquilinoInput = {
-    where: AcompañanteWhereUniqueInput
-    create: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput>
-  }
-
-  export type AcompañanteCreateManyInquilinoInputEnvelope = {
-    data: AcompañanteCreateManyInquilinoInput | AcompañanteCreateManyInquilinoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ContratosCreateWithoutInquilinoInput = {
-    id?: string
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    apartamento: ApartamentoCreateNestedOneWithoutContratosInput
-    recibos?: RecibosCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosUncheckedCreateWithoutInquilinoInput = {
-    id?: string
-    apartamentoId: string
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
-  }
-
-  export type ContratosCreateOrConnectWithoutInquilinoInput = {
-    where: ContratosWhereUniqueInput
-    create: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput>
-  }
-
-  export type ContratosCreateManyInquilinoInputEnvelope = {
-    data: ContratosCreateManyInquilinoInput | ContratosCreateManyInquilinoInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput = {
-    where: AcompañanteWhereUniqueInput
-    update: XOR<AcompañanteUpdateWithoutInquilinoInput, AcompañanteUncheckedUpdateWithoutInquilinoInput>
-    create: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput>
-  }
-
-  export type AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput = {
-    where: AcompañanteWhereUniqueInput
-    data: XOR<AcompañanteUpdateWithoutInquilinoInput, AcompañanteUncheckedUpdateWithoutInquilinoInput>
-  }
-
-  export type AcompañanteUpdateManyWithWhereWithoutInquilinoInput = {
-    where: AcompañanteScalarWhereInput
-    data: XOR<AcompañanteUpdateManyMutationInput, AcompañanteUncheckedUpdateManyWithoutInquilinoInput>
-  }
-
-  export type AcompañanteScalarWhereInput = {
-    AND?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
-    OR?: AcompañanteScalarWhereInput[]
-    NOT?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
-    id?: StringFilter<"Acompañante"> | string
-    nombreCompleto?: StringFilter<"Acompañante"> | string
-    inquilinoId?: StringFilter<"Acompañante"> | string
-    Parentesco?: StringFilter<"Acompañante"> | string
-    createAt?: DateTimeFilter<"Acompañante"> | Date | string
-    updateAt?: DateTimeFilter<"Acompañante"> | Date | string
-    activo?: BoolFilter<"Acompañante"> | boolean
-  }
-
-  export type ContratosUpsertWithWhereUniqueWithoutInquilinoInput = {
-    where: ContratosWhereUniqueInput
-    update: XOR<ContratosUpdateWithoutInquilinoInput, ContratosUncheckedUpdateWithoutInquilinoInput>
-    create: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput>
-  }
-
-  export type ContratosUpdateWithWhereUniqueWithoutInquilinoInput = {
-    where: ContratosWhereUniqueInput
-    data: XOR<ContratosUpdateWithoutInquilinoInput, ContratosUncheckedUpdateWithoutInquilinoInput>
-  }
-
-  export type ContratosUpdateManyWithWhereWithoutInquilinoInput = {
-    where: ContratosScalarWhereInput
-    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyWithoutInquilinoInput>
-  }
-
-  export type ContratosScalarWhereInput = {
-    AND?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
-    OR?: ContratosScalarWhereInput[]
-    NOT?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
-    id?: StringFilter<"Contratos"> | string
-    inquilinoId?: StringFilter<"Contratos"> | string
-    apartamentoId?: StringFilter<"Contratos"> | string
-    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
-    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
-    createAt?: DateTimeFilter<"Contratos"> | Date | string
-    updateAt?: DateTimeFilter<"Contratos"> | Date | string
-    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
-    activo?: BoolFilter<"Contratos"> | boolean
-  }
-
   export type InquilinoCreateWithoutAcompañanteInput = {
     id?: string
     nombreCompleto: string
@@ -20678,6 +20556,21 @@ export namespace Prisma {
     data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyWithoutApartamentoInput>
   }
 
+  export type ContratosScalarWhereInput = {
+    AND?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
+    OR?: ContratosScalarWhereInput[]
+    NOT?: ContratosScalarWhereInput | ContratosScalarWhereInput[]
+    id?: StringFilter<"Contratos"> | string
+    inquilinoId?: StringFilter<"Contratos"> | string
+    apartamentoId?: StringFilter<"Contratos"> | string
+    fechaInicio?: DateTimeFilter<"Contratos"> | Date | string
+    fechaFin?: DateTimeNullableFilter<"Contratos"> | Date | string | null
+    createAt?: DateTimeFilter<"Contratos"> | Date | string
+    updateAt?: DateTimeFilter<"Contratos"> | Date | string
+    montoMensual?: DecimalFilter<"Contratos"> | Decimal | DecimalJsLike | number | string
+    activo?: BoolFilter<"Contratos"> | boolean
+  }
+
   export type ApartamentoServiciosCreateWithoutServicioInput = {
     id?: string
     incluido?: boolean
@@ -21020,6 +20913,113 @@ export namespace Prisma {
     total?: DecimalFilter<"Recibos"> | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFilter<"Recibos"> | Date | string
     updateAt?: DateTimeFilter<"Recibos"> | Date | string
+  }
+
+  export type AcompañanteCreateWithoutInquilinoInput = {
+    id?: string
+    nombreCompleto: string
+    Parentesco: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type AcompañanteUncheckedCreateWithoutInquilinoInput = {
+    id?: string
+    nombreCompleto: string
+    Parentesco: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type AcompañanteCreateOrConnectWithoutInquilinoInput = {
+    where: AcompañanteWhereUniqueInput
+    create: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput>
+  }
+
+  export type AcompañanteCreateManyInquilinoInputEnvelope = {
+    data: AcompañanteCreateManyInquilinoInput | AcompañanteCreateManyInquilinoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContratosCreateWithoutInquilinoInput = {
+    id?: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    apartamento: ApartamentoCreateNestedOneWithoutContratosInput
+    recibos?: RecibosCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosUncheckedCreateWithoutInquilinoInput = {
+    id?: string
+    apartamentoId: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+    recibos?: RecibosUncheckedCreateNestedManyWithoutContratoInput
+  }
+
+  export type ContratosCreateOrConnectWithoutInquilinoInput = {
+    where: ContratosWhereUniqueInput
+    create: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput>
+  }
+
+  export type ContratosCreateManyInquilinoInputEnvelope = {
+    data: ContratosCreateManyInquilinoInput | ContratosCreateManyInquilinoInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AcompañanteUpsertWithWhereUniqueWithoutInquilinoInput = {
+    where: AcompañanteWhereUniqueInput
+    update: XOR<AcompañanteUpdateWithoutInquilinoInput, AcompañanteUncheckedUpdateWithoutInquilinoInput>
+    create: XOR<AcompañanteCreateWithoutInquilinoInput, AcompañanteUncheckedCreateWithoutInquilinoInput>
+  }
+
+  export type AcompañanteUpdateWithWhereUniqueWithoutInquilinoInput = {
+    where: AcompañanteWhereUniqueInput
+    data: XOR<AcompañanteUpdateWithoutInquilinoInput, AcompañanteUncheckedUpdateWithoutInquilinoInput>
+  }
+
+  export type AcompañanteUpdateManyWithWhereWithoutInquilinoInput = {
+    where: AcompañanteScalarWhereInput
+    data: XOR<AcompañanteUpdateManyMutationInput, AcompañanteUncheckedUpdateManyWithoutInquilinoInput>
+  }
+
+  export type AcompañanteScalarWhereInput = {
+    AND?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
+    OR?: AcompañanteScalarWhereInput[]
+    NOT?: AcompañanteScalarWhereInput | AcompañanteScalarWhereInput[]
+    id?: StringFilter<"Acompañante"> | string
+    nombreCompleto?: StringFilter<"Acompañante"> | string
+    inquilinoId?: StringFilter<"Acompañante"> | string
+    Parentesco?: StringFilter<"Acompañante"> | string
+    createAt?: DateTimeFilter<"Acompañante"> | Date | string
+    updateAt?: DateTimeFilter<"Acompañante"> | Date | string
+    activo?: BoolFilter<"Acompañante"> | boolean
+  }
+
+  export type ContratosUpsertWithWhereUniqueWithoutInquilinoInput = {
+    where: ContratosWhereUniqueInput
+    update: XOR<ContratosUpdateWithoutInquilinoInput, ContratosUncheckedUpdateWithoutInquilinoInput>
+    create: XOR<ContratosCreateWithoutInquilinoInput, ContratosUncheckedCreateWithoutInquilinoInput>
+  }
+
+  export type ContratosUpdateWithWhereUniqueWithoutInquilinoInput = {
+    where: ContratosWhereUniqueInput
+    data: XOR<ContratosUpdateWithoutInquilinoInput, ContratosUncheckedUpdateWithoutInquilinoInput>
+  }
+
+  export type ContratosUpdateManyWithWhereWithoutInquilinoInput = {
+    where: ContratosScalarWhereInput
+    data: XOR<ContratosUpdateManyMutationInput, ContratosUncheckedUpdateManyWithoutInquilinoInput>
   }
 
   export type ContratosCreateWithoutRecibosInput = {
@@ -21462,88 +21462,6 @@ export namespace Prisma {
     DebeCambiar?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type AcompañanteCreateManyInquilinoInput = {
-    id?: string
-    nombreCompleto: string
-    Parentesco: string
-    createAt?: Date | string
-    updateAt?: Date | string
-    activo: boolean
-  }
-
-  export type ContratosCreateManyInquilinoInput = {
-    id?: string
-    apartamentoId: string
-    fechaInicio: Date | string
-    fechaFin?: Date | string | null
-    createAt?: Date | string
-    updateAt?: Date | string
-    montoMensual?: Decimal | DecimalJsLike | number | string
-    activo?: boolean
-  }
-
-  export type AcompañanteUpdateWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    Parentesco?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type AcompañanteUncheckedUpdateWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    Parentesco?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type AcompañanteUncheckedUpdateManyWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nombreCompleto?: StringFieldUpdateOperationsInput | string
-    Parentesco?: StringFieldUpdateOperationsInput | string
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ContratosUpdateWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    apartamento?: ApartamentoUpdateOneRequiredWithoutContratosNestedInput
-    recibos?: RecibosUpdateManyWithoutContratoNestedInput
-  }
-
-  export type ContratosUncheckedUpdateWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    apartamentoId?: StringFieldUpdateOperationsInput | string
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-    recibos?: RecibosUncheckedUpdateManyWithoutContratoNestedInput
-  }
-
-  export type ContratosUncheckedUpdateManyWithoutInquilinoInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    apartamentoId?: StringFieldUpdateOperationsInput | string
-    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
-    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    activo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
   export type HabitacionesCreateManyTipoHabitacionInput = {
     id?: string
     apartamentoId: string
@@ -21766,6 +21684,88 @@ export namespace Prisma {
     total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AcompañanteCreateManyInquilinoInput = {
+    id?: string
+    nombreCompleto: string
+    Parentesco: string
+    createAt?: Date | string
+    updateAt?: Date | string
+    activo: boolean
+  }
+
+  export type ContratosCreateManyInquilinoInput = {
+    id?: string
+    apartamentoId: string
+    fechaInicio: Date | string
+    fechaFin?: Date | string | null
+    createAt?: Date | string
+    updateAt?: Date | string
+    montoMensual?: Decimal | DecimalJsLike | number | string
+    activo?: boolean
+  }
+
+  export type AcompañanteUpdateWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    Parentesco?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AcompañanteUncheckedUpdateWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    Parentesco?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AcompañanteUncheckedUpdateManyWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nombreCompleto?: StringFieldUpdateOperationsInput | string
+    Parentesco?: StringFieldUpdateOperationsInput | string
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ContratosUpdateWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    apartamento?: ApartamentoUpdateOneRequiredWithoutContratosNestedInput
+    recibos?: RecibosUpdateManyWithoutContratoNestedInput
+  }
+
+  export type ContratosUncheckedUpdateWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
+    recibos?: RecibosUncheckedUpdateManyWithoutContratoNestedInput
+  }
+
+  export type ContratosUncheckedUpdateManyWithoutInquilinoInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apartamentoId?: StringFieldUpdateOperationsInput | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaFin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updateAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    montoMensual?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ReciboDetallesCreateManyReciboInput = {
