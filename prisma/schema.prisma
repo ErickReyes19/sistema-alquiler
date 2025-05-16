@@ -1,9 +1,8 @@
- generator client {
-   provider = "prisma-client-js"
-   output   = "../app/generated/prisma"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
- }
-
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../app/generated/prisma"
+  binaryTargets = ["linux-musl-arm64-openssl-3.0.x"]
+}
 
 datasource db {
   provider = "mysql"
@@ -20,8 +19,6 @@ model Rol {
   permisos    RolPermiso[]
   Usuario     Usuario[]
 }
-
-
 
 model Acompañante {
   id             String    @id @default(uuid())
@@ -112,6 +109,7 @@ model Contratos {
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
   @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
 }
+
 model Inquilino {
   id              String         @id @default(uuid())
   nombreCompleto  String
