@@ -384,7 +384,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "mysql://alquiler_user:X7%40cZ%2491uN%21eRt3q@18.189.20.117:3306/alquiler\n"
+        "value": "mysql://root:BRQuklqdbGXaArECxcAtOGlpLqeTHfkN@switchyard.proxy.rlwy.net:51129/railway"
       }
     }
   },
