@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil, Plus, Search } from "lucide-react";
+import { Pencil, Plus, Search, View, ReceiptText} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Contrato } from "../type";  // Cambié Usuario por Contrato
@@ -57,6 +57,16 @@ export default function ContratoListMobile({ contratos }: ContratoListProps) {
             <Link href={`/contratos/${contrato.id}/edit`}>
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Pencil className="h-4 w-4" />
+              </Button>
+            </Link>
+ <Link href={`/contratos/${contrato.id}/view`}>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <View className="h-4 w-4" />
+              </Button>
+            </Link>
+ <Link href={`/contratos/${contrato.id}/recibos`}>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ReceiptText className="h-4 w-4" />
               </Button>
             </Link>
           </div>
