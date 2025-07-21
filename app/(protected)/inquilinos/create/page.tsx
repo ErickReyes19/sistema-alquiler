@@ -26,7 +26,7 @@ const initialData = {
     dni: "",
     telefono: "",
     correo: "",
-    fechaNacimiento: new date(),
+    fechaNacimiento: new Date(),
     activo: true,
 };
 
