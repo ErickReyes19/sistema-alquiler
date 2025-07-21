@@ -18,8 +18,6 @@ export interface UsuarioSesion extends JWTPayload {
     IdRol: string;
     Permiso: string[];
     DebeCambiar: boolean;
-    Puesto: string;
-    PuestoId: string;
     // exp, iss, aud ya vienen de JWTPayload
 }
 
@@ -216,25 +214,31 @@ export async function changePassword(
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
   
     // 3) Actualizar usando el id
-    const updated = await prisma.usuario.update({
-      where: { id: existing.id },
-      data: {
-        password: hashedPassword,
-        DebeCambiar: false,
-      },
-    });
+        const updated = await prisma.usuario.update({
+            where: { id: existing.id },
+            data: {
+                password: hashedPassword,
+                DebeCambiar: false,
+            },
+            include: {
+                rol: {
+                    include: {
+                        permisos: { include: { permiso: true } },
+                    },
+                },
+            },
+        });
 
     // 3) (Opcional) Reconstruye y devuelve un token nuevo
-    const permisos: string[] = []; // o vuelve a traer rol/permisos si quieres
+
+    const permisos = updated.rol.permisos.map((rp) => rp.permiso.nombre);
     const payload: UsuarioSesion = {
         IdUser: updated.id,
         User: updated.nombre,
-        Rol: "",      // o updated.rol.nombre si lo incluyes
+        Rol: updated.rol.nombre,      // o updated.rol.nombre si lo incluyes
         IdRol: updated.rolId,
         Permiso: permisos,
         DebeCambiar: updated.DebeCambiar,
-        Puesto: "",
-        PuestoId: "",
         exp: Math.floor(Date.now() / 1000) + 3600,
         iss: "your-issuer",
         aud: "your-audience",

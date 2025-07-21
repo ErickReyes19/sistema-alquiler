@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  output        = "../app/generated/prisma"
 }
 
 datasource db {
@@ -115,7 +116,7 @@ model Inquilino {
   dni             String
   numero          String
   correo          String
-  fechaNacimiento DateTime
+  fechaNacimiento DateTime       @db.DateTime(6) // armada a partir de "Dia"/"Mes"/"Año"
   createAt        DateTime       @default(now())
   updateAt        DateTime       @updatedAt
   activo          Boolean

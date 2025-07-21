@@ -7,9 +7,12 @@ export const InquilinoSchema = z.object({
   telefono: z.string().min(8, "El teléfono debe tener al menos 8 caracteres"),
   correo: z.string().email("Debe ser un correo válido").optional(),
   fechaNacimiento: z
-    .string()
-    .min(1, "La fecha de nacimiento es obligatoria")
-    .refine((s) => !Number.isNaN(Date.parse(s)), "Formato de fecha inválido"),
+    .date({
+      required_error: "La fecha de nacimiento es requerida",
+      invalid_type_error: "La fecha de nacimiento debe ser una fecha válida",
+    })
+    .refine((d) => d <= new Date(), "La fecha de nacimiento no puede ser futura"),
+
   activo: z.boolean().optional(),
 });
 

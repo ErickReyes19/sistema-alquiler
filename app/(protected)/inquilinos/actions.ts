@@ -14,12 +14,11 @@ export async function getInquilinos(): Promise<Inquilino[]> {
     activo:   r.activo,
     telefono: r.numero,
     correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento.toISOString(),
+    fechaNacimiento: r.fechaNacimiento,
     acompanantes: r.Acompañante.map(a => ({
       id:             a.id,
       nombreCompleto: a.nombreCompleto,
       parentesco:     a.Parentesco,
-      fechaNacimiento:a.createAt.toISOString(), // si guardas la fecha real, ajústalo
       activo:         a.activo,
     })),
   }));
@@ -38,12 +37,11 @@ export async function getInquilinosActivosSinContrato(): Promise<Inquilino[]> {
     activo:   r.activo,
     telefono: r.numero,
     correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento.toISOString(),
+    fechaNacimiento: r.fechaNacimiento,
     acompanantes: r.Acompañante.map(a => ({
       id:             a.id,
       nombreCompleto: a.nombreCompleto,
       parentesco:     a.Parentesco,
-      fechaNacimiento:a.createAt.toISOString(),
       activo:         a.activo,
     })),
   }));
@@ -62,12 +60,11 @@ export async function getInquilinoById(id: string): Promise<Inquilino | null> {
     activo:   r.activo,
     telefono: r.numero,
     correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento.toISOString(),
+    fechaNacimiento: r.fechaNacimiento,
     acompanantes: r.Acompañante.map(a => ({
       id:             a.id,
       nombreCompleto: a.nombreCompleto,
       parentesco:     a.Parentesco,
-      fechaNacimiento:a.createAt.toISOString(),
       activo:         a.activo,
     })),
   };
@@ -106,7 +103,7 @@ export async function postInquilino({
     activo:   created.activo,
     telefono: created.numero,
     correo:   created.correo,
-    fechaNacimiento: created.fechaNacimiento.toISOString(),
+    fechaNacimiento: created.fechaNacimiento,
     acompanantes: created.Acompañante.map(a => ({
       id:             a.id,
       nombreCompleto: a.nombreCompleto,
@@ -157,7 +154,7 @@ export async function putInquilino({
     activo:   updated.activo,
     telefono: updated.numero,
     correo:   updated.correo,
-    fechaNacimiento: updated.fechaNacimiento.toISOString(),
+    fechaNacimiento: updated.fechaNacimiento,
     acompanantes: updated.Acompañante.map(a => ({
       id:             a.id,
       nombreCompleto: a.nombreCompleto,

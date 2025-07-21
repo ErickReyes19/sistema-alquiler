@@ -21,15 +21,15 @@ export default async function EstadoServicio() {
   return (
     <div className="container mx-auto py-2">
       <HeaderComponent
-      Icon={ListCheck}
-      description="En este apartado podrá ver todos los inquilinos"
-      screenName="Inquilinos"
+        Icon={ListCheck}
+        description="En este apartado podrá ver todos los inquilinos"
+        screenName="Inquilinos"
       />
       <div className="hidden md:block">
-      <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={data} />
       </div>
       <div className="block md:hidden">
-      <InquilinoListMobile inquilinos={data} />
+        <InquilinoListMobile inquilinos={data} />
       </div>
     </div>
   );

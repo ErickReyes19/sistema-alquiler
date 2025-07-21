@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
         />
         <Link href={`/tipo-habitacion/create`} className="w-full md:w-auto">
           <Button className="w-full md:w-auto flex items-center gap-2">
-            Nuevo Rol
+            Nuevo tipo de habitación
             <Plus />
           </Button>
         </Link>

@@ -11,7 +11,7 @@ import type { InquilinoForm, Acompanante } from "../schema"
 import { postInquilino, putInquilino } from "../actions"
 import { useToast } from "@/hooks/use-toast"
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,7 +50,7 @@ export function FormularioInquilino({
       dni: "",
       telefono: "",
       correo: "",
-      fechaNacimiento: "",
+      fechaNacimiento: new Date(),
       activo: true,
       acompanantes: [],
     },
@@ -161,41 +161,42 @@ export function FormularioInquilino({
           />
 
           <FormField
-            control={control}
+            control={form.control}
             name="fechaNacimiento"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">Fecha de Nacimiento</FormLabel>
-                <FormControl>
-                  <Popover>
-                    <PopoverTrigger asChild>
+              <FormItem className="flex flex-col col-span-1">
+                <FormLabel>Fecha de nacimiento</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
+                          "w-[240px] pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(new Date(field.value), "PPP",  { locale: es }) : <span>Selecciona una fecha</span>}
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: es })
+                        ) : (
+                          <span>Selecciona una fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : new Date()}
-                      onSelect={(date) => {
-                        if (date) {
-                        const localDate = new Date(date.getTime() - date.getTimezoneOffset());
-                        const adjustedDate = new Date(localDate.getTime() + 6 * 60 * 60 * 1000); // Add 6 hours
-                        field.onChange(adjustedDate);
-                        }
-                      }}
-                      initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormControl>
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>Fecha de nacimiento del inquilino.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { Inquilino } from "../type";
+import { calcularEdad } from "@/lib/utils";
 
 export const columns: ColumnDef<Inquilino>[] = [
 
@@ -69,24 +70,41 @@ export const columns: ColumnDef<Inquilino>[] = [
       </Button>
     ),
   },
-  {
-    accessorKey: "fechaNacimiento",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Fecha Nacimiento
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const fechaNacimiento = row.getValue<string>("fechaNacimiento");
-      const fechaFormateada = new Date(fechaNacimiento).toLocaleDateString();
-      return <span>{fechaFormateada}</span>;
-    },
+{
+  accessorKey: "fechaNacimiento",
+  header: ({ column }) => (
+    <Button
+      variant="ghost"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      className="text-center"
+    >
+      Edad
+      <ArrowUpDown className="ml-2 h-4 w-4" />
+    </Button>
+  ),
+  cell: ({ row }) => {
+    // Puede venir string (del JSON) o Date (en memoria)
+    const fn = row.original.fechaNacimiento;
+    const fecha = typeof fn === "string" ? new Date(fn) : fn;
+
+    // Calcula años
+    const edad = calcularEdad(fecha);
+
+    // Formatea a string
+    const fechaFormateada = fecha.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    return (
+      <div className="text-center">
+        {fechaFormateada} ({edad} años)
+      </div>
+    );
   },
+}
+,
 
   {
     accessorKey: "activo",

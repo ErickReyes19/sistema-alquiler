@@ -11,7 +11,7 @@ export type Acompanante = {
     dni: string;
     telefono: string;
     correo?: string;
-    fechaNacimiento: string;
+    fechaNacimiento: Date;
     activo?: boolean;
     // <-- aquí añadimos el array de acompañantes
     acompanantes?: Acompanante[];

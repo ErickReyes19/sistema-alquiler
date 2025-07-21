@@ -56,7 +56,16 @@ export default function InquilinoListMobile({ inquilinos }: InquilinoListProps) 
             <p className="text-xs mt-1 truncate">DNI: {inquilino.dni}</p>
             <p className="text-xs truncate">Teléfono: {inquilino.telefono}</p>
             {inquilino.correo && <p className="text-xs truncate">Correo: {inquilino.correo}</p>}
-            <p className="text-xs truncate">Fecha de Nacimiento: {inquilino.fechaNacimiento}</p>
+            <p className="text-xs truncate">
+              Fecha de Nacimiento:{" "}
+              {new Date(inquilino.fechaNacimiento)
+                .toLocaleDateString("es-ES", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+            </p>
+
           </div>
           <div className="flex items-center ml-4">
             <Link href={`/inquilinos/${inquilino.id}/edit`}>

@@ -16,22 +16,34 @@ import {
     Wifi,
     Tv,
     X,
+    AirVent,
+    BrushCleaning,
+    WashingMachine,
 } from "lucide-react"
 import { ApartamentoView } from "../type"
+import { ca } from "date-fns/locale"
 
 
 // Componente para mostrar el ícono correspondiente a cada tipo de habitación
 const HabitacionIcon = ({ tipo }: { tipo: string }) => {
     switch (tipo.toLowerCase()) {
         case "dormitorio":
+        case "habitación":
+        case "cuarto":
             return <Bed className="h-5 w-5 text-primary" />
         case "sala":
+        case "living":
+        case "salón":
+        case "salón principal":
             return <Sofa className="h-5 w-5 text-primary" />
         case "cocina":
+        case "cocina-comedor":
             return <Kitchen className="h-5 w-5 text-primary" />
         case "comedor":
             return <Coffee className="h-5 w-5 text-primary" />
         case "baño":
+        case "baño completo":
+        case "baño compartido":
             return <ShowerHead className="h-5 w-5 text-primary" />
         default:
             return <DoorClosed className="h-5 w-5 text-primary" />
@@ -45,6 +57,14 @@ const ServicioIcon = ({ nombre }: { nombre: string }) => {
             return <Wifi className="h-5 w-5 text-primary" />
         case "cable":
             return <Tv className="h-5 w-5 text-primary" />
+        case "aire acondicionado":
+            return <AirVent className="h-5 w-5 text-primary" />
+        case "calefacción":
+            return <AirVent className="h-5 w-5 text-primary" />
+        case "limpieza":
+            return <BrushCleaning className="h-5 w-5 text-primary" />
+        case "lavanderia":
+            return <WashingMachine className="h-5 w-5 text-primary" />
         default:
             return <Home className="h-5 w-5 text-primary" />
     }
