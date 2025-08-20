@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Pencil } from "lucide-react";
+import { Search, Plus, Pencil, View } from "lucide-react";
 import { ReciboView } from "../type";
 
 interface ReciboListMobileProps {
@@ -75,9 +75,9 @@ export default function ReciboListMobile({
                 <Pencil className="h-4 w-4" />
               </Button>
             </Link>
-            <Link href={`/contratos/${contratoId}/recibos/${r.id}/print`}>
+            <Link href={`/contratos/${contratoId}/recibos/${r.id}/view`}>
               <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Pencil className="h-4 w-4 rotate-45" /> {/* reuse icon for print */}
+                <View className="h-4 w-4" /> {/* reuse icon for print */}
               </Button>
             </Link>
           </div>

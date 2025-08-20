@@ -15,9 +15,9 @@ async function main() {
     "ver_inquilinos", "crear_inquilino", "editar_inquilino",
     "ver_acompanantes", "editar_tipo_habitacion",
     "ver_tipos_habitacion", "crear_tipo_habitacion", "ver_apartamentos",
-    "crear_apartamento","editar_apartamento","crear_servicio","ver_servicios",
-    "editar_servicio","ver_contratos","crear_contrato","editar_contrato","ver_recibos",
-    "crear_recibo","editar_recibo"
+    "crear_apartamento", "editar_apartamento", "crear_servicio", "ver_servicios",
+    "editar_servicio", "ver_contratos", "crear_contrato", "editar_contrato", "ver_recibos",
+    "crear_recibo", "editar_recibo"
   ];
 
   // Seed Permisos
@@ -46,7 +46,9 @@ async function main() {
 
   // Seed Usuario Admin
   const email = "erickjosepineda33@gmail.com";
+  const email2 = "visitante@gmail.com";
   const hashedPassword = await bcrypt.hash("erick.reyes", 10);
+  const hashedPassword2 = await bcrypt.hash("visitante", 10);
   await prisma.usuario.upsert({
     where: { email },
     update: {},
@@ -54,6 +56,17 @@ async function main() {
       id: randomUUID(), nombre: "erick.reyes", email,
       password: hashedPassword, activo: true,
       rolId: rolAdmin.id, DebeCambiar: true
+    }
+  });
+
+  await prisma.usuario.upsert({
+    where: { email: email2 },
+    update: {},
+    create: {
+      id: randomUUID(), nombre: "visitante", 
+      email: email2,
+      password: hashedPassword2, activo: true,
+      rolId: rolAdmin.id, DebeCambiar: false
     }
   });
   console.log("✅ Usuario administrador seed completado");
