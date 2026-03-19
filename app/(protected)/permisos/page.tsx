@@ -26,8 +26,8 @@ export default async function EstadoServicio() {
     <div className="container mx-auto py-2">
       <HeaderComponent
         Icon={ListCheck}
-        description="En este apartado podrá ver todos los permisos"
-        screenName="Permisos"
+        description="En este apartado podrá ver el permiso"
+        screenName="Permiso"
       />
 
       <div className="hidden md:block">
