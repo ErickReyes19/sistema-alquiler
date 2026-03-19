@@ -1,21 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useRouter } from 'next/navigation';
 
-import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -24,20 +16,50 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+
+import { Servicio } from '../../servicios/type';
+import { TipoHabitacion } from '../../tipo-habitacion/type';
 import { postApartamentoCompleto, putApartamentoCompleto } from '../actions';
 import { ApartamentoSchema } from '../schema';
-import { Apartamento } from '../type';
-import { TipoHabitacion } from '../../tipo-habitacion/type';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import { Servicio } from '../../servicios/type';
+
+type ApartamentoFormValues = z.infer<typeof ApartamentoSchema>;
 
 interface Props {
   tipoHabitaciones: TipoHabitacion[];
   serviciosDisponibles: Servicio[];
-  initialData?: Apartamento;
+  initialData?: ApartamentoFormValues;
   isUpdate?: boolean;
 }
+
+const defaultValues: ApartamentoFormValues = {
+  numero: '',
+  direccion: '',
+  disponible: true,
+  activo: true,
+  habitaciones: [],
+  servicios: [],
+};
+
+const normalizeInitialData = (
+  initialData?: ApartamentoFormValues,
+): ApartamentoFormValues => ({
+  ...defaultValues,
+  ...initialData,
+  direccion: initialData?.direccion ?? '',
+  disponible: initialData?.disponible ?? true,
+  activo: initialData?.activo ?? true,
+  habitaciones: initialData?.habitaciones ?? [],
+  servicios: initialData?.servicios ?? [],
+});
 
 export default function ApartamentoForm({
   tipoHabitaciones,
@@ -48,16 +70,9 @@ export default function ApartamentoForm({
   const { toast } = useToast();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof ApartamentoSchema>>({
+  const form = useForm<ApartamentoFormValues>({
     resolver: zodResolver(ApartamentoSchema),
-    defaultValues: {
-      numero: '',
-      direccion: '',
-      disponible: true,
-      activo: true,
-      habitaciones: [],
-      servicios: [],
-    },
+    defaultValues,
   });
 
   const { control, handleSubmit, reset } = form;
@@ -73,34 +88,38 @@ export default function ApartamentoForm({
   });
 
   useEffect(() => {
-    if (initialData) reset(initialData as any);
+    reset(normalizeInitialData(initialData));
   }, [initialData, reset]);
 
-  const onSubmit = async (values: z.infer<typeof ApartamentoSchema>) => {
+  const saveApartamento = async (values: ApartamentoFormValues) => {
+    const payload = {
+      apartamento: values,
+      habitaciones: values.habitaciones,
+      servicios: values.servicios ?? [],
+    };
+
+    if (isUpdate && initialData?.id) {
+      return putApartamentoCompleto(payload);
+    }
+
+    return postApartamentoCompleto(payload);
+  };
+
+  const onSubmit = async (values: ApartamentoFormValues) => {
     try {
-      if (isUpdate && initialData?.id) {
-        await putApartamentoCompleto({
-          apartamento: values,
-          habitaciones: values.habitaciones || [],
-          servicios: values.servicios!,
-        });
-      } else {
-        await postApartamentoCompleto({
-          apartamento: values,
-          habitaciones: values.habitaciones || [],
-          servicios: values.servicios!,
-        });
-      }
+      await saveApartamento(values);
+
       toast({
         title: isUpdate ? 'Apartamento actualizado' : 'Apartamento creado',
         description: 'Operación exitosa.',
       });
       router.push('/apartamentos');
       router.refresh();
-    } catch {
+    } catch (error) {
       toast({
         title: 'Error',
-        description: 'Algo falló.',
+        description:
+          error instanceof Error ? error.message : 'No se pudo guardar el apartamento.',
         variant: 'destructive',
       });
     }
@@ -109,10 +128,9 @@ export default function ApartamentoForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {/* Datos del Apartamento */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Datos del Apartamento</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <FormField
               control={control}
               name="numero"
@@ -168,12 +186,11 @@ export default function ApartamentoForm({
           </div>
         </div>
 
-        {/* Habitaciones */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Habitaciones</h2>
           {habFields.map((field, idx) => (
-            <div key={field.id} className="p-4 border rounded-lg space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div key={field.id} className="space-y-4 rounded-lg border p-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <FormField
                   control={control}
                   name={`habitaciones.${idx}.tipoHabitacionId`}
@@ -231,21 +248,18 @@ export default function ApartamentoForm({
           <div className="flex justify-end">
             <Button
               type="button"
-              onClick={() =>
-                appendHab({ tipoHabitacionId: '', cantidad: 1, activo: true })
-              }
+              onClick={() => appendHab({ tipoHabitacionId: '', cantidad: 1, activo: true })}
             >
               Añadir Habitación
             </Button>
           </div>
         </div>
 
-        {/* Servicios */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Servicios</h2>
           {servFields.map((field, idx) => (
-            <div key={field.id} className="p-4 border rounded-lg space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div key={field.id} className="space-y-4 rounded-lg border p-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <FormField
                   control={control}
                   name={`servicios.${idx}.servicioId`}
@@ -258,9 +272,9 @@ export default function ApartamentoForm({
                             <SelectValue placeholder="Selecciona un servicio" />
                           </SelectTrigger>
                           <SelectContent>
-                            {serviciosDisponibles.map((s) => (
-                              <SelectItem key={s.id} value={s.id || ''}>
-                                {s.nombre}
+                            {serviciosDisponibles.map((servicio) => (
+                              <SelectItem key={servicio.id} value={servicio.id || ''}>
+                                {servicio.nombre}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -324,7 +338,6 @@ export default function ApartamentoForm({
           </div>
         </div>
 
-        {/* Botón de envío */}
         <div className="flex justify-end">
           <Button type="submit">
             {isUpdate ? 'Actualizar Apartamento' : 'Crear Apartamento'}

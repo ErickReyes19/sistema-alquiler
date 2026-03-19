@@ -1,73 +1,104 @@
 "use server";
-import { prisma } from "@/lib/prisma";
-import { Inquilino, Acompanante } from "./type";
+
 import { randomUUID } from "crypto";
 
-export async function getInquilinos(): Promise<Inquilino[]> {
-  const inquilinos = await prisma.inquilino.findMany({
-    include: { Acompañante: true },
-  });
-  return inquilinos.map((r) => ({
-    id:       r.id,
-    nombreCompleto:  r.nombreCompleto,
-    dni:      r.dni,
-    activo:   r.activo,
-    telefono: r.numero,
-    correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento,
-    acompanantes: r.Acompañante.map(a => ({
-      id:             a.id,
-      nombreCompleto: a.nombreCompleto,
-      parentesco:     a.Parentesco,
-      activo:         a.activo,
-    })),
+import { Prisma } from "@/app/generated/prisma";
+import { prisma } from "@/lib/prisma";
+import {
+  logServerActionError,
+  normalizeOptionalText,
+  requireEntityId,
+  resolveActivo,
+} from "@/lib/server-action-utils";
+
+import { Acompanante, Inquilino } from "./type";
+
+const inquilinoInclude = {
+  Acompañante: true,
+} as const;
+
+type InquilinoWithAcompanantes = Prisma.InquilinoGetPayload<{
+  include: typeof inquilinoInclude;
+}>;
+
+const mapInquilinoToDto = (inquilino: InquilinoWithAcompanantes): Inquilino => ({
+  id: inquilino.id,
+  nombreCompleto: inquilino.nombreCompleto,
+  dni: inquilino.dni,
+  activo: inquilino.activo,
+  telefono: inquilino.numero,
+  correo: inquilino.correo,
+  fechaNacimiento: inquilino.fechaNacimiento,
+  acompanantes: inquilino.Acompañante.map((acompanante) => ({
+    id: acompanante.id,
+    nombreCompleto: acompanante.nombreCompleto,
+    parentesco: acompanante.Parentesco,
+    activo: acompanante.activo,
+  })),
+});
+
+const buildAcompanantesCreateData = (acompanantes: Acompanante[]) =>
+  acompanantes.map((acompanante) => ({
+    id: acompanante.id ?? randomUUID(),
+    nombreCompleto: acompanante.nombreCompleto,
+    Parentesco: acompanante.parentesco,
+    activo: resolveActivo(acompanante.activo),
   }));
+
+const buildInquilinoData = (
+  inquilino: Inquilino & { acompanantes: Acompanante[] },
+) => ({
+  nombreCompleto: inquilino.nombreCompleto,
+  dni: inquilino.dni,
+  activo: resolveActivo(inquilino.activo),
+  numero: inquilino.telefono,
+  correo: normalizeOptionalText(inquilino.correo, "Sin Correo"),
+  fechaNacimiento: new Date(inquilino.fechaNacimiento),
+  Acompañante: {
+    create: buildAcompanantesCreateData(inquilino.acompanantes),
+  },
+});
+
+async function findInquilinos(where?: { activo?: boolean }): Promise<Inquilino[]> {
+  const inquilinos = await prisma.inquilino.findMany({
+    where,
+    include: inquilinoInclude,
+    orderBy: { nombreCompleto: "asc" },
+  });
+
+  return inquilinos.map(mapInquilinoToDto);
 }
+
+export async function getInquilinos(): Promise<Inquilino[]> {
+  try {
+    return await findInquilinos();
+  } catch (error) {
+    logServerActionError("getInquilinos", error);
+    return [];
+  }
+}
+
 export async function getInquilinosActivosSinContrato(): Promise<Inquilino[]> {
-  const inquilinos = await prisma.inquilino.findMany({
-    where: {
-      activo: true,
-    },
-    include: { Acompañante: true },
-  });
-  return inquilinos.map((r) => ({
-    id:       r.id,
-    nombreCompleto:  r.nombreCompleto,
-    dni:      r.dni,
-    activo:   r.activo,
-    telefono: r.numero,
-    correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento,
-    acompanantes: r.Acompañante.map(a => ({
-      id:             a.id,
-      nombreCompleto: a.nombreCompleto,
-      parentesco:     a.Parentesco,
-      activo:         a.activo,
-    })),
-  }));
+  try {
+    return await findInquilinos({ activo: true });
+  } catch (error) {
+    logServerActionError("getInquilinosActivosSinContrato", error);
+    return [];
+  }
 }
 
 export async function getInquilinoById(id: string): Promise<Inquilino | null> {
-  const r = await prisma.inquilino.findUnique({
-    where: { id },
-    include: { Acompañante: true },
-  });
-  if (!r) return null;
-  return {
-    id:       r.id,
-    nombreCompleto:  r.nombreCompleto,
-    dni:      r.dni,
-    activo:   r.activo,
-    telefono: r.numero,
-    correo:   r.correo,
-    fechaNacimiento: r.fechaNacimiento,
-    acompanantes: r.Acompañante.map(a => ({
-      id:             a.id,
-      nombreCompleto: a.nombreCompleto,
-      parentesco:     a.Parentesco,
-      activo:         a.activo,
-    })),
-  };
+  try {
+    const inquilino = await prisma.inquilino.findUnique({
+      where: { id },
+      include: inquilinoInclude,
+    });
+
+    return inquilino ? mapInquilinoToDto(inquilino) : null;
+  } catch (error) {
+    logServerActionError("getInquilinoById", error);
+    return null;
+  }
 }
 
 export async function postInquilino({
@@ -75,42 +106,20 @@ export async function postInquilino({
 }: {
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
-  const created = await prisma.inquilino.create({
-    data: {
-      id:             inquilino.id ?? randomUUID(),
-      nombreCompleto: inquilino.nombreCompleto,
-      dni:            inquilino.dni,
-      activo:         inquilino.activo ?? true,
-      numero:         inquilino.telefono,
-      correo:         inquilino.correo ?? "Sin Correo",
-      fechaNacimiento:new Date(inquilino.fechaNacimiento),
-      Acompañante: {
-        create: inquilino.acompanantes.map(a => ({
-          id:             a.id ?? randomUUID(),
-          nombreCompleto: a.nombreCompleto,
-          Parentesco:     a.parentesco,
-          activo:         a.activo ?? true,
-        })),
+  try {
+    const created = await prisma.inquilino.create({
+      data: {
+        id: inquilino.id ?? randomUUID(),
+        ...buildInquilinoData(inquilino),
       },
-    },
-    include: { Acompañante: true },
-  });
+      include: inquilinoInclude,
+    });
 
-  return {
-    id:       created.id,
-    nombreCompleto:  created.nombreCompleto,
-    dni:      created.dni,
-    activo:   created.activo,
-    telefono: created.numero,
-    correo:   created.correo,
-    fechaNacimiento: created.fechaNacimiento,
-    acompanantes: created.Acompañante.map(a => ({
-      id:             a.id,
-      nombreCompleto: a.nombreCompleto,
-      parentesco:     a.Parentesco,
-      activo:         a.activo,
-    })),
-  };
+    return mapInquilinoToDto(created);
+  } catch (error) {
+    logServerActionError("postInquilino", error);
+    return null;
+  }
 }
 
 export async function putInquilino({
@@ -118,48 +127,24 @@ export async function putInquilino({
 }: {
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
-  if (!inquilino.id) throw new Error("ID es obligatorio para actualizar.");
+  try {
+    const inquilinoId = requireEntityId(inquilino.id, "inquilino");
 
-  // Estrategia: borrar los viejos y crear los nuevos.
-  // Otra opción: hacer upsert individual por cada acompañante.
-  await prisma.acompañante.deleteMany({
-    where: { inquilinoId: inquilino.id },
-  });
+    const updated = await prisma.$transaction(async (tx) => {
+      await tx.acompañante.deleteMany({
+        where: { inquilinoId },
+      });
 
-  const updated = await prisma.inquilino.update({
-    where: { id: inquilino.id },
-    data: {
-      nombreCompleto: inquilino.nombreCompleto,
-      dni:            inquilino.dni,
-      activo:         inquilino.activo ?? true,
-      numero:         inquilino.telefono,
-      correo:         inquilino.correo ?? "Sin Correo",
-      fechaNacimiento:new Date(inquilino.fechaNacimiento),
-      Acompañante: {
-        create: inquilino.acompanantes.map(a => ({
-          id:             a.id ?? randomUUID(),
-          nombreCompleto: a.nombreCompleto,
-          Parentesco:     a.parentesco,
-          activo:         a.activo ?? true,
-        })),
-      },
-    },
-    include: { Acompañante: true },
-  });
+      return tx.inquilino.update({
+        where: { id: inquilinoId },
+        data: buildInquilinoData(inquilino),
+        include: inquilinoInclude,
+      });
+    });
 
-  return {
-    id:       updated.id,
-    nombreCompleto:  updated.nombreCompleto,
-    dni:      updated.dni,
-    activo:   updated.activo,
-    telefono: updated.numero,
-    correo:   updated.correo,
-    fechaNacimiento: updated.fechaNacimiento,
-    acompanantes: updated.Acompañante.map(a => ({
-      id:             a.id,
-      nombreCompleto: a.nombreCompleto,
-      parentesco:     a.Parentesco,
-      activo:         a.activo,
-    })),
-  };
+    return mapInquilinoToDto(updated);
+  } catch (error) {
+    logServerActionError("putInquilino", error);
+    return null;
+  }
 }

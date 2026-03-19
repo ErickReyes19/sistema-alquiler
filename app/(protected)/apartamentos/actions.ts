@@ -1,8 +1,121 @@
 'use server'
-import { prisma } from '@/lib/prisma'
-import { Apartamento, ApartamentoServicio, ApartamentoView, Habitacion } from './type'
 
-// Crear un nuevo apartamento con sus habitaciones y servicios asociados
+import { prisma } from '@/lib/prisma'
+
+import {
+  Apartamento,
+  ApartamentoServicio,
+  ApartamentoView,
+  Habitacion,
+} from './type'
+
+const apartamentoInclude = {
+  apartamento: true,
+  ApartamentoServicios: true,
+} as const
+
+const apartamentoViewInclude = {
+  apartamento: {
+    include: {
+      tipoHabitacion: true,
+    },
+  },
+  ApartamentoServicios: {
+    include: {
+      servicio: true,
+    },
+  },
+} as const
+
+const mapHabitacion = (habitacion: {
+  id: string
+  apartamentoId: string
+  tipoHabitacionId: string
+  cantidad: number
+  activo: boolean
+}): Habitacion => ({
+  id: habitacion.id,
+  apartamentoId: habitacion.apartamentoId,
+  tipoHabitacionId: habitacion.tipoHabitacionId,
+  cantidad: habitacion.cantidad,
+  activo: habitacion.activo,
+})
+
+const mapApartamentoServicio = (servicio: {
+  id: string
+  apartamentoId: string
+  servicioId: string
+  incluido: boolean
+  costoAdicional: { toString(): string } | number
+}): ApartamentoServicio => ({
+  id: servicio.id,
+  apartamentoId: servicio.apartamentoId,
+  servicioId: servicio.servicioId,
+  incluido: servicio.incluido,
+  costoAdicional: Number(servicio.costoAdicional),
+})
+
+const mapApartamentoCompleto = (apartamento: {
+  id: string
+  numero: string
+  direccion: string | null
+  disponible: boolean
+  activo: boolean
+  apartamento: Array<Parameters<typeof mapHabitacion>[0]>
+  ApartamentoServicios: Array<Parameters<typeof mapApartamentoServicio>[0]>
+}): Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] } => ({
+  id: apartamento.id,
+  numero: apartamento.numero,
+  direccion: apartamento.direccion ?? undefined,
+  disponible: apartamento.disponible,
+  activo: apartamento.activo,
+  habitaciones: apartamento.apartamento.map(mapHabitacion),
+  servicios: apartamento.ApartamentoServicios.map(mapApartamentoServicio),
+})
+
+const buildApartamentoData = (apartamento: Apartamento) => ({
+  numero: apartamento.numero,
+  direccion: apartamento.direccion ?? undefined,
+  disponible: apartamento.disponible ?? true,
+  activo: apartamento.activo ?? true,
+})
+
+const buildHabitacionesCreateData = (habitaciones: Habitacion[]) =>
+  habitaciones.map((habitacion) => ({
+    tipoHabitacionId: habitacion.tipoHabitacionId,
+    cantidad: habitacion.cantidad,
+    activo: habitacion.activo ?? true,
+  }))
+
+const buildServiciosCreateData = (servicios: ApartamentoServicio[]) =>
+  servicios.map((servicio) => ({
+    servicioId: servicio.servicioId,
+    incluido: servicio.incluido ?? true,
+    costoAdicional: servicio.costoAdicional ?? 0,
+  }))
+
+const buildHabitacionesCreateManyData = (
+  apartamentoId: string,
+  habitaciones: Habitacion[],
+) =>
+  habitaciones.map((habitacion) => ({
+    apartamentoId,
+    tipoHabitacionId: habitacion.tipoHabitacionId,
+    cantidad: habitacion.cantidad,
+    activo: habitacion.activo ?? true,
+  }))
+
+const buildServiciosCreateManyData = (
+  apartamentoId: string,
+  servicios: ApartamentoServicio[],
+) =>
+  servicios.map((servicio) => ({
+    apartamentoId,
+    servicioId: servicio.servicioId,
+    incluido: servicio.incluido ?? true,
+    costoAdicional: servicio.costoAdicional ?? 0,
+  }))
+
 export async function postApartamentoCompleto({
   apartamento,
   habitaciones,
@@ -13,38 +126,27 @@ export async function postApartamentoCompleto({
   servicios: ApartamentoServicio[]
 }): Promise<boolean> {
   try {
-    const created = await prisma.apartamento.create({
+    await prisma.apartamento.create({
       data: {
-        numero: apartamento.numero,
-        direccion: apartamento.direccion ?? undefined,
-        disponible: apartamento.disponible ?? true,
-        activo: apartamento.activo ?? true,
+        ...buildApartamentoData(apartamento),
         apartamento: {
-          create: habitaciones.map((h) => ({
-            tipoHabitacionId: h.tipoHabitacionId,
-            cantidad: h.cantidad,
-            activo: h.activo ?? true,
-          })),
+          create: buildHabitacionesCreateData(habitaciones),
         },
         ApartamentoServicios: servicios.length
           ? {
-              create: servicios.map((s) => ({
-                servicioId: s.servicioId,
-                incluido: s.incluido ?? true,
-                costoAdicional: s.costoAdicional ?? 0,
-              })),
+              create: buildServiciosCreateData(servicios),
             }
           : undefined,
       },
     })
+
     return true
-  } catch (e) {
-    console.error('Error al crear apartamento completo:', e)
-    return false
+  } catch (error) {
+    console.error('Error al crear apartamento completo:', error)
+    throw new Error('No se pudo crear el apartamento.')
   }
 }
 
-// Actualizar un apartamento: recrea habitaciones y servicios
 export async function putApartamentoCompleto({
   apartamento,
   habitaciones,
@@ -54,156 +156,105 @@ export async function putApartamentoCompleto({
   habitaciones: Habitacion[]
   servicios: ApartamentoServicio[]
 }): Promise<boolean> {
+  if (!apartamento.id) {
+    throw new Error('El ID del apartamento es obligatorio para actualizar.')
+  }
+
   try {
-    // borrar existencias
-    await prisma.apartamentoServicios.deleteMany({ where: { apartamentoId: apartamento.id! } })
-    await prisma.habitaciones.deleteMany({ where: { apartamentoId: apartamento.id! } })
-    // actualizar datos
-    await prisma.apartamento.update({
-      where: { id: apartamento.id! },
-      data: {
-        numero: apartamento.numero,
-        direccion: apartamento.direccion ?? undefined,
-        disponible: apartamento.disponible ?? true,
-        activo: apartamento.activo ?? true,
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.apartamentoServicios.deleteMany({
+        where: { apartamentoId: apartamento.id! },
+      })
+      await tx.habitaciones.deleteMany({
+        where: { apartamentoId: apartamento.id! },
+      })
+
+      await tx.apartamento.update({
+        where: { id: apartamento.id! },
+        data: buildApartamentoData(apartamento),
+      })
+
+      if (habitaciones.length) {
+        await tx.habitaciones.createMany({
+          data: buildHabitacionesCreateManyData(apartamento.id!, habitaciones),
+        })
+      }
+
+      if (servicios.length) {
+        await tx.apartamentoServicios.createMany({
+          data: buildServiciosCreateManyData(apartamento.id!, servicios),
+        })
+      }
     })
-    // recrear habitaciones
-    if (habitaciones.length) {
-      await prisma.habitaciones.createMany({
-        data: habitaciones.map((h) => ({
-          apartamentoId: apartamento.id!,
-          tipoHabitacionId: h.tipoHabitacionId,
-          cantidad: h.cantidad,
-          activo: h.activo ?? true,
-        })),
-      })
-    }
-    // recrear servicios
-    if (servicios.length) {
-      await prisma.apartamentoServicios.createMany({
-        data: servicios.map((s) => ({
-          apartamentoId: apartamento.id!,
-          servicioId: s.servicioId,
-          incluido: s.incluido ?? true,
-          costoAdicional: s.costoAdicional ?? 0,
-        })),
-      })
-    }
+
     return true
-  } catch (e) {
-    console.error('Error al actualizar apartamento completo:', e)
-    return false
+  } catch (error) {
+    console.error('Error al actualizar apartamento completo:', error)
+    throw new Error('No se pudo actualizar el apartamento.')
   }
 }
 
-// Obtener todos los apartamentos con sus habitaciones y servicios
 export async function getApartamentosCompleto(): Promise<
   (Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] })[]
 > {
   try {
-    const list = await prisma.apartamento.findMany({
+    const apartamentos = await prisma.apartamento.findMany({
       where: { activo: true },
-      include: { apartamento: true, ApartamentoServicios: true },
+      include: apartamentoInclude,
     })
-    return list.map((a) => ({
-      id: a.id,
-      numero: a.numero,
-      direccion: a.direccion ?? undefined,
-      disponible: a.disponible,
-      activo: a.activo,
-      habitaciones: a.apartamento.map((h) => ({
-        id: h.id,
-        apartamentoId: h.apartamentoId,
-        tipoHabitacionId: h.tipoHabitacionId,
-        cantidad: h.cantidad,
-        activo: h.activo,
-      })),
-      servicios: a.ApartamentoServicios.map((s) => ({
-        id: s.id,
-        apartamentoId: s.apartamentoId,
-        servicioId: s.servicioId,
-        incluido: s.incluido,
-        costoAdicional: Number(s.costoAdicional),
-      })),
-    }))
-  } catch (e) {
-    console.error('Error al obtener apartamentos completos:', e)
+
+    return apartamentos.map(mapApartamentoCompleto)
+  } catch (error) {
+    console.error('Error al obtener apartamentos completos:', error)
     return []
   }
 }
 
-// Obtener servicios activos
 export async function getServiciosActivos(): Promise<{ id: string; nombre: string }[]> {
   try {
     const servicios = await prisma.servicios.findMany({
       where: { activo: true },
+      orderBy: { nombre: 'asc' },
+      select: {
+        id: true,
+        nombre: true,
+      },
     })
-    return servicios.map((s) => ({ id: s.id, nombre: s.nombre }))
-  } catch (e) {
-    console.error('Error al obtener servicios activos:', e)
+
+    return servicios
+  } catch (error) {
+    console.error('Error al obtener servicios activos:', error)
     return []
   }
 }
 
-// Obtener datos de un apartamento por ID (completo)
 export async function getApartamentoCompletoById(
-  id: string
+  id: string,
 ): Promise<(Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] }) | null> {
   try {
-    const a = await prisma.apartamento.findUnique({
+    const apartamento = await prisma.apartamento.findUnique({
       where: { id },
-      include: { apartamento: true, ApartamentoServicios: true },
+      include: apartamentoInclude,
     })
-    if (!a) return null
-    return {
-      id: a.id,
-      numero: a.numero,
-      direccion: a.direccion ?? undefined,
-      disponible: a.disponible,
-      activo: a.activo,
-      habitaciones: a.apartamento.map((h) => ({
-        id: h.id,
-        apartamentoId: h.apartamentoId,
-        tipoHabitacionId: h.tipoHabitacionId,
-        cantidad: h.cantidad,
-        activo: h.activo,
-      })),
-      servicios: a.ApartamentoServicios.map((s) => ({
-        id: s.id,
-        apartamentoId: s.apartamentoId,
-        servicioId: s.servicioId,
-        incluido: s.incluido,
-        costoAdicional: Number(s.costoAdicional),
-      })),
-    }
-  } catch (e) {
-    console.error('Error al obtener apartamento completo por ID:', e)
+
+    return apartamento ? mapApartamentoCompleto(apartamento) : null
+  } catch (error) {
+    console.error('Error al obtener apartamento completo por ID:', error)
     return null
   }
 }
+
 export async function getApartamentoCompletoConId(
-  id: string
+  id: string,
 ): Promise<ApartamentoView | null> {
   try {
     const apartamento = await prisma.apartamento.findUnique({
       where: { id },
-      include: {
-        apartamento: {
-          include: {
-            tipoHabitacion: true,
-          },
-        },
-        ApartamentoServicios: {
-          include: {
-            servicio: true,
-          },
-        },
-      },
-    });
+      include: apartamentoViewInclude,
+    })
 
     if (!apartamento) {
-      return null;
+      return null
     }
 
     return {
@@ -212,24 +263,23 @@ export async function getApartamentoCompletoConId(
       direccion: apartamento.direccion ?? undefined,
       disponible: apartamento.disponible,
       activo: apartamento.activo,
-      habitaciones: apartamento.apartamento.map((h) => ({
-        id: h.id,
-        tipoHabitacionId: h.tipoHabitacionId,
-        tipoHabitacionNombre: h.tipoHabitacion.nombre,
-        cantidad: h.cantidad,
-        activo: h.activo,
+      habitaciones: apartamento.apartamento.map((habitacion) => ({
+        id: habitacion.id,
+        tipoHabitacionId: habitacion.tipoHabitacionId,
+        tipoHabitacionNombre: habitacion.tipoHabitacion.nombre,
+        cantidad: habitacion.cantidad,
+        activo: habitacion.activo,
       })),
-      servicios: apartamento.ApartamentoServicios.map((s) => ({
-        id: s.id,
-        servicioId: s.servicioId,
-        servicioNombre: s.servicio.nombre,
-        incluido: s.incluido,
-        costoAdicional: Number(s.costoAdicional),
+      servicios: apartamento.ApartamentoServicios.map((servicio) => ({
+        id: servicio.id,
+        servicioId: servicio.servicioId,
+        servicioNombre: servicio.servicio.nombre,
+        incluido: servicio.incluido,
+        costoAdicional: Number(servicio.costoAdicional),
       })),
-    };
-  } catch (e) {
-    console.error('Error al obtener apartamento completo con ID:', e);
-    return null;
+    }
+  } catch (error) {
+    console.error('Error al obtener apartamento completo con ID:', error)
+    return null
   }
 }
-

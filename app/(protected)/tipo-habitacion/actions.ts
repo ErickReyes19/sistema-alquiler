@@ -1,103 +1,100 @@
 'use server'
-import { prisma } from "@/lib/prisma";
-import { TipoHabitacion } from "./type";
+
+import { prisma } from '@/lib/prisma'
+import {
+  logServerActionError,
+  requireEntityId,
+  resolveActivo,
+} from '@/lib/server-action-utils'
+
+import { TipoHabitacion } from './type'
+
+const mapTipoHabitacionToDto = (tipoHabitacion: {
+  id: string
+  nombre: string
+  activo: boolean
+}): TipoHabitacion => ({
+  id: tipoHabitacion.id,
+  nombre: tipoHabitacion.nombre,
+  activo: tipoHabitacion.activo,
+})
+
+async function findTiposHabitacion(where?: { activo?: boolean }): Promise<TipoHabitacion[]> {
+  const tiposHabitacion = await prisma.tiposHabitacion.findMany({
+    where,
+    orderBy: { nombre: 'asc' },
+  })
+
+  return tiposHabitacion.map(mapTipoHabitacionToDto)
+}
+
+const buildTipoHabitacionData = (tipoHabitacion: TipoHabitacion) => ({
+  nombre: tipoHabitacion.nombre,
+  activo: resolveActivo(tipoHabitacion.activo),
+})
 
 export async function getTiposHabitacion(): Promise<TipoHabitacion[]> {
   try {
-    const tipos = await prisma.tiposHabitacion.findMany();
-
-    // Mapear al DTO
-    return tipos.map((t) => ({
-      id: t.id,
-      nombre: t.nombre,
-      activo: t.activo,
-    }));
+    return await findTiposHabitacion()
   } catch (error) {
-    console.error("Error al obtener los tipos de habitación:", error);
-    return [];
+    logServerActionError('getTiposHabitacion', error)
+    return []
   }
 }
 
 export async function getTiposHabitacionActivos(): Promise<TipoHabitacion[]> {
   try {
-    const tipos = await prisma.tiposHabitacion.findMany({
-      where: {
-        activo: true,
-      },
-    });
-
-    return tipos.map((t) => ({
-      id: t.id,
-      nombre: t.nombre,
-      activo: t.activo,
-    }));
+    return await findTiposHabitacion({ activo: true })
   } catch (error) {
-    console.error("Error al obtener los tipos de habitación activos:", error);
-    return [];
+    logServerActionError('getTiposHabitacionActivos', error)
+    return []
   }
 }
-
 
 export async function putTipoHabitacion({
   tipoHabitacion,
 }: {
-  tipoHabitacion: TipoHabitacion;
+  tipoHabitacion: TipoHabitacion
 }): Promise<boolean> {
   try {
     await prisma.tiposHabitacion.update({
-      where: { id: tipoHabitacion.id! },
-      data: {
-        nombre: tipoHabitacion.nombre,
-        activo: tipoHabitacion.activo ?? true,
-      },
-    });
+      where: { id: requireEntityId(tipoHabitacion.id, 'tipo de habitación') },
+      data: buildTipoHabitacionData(tipoHabitacion),
+    })
 
-    return true;
+    return true
   } catch (error) {
-    console.error("Error al actualizar el tipo de habitación:", error);
-    return false;
+    logServerActionError('putTipoHabitacion', error)
+    return false
   }
 }
 
 export async function postTipoHabitacion({
   tipoHabitacion,
 }: {
-  tipoHabitacion: TipoHabitacion;
+  tipoHabitacion: TipoHabitacion
 }): Promise<boolean> {
   try {
     await prisma.tiposHabitacion.create({
-      data: {
-        nombre: tipoHabitacion.nombre,
-        activo: tipoHabitacion.activo ?? true,
-      },
-    });
-    return true;
+      data: buildTipoHabitacionData(tipoHabitacion),
+    })
+
+    return true
   } catch (error) {
-    console.error("Error al crear el tipo de habitación:", error);
-    return false;
+    logServerActionError('postTipoHabitacion', error)
+    return false
   }
 }
-
 
 export async function getTipoHabitacionById(id: string): Promise<TipoHabitacion | null> {
   try {
-    const tipo = await prisma.tiposHabitacion.findUnique({
+    const tipoHabitacion = await prisma.tiposHabitacion.findUnique({
       where: { id },
-    });
+    })
 
-    if (!tipo) {
-      return null;
-    }
-
-    return {
-      id: tipo.id,
-      nombre: tipo.nombre,
-      activo: tipo.activo,
-    };
+    return tipoHabitacion ? mapTipoHabitacionToDto(tipoHabitacion) : null
   } catch (error) {
-    console.error("Error al obtener el tipo de habitación por ID:", error);
-    return null;
+    logServerActionError('getTipoHabitacionById', error)
+    return null
   }
 }
-
-
