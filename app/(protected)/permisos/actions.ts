@@ -1,44 +1,49 @@
+"use server";
 
 import { prisma } from "@/lib/prisma";
-import { Permiso as PermisoDTO } from "./type";
-import { PermisosRol } from "../roles/type";
 
-/**
- * Obtiene los permisos y los transforma a DTO
- */
+import { PermisosRol } from "../roles/type";
+import { Permiso as PermisoDTO } from "./type";
+
+const mapPermisoToDto = (permiso: {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  activo: boolean;
+}): PermisoDTO => ({
+  id: permiso.id,
+  nombre: permiso.nombre,
+  descripcion: permiso.descripcion,
+  activo: permiso.activo,
+});
+
+async function findActivePermisos(): Promise<PermisoDTO[]> {
+  const permisos = await prisma.permiso.findMany({
+    where: { activo: true },
+  });
+
+  return permisos.map(mapPermisoToDto);
+}
+
 export async function getPermisos(): Promise<PermisoDTO[]> {
   try {
-    const permisos = await prisma.permiso.findMany({
-      where: { activo: true }
-    });
-
-    // Mapear al DTO para exponer sólo los campos necesarios
-    return permisos.map((p) => ({
-      id: p.id,
-      nombre: p.nombre,
-      descripcion: p.descripcion,
-      activo: p.activo,
-    }));
+    return await findActivePermisos();
   } catch (error) {
     console.error("Error al obtener los permisos:", error);
     return [];
   }
 }
+
 export async function getPermisosForRoles(): Promise<PermisosRol[]> {
   try {
-    const permisos = await prisma.permiso.findMany({
-      where: { activo: true }
-    });
+    const permisos = await findActivePermisos();
 
-    // Mapear al DTO para exponer sólo los campos necesarios
-    return permisos.map((p) => ({
-      id: p.id,
-      nombre: p.nombre,
-      descripcion: p.descripcion,
-      activo: p.activo,
+    return permisos.map(({ id, nombre }) => ({
+      id: id!,
+      nombre,
     }));
   } catch (error) {
-    console.error("Error al obtener los permisos:", error);
+    console.error("Error al obtener los permisos para roles:", error);
     return [];
   }
 }
