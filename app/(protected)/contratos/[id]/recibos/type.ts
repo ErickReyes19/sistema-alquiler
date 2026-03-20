@@ -1,4 +1,4 @@
-import { Decimal } from "@/app/generated/prisma/runtime/library";
+import { Decimal } from "@/lib/generated/prisma/runtime/library";
 
 // Recibo básico
 export type Recibo = {
