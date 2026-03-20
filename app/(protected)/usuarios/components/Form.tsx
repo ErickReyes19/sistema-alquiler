@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postUsuario, putUsuario } from "../actions";
@@ -41,6 +42,7 @@ export function Formulario({
 }) {
   const { toast } = useToast();
   const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Usamos Zod para resolver la validación
   const form = useForm<z.infer<typeof UsuarioSchema>>({
@@ -62,21 +64,33 @@ export function Formulario({
 
       if (isUpdate) {
         await putUsuario({ usuario: usuarioData as UsuarioUpdate });
-      } else {
-        const result = await postUsuario({ usuario: usuarioData as UsuarioCreate });
-        passwordTemporal = result.passwordTemporal;
+        setSuccessMessage("");
+
+        toast({
+          title: "Actualización Exitosa",
+          description: "El usuario ha sido actualizado.",
+        });
+
+        router.push("/usuarios");
+        router.refresh();
+        return;
       }
 
-      toast({
-        title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
-        description: isUpdate
-          ? "El usuario ha sido actualizado."
-          : `El usuario ha sido creado. ${buildTemporaryPasswordMessage(passwordTemporal ?? "temporal-no-disponible")}`,
+      const result = await postUsuario({ usuario: usuarioData as UsuarioCreate });
+      passwordTemporal = result.passwordTemporal;
+      setSuccessMessage(buildTemporaryPasswordMessage(passwordTemporal));
+      form.reset({
+        usuario: "",
+        email: "",
+        rol_id: "",
       });
 
-      router.push("/usuarios");
-      router.refresh();
+      toast({
+        title: "Creación Exitosa",
+        description: "El usuario ha sido creado.",
+      });
     } catch (error) {
+      setSuccessMessage("");
       console.error("Error en la operación:", error);
       toast({
         title: "Error",
@@ -197,6 +211,11 @@ export function Formulario({
             )}
           </Button>
         </div>
+        {successMessage ? (
+          <p className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+            {successMessage}
+          </p>
+        ) : null}
       </form>
     </Form>
   );
