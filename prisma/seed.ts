@@ -1,4 +1,4 @@
-import { PrismaClient, TipoUsuario } from "../app/generated/prisma";
+import { PrismaClient, TipoUsuario } from "../lib/generated/prisma";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 

@@ -4,7 +4,7 @@ import { randomUUID } from "crypto"
 
 import bcrypt from "bcryptjs"
 
-import { TipoUsuario } from "@/app/generated/prisma"
+import { TipoUsuario } from "@/lib/generated/prisma"
 import { prisma } from "@/lib/prisma"
 import { requireTenantSession } from "@/lib/tenant-session"
 
