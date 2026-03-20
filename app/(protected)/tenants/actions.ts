@@ -2,7 +2,7 @@
 
 import { randomUUID } from "crypto"
 
-import { Prisma, TipoUsuario } from "@/app/generated/prisma"
+import { Prisma, TipoUsuario } from "@/lib/generated/prisma"
 import { prisma } from "@/lib/prisma"
 import { ROOT_PERMISSION_NAMES, SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
 import { requireTenantSession } from "@/lib/tenant-session"
