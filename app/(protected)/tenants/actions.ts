@@ -4,7 +4,7 @@ import { randomUUID } from "crypto"
 
 import { Prisma, TipoUsuario } from "@/lib/generated/prisma"
 import { prisma } from "@/lib/prisma"
-import { ROOT_PERMISSION_NAMES, SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
+import { SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
 import { requireTenantSession } from "@/lib/tenant-session"
 
 export type TenantListItem = {
@@ -63,15 +63,6 @@ export async function createTenant(input: { nombre: string; slug: string }) {
         activo: true,
         esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
       }))
-      const rootPermissionRecords = ROOT_PERMISSION_NAMES.map((permissionName) => ({
-        id: randomUUID(),
-        tenantId,
-        nombre: permissionName,
-        descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-        activo: true,
-        esPermisoSistema: true,
-      }))
-
       const createdTenant = await tx.tenant.create({
         data: {
           id: tenantId,
@@ -82,7 +73,7 @@ export async function createTenant(input: { nombre: string; slug: string }) {
       })
 
       await tx.permiso.createMany({
-        data: [...tenantPermissionRecords, ...rootPermissionRecords],
+        data: tenantPermissionRecords,
       })
 
       await tx.rol.create({
