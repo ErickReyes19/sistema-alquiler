@@ -6,6 +6,7 @@ import {
   requireEntityId,
   resolveActivo,
 } from '@/lib/server-action-utils'
+import { buildTenantWhere, getTenantIdFromSession } from '@/lib/tenant-session'
 
 import { Servicio } from './type'
 
@@ -21,7 +22,7 @@ const mapServicioToDto = (servicio: {
 
 async function findServicios(where?: { activo?: boolean }): Promise<Servicio[]> {
   const servicios = await prisma.servicios.findMany({
-    where,
+    where: await buildTenantWhere(where),
     orderBy: { nombre: 'asc' },
   })
 
@@ -53,10 +54,16 @@ export async function getServiciosActivos(): Promise<Servicio[]> {
 
 export async function putServicio({ servicio }: { servicio: Servicio }): Promise<boolean> {
   try {
-    await prisma.servicios.update({
-      where: { id: requireEntityId(servicio.id, 'servicio') },
+    const tenantId = await getTenantIdFromSession()
+    const servicioId = requireEntityId(servicio.id, 'servicio')
+    const updated = await prisma.servicios.updateMany({
+      where: { id: servicioId, tenantId },
       data: buildServicioData(servicio),
     })
+
+    if (updated.count === 0) {
+      throw new Error('Servicio no encontrado para el tenant actual.')
+    }
 
     return true
   } catch (error) {
@@ -67,8 +74,12 @@ export async function putServicio({ servicio }: { servicio: Servicio }): Promise
 
 export async function postservicio({ servicio }: { servicio: Servicio }): Promise<boolean> {
   try {
+    const tenantId = await getTenantIdFromSession()
     await prisma.servicios.create({
-      data: buildServicioData(servicio),
+      data: {
+        ...buildServicioData(servicio),
+        tenantId,
+      },
     })
 
     return true
@@ -80,8 +91,8 @@ export async function postservicio({ servicio }: { servicio: Servicio }): Promis
 
 export async function getServicioById(id: string): Promise<Servicio | null> {
   try {
-    const servicio = await prisma.servicios.findUnique({
-      where: { id },
+    const servicio = await prisma.servicios.findFirst({
+      where: await buildTenantWhere({ id }),
     })
 
     return servicio ? mapServicioToDto(servicio) : null

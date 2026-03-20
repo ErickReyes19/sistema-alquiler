@@ -4,7 +4,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  // SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -16,13 +15,26 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Calculator, ChevronDown, ChevronUp, File, FileCheck2, Files, HouseIcon, LayersIcon, ListOrderedIcon, LucideFilePen, Settings, User, UserIcon, UserRoundCheck, Users2, UsersIcon } from 'lucide-react';
+import { Building2, ChevronDown, ChevronUp, HouseIcon, LayersIcon, ListOrderedIcon, Settings, UserCog, UserIcon, Users2 } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
-// import { NavUser } from "./nav-user";
 
-// Menú de mantenimiento
+const rootItems = [
+  {
+    title: "Tenants",
+    url: "/tenants",
+    icon: Building2,
+    permiso: "ver_tenants",
+  },
+  {
+    title: "Usuarios por tenant",
+    url: "/tenant-users",
+    icon: UserCog,
+    permiso: "ver_usuarios_tenant",
+  },
+]
+
 const mantenimientoItems = [
   {
     title: "Roles",
@@ -44,12 +56,7 @@ const mantenimientoItems = [
   }
 ];
 
-
-
-
-// Menu items con permisos necesarios (sin los items de mantenimiento)
 const items = [
-
   {
     title: "Apartamentos",
     url: "/apartamentos",
@@ -62,7 +69,6 @@ const items = [
     icon: HouseIcon,
     permiso: "ver_tipos_habitacion",
   },
-
   {
     title: "Inquilinos",
     url: "/inquilinos",
@@ -84,22 +90,14 @@ const items = [
 ];
 
 export async function AppSidebar() {
-  const usuario = await getSessionUsuario(); // Obtiene el nombre del usuario
+  const usuario = await getSessionUsuario();
   const permisosUsuario = usuario?.Permiso || [];
 
-  // Filtrar los ítems basados en los permisos del usuario
-  const filteredItems = items.filter(item =>
-    permisosUsuario.includes(item.permiso)
-  );
-
-  // Filtrar los ítems de mantenimiento basados en los permisos del usuario
-  const filteredMantenimientoItems = mantenimientoItems.filter(item =>
-    permisosUsuario.includes(item.permiso)
-  );
-
-
-  // Solo mostrar la sección de mantenimiento si hay al menos un ítem con permiso
+  const filteredRootItems = rootItems.filter((item) => permisosUsuario.includes(item.permiso))
+  const filteredItems = items.filter(item => permisosUsuario.includes(item.permiso));
+  const filteredMantenimientoItems = mantenimientoItems.filter(item => permisosUsuario.includes(item.permiso));
   const showMantenimiento = filteredMantenimientoItems.length > 0;
+  const showRootModules = filteredRootItems.length > 0
 
   return (
     <Sidebar collapsible="icon" variant="floating">
@@ -112,18 +110,29 @@ export async function AppSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {filteredItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon size={16} className="p-0" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {showRootModules
+                ? filteredRootItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link href={item.url}>
+                          <item.icon size={16} className="p-0" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                : filteredItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link href={item.url}>
+                          <item.icon size={16} className="p-0" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
 
-              {showMantenimiento && (
+              {!showRootModules && showMantenimiento && (
                 <Collapsible className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
@@ -139,9 +148,7 @@ export async function AppSidebar() {
                         {filteredMantenimientoItems.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
                             <SidebarMenuSubButton asChild>
-                              <Link href={item.url}>
-                                {item.title}
-                              </Link>
+                              <Link href={item.url}>{item.title}</Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
@@ -150,14 +157,11 @@ export async function AppSidebar() {
                   </SidebarMenuItem>
                 </Collapsible>
               )}
-
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        {usuario && <NavUser usuario={usuario} />}
-      </SidebarFooter>
+      <SidebarFooter>{usuario && <NavUser usuario={usuario} />}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

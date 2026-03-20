@@ -20,3 +20,10 @@ export function normalizeOptionalText(value?: string | null, fallback = ''): str
 export function logServerActionError(actionName: string, error: unknown) {
   console.error(`Error en ${actionName}:`, error)
 }
+
+
+export function assertEntityTenant(entityTenantId: string, sessionTenantId: string, entityName: string) {
+  if (entityTenantId !== sessionTenantId) {
+    throw new Error(`No tienes acceso al ${entityName} indicado.`)
+  }
+}

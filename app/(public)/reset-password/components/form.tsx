@@ -27,6 +27,7 @@ export default function ResetPassword() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [username, setUsername] = useState<string>("");
+    const [nextRoute, setNextRoute] = useState("/inquilinos");
     // Solo en montaje validamos que haya sesión y flag
     useEffect(() => {
         (async () => {
@@ -36,6 +37,7 @@ export default function ResetPassword() {
                 return;
             }
             setUsername(session.User);
+            setNextRoute(session.tipoUsuario === "ROOT" ? "/tenants" : "/inquilinos");
             setMounted(true);
         })();
     }, [router]);
@@ -53,7 +55,7 @@ export default function ResetPassword() {
                 return;
             }
             // Ya está la cookie con el nuevo token, el middleware lo verá correcto
-            router.push("/inquilinos");
+            router.push(nextRoute);
         });
     };
 

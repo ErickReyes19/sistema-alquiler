@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 
 import bcrypt from "bcryptjs";
 
-import { Prisma } from "@/app/generated/prisma";
+import { Prisma, TipoUsuario } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import {
   logServerActionError,
@@ -12,6 +12,7 @@ import {
   requireEntityId,
   resolveActivo,
 } from "@/lib/server-action-utils";
+import { requireTenantSession } from "@/lib/tenant-session";
 
 import { Usuario, UsuarioCreate, UsuarioUpdate } from "./type";
 
@@ -40,7 +41,14 @@ const buildUsuarioData = (usuario: Pick<Usuario, "usuario" | "rol_id" | "email">
 
 export async function getUsuarios(): Promise<Usuario[]> {
   try {
+    const session = await requireTenantSession();
     const usuarios = await prisma.usuario.findMany({
+      where: {
+        tenantId: session.tenantId,
+        ...(session.tipoUsuario === TipoUsuario.ROOT
+          ? {}
+          : { tipoUsuario: TipoUsuario.TENANT_ADMIN }),
+      },
       include: usuarioInclude,
       orderBy: {
         nombre: "asc",
@@ -56,15 +64,18 @@ export async function getUsuarios(): Promise<Usuario[]> {
 
 export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Promise<Usuario> {
   try {
+    const session = await requireTenantSession();
     const hashedPassword = await bcrypt.hash("password.123", 10);
 
     const createdUsuario = await prisma.usuario.create({
       data: {
         id: randomUUID(),
+        tenantId: session.tenantId,
         ...buildUsuarioData(usuario),
         activo: true,
         password: hashedPassword,
         DebeCambiar: true,
+        tipoUsuario: TipoUsuario.TENANT_ADMIN,
       },
       include: usuarioInclude,
     });
@@ -78,8 +89,25 @@ export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Prom
 
 export async function putUsuario({ usuario }: { usuario: UsuarioUpdate }): Promise<Usuario> {
   try {
+    const session = await requireTenantSession();
+    const usuarioId = requireEntityId(usuario.id, "usuario");
+    const existing = await prisma.usuario.findFirst({
+      where: { id: usuarioId, tenantId: session.tenantId },
+    });
+
+    if (!existing) {
+      throw new Error("Usuario no encontrado para el tenant actual");
+    }
+
+    if (
+      session.tipoUsuario !== TipoUsuario.ROOT &&
+      existing.tipoUsuario === TipoUsuario.ROOT
+    ) {
+      throw new Error("No puedes editar usuarios root");
+    }
+
     const updatedUsuario = await prisma.usuario.update({
-      where: { id: requireEntityId(usuario.id, "usuario") },
+      where: { id: usuarioId },
       data: {
         ...buildUsuarioData(usuario),
         activo: resolveActivo(usuario.activo),
@@ -96,8 +124,15 @@ export async function putUsuario({ usuario }: { usuario: UsuarioUpdate }): Promi
 
 export async function getUsuarioById(id: string): Promise<Usuario | null> {
   try {
-    const usuario = await prisma.usuario.findUnique({
-      where: { id },
+    const session = await requireTenantSession();
+    const usuario = await prisma.usuario.findFirst({
+      where: {
+        id,
+        tenantId: session.tenantId,
+        ...(session.tipoUsuario === TipoUsuario.ROOT
+          ? {}
+          : { tipoUsuario: TipoUsuario.TENANT_ADMIN }),
+      },
       include: usuarioInclude,
     });
 

@@ -6,6 +6,7 @@ import {
   requireEntityId,
   resolveActivo,
 } from '@/lib/server-action-utils'
+import { buildTenantWhere, getTenantIdFromSession } from '@/lib/tenant-session'
 
 import { TipoHabitacion } from './type'
 
@@ -21,7 +22,7 @@ const mapTipoHabitacionToDto = (tipoHabitacion: {
 
 async function findTiposHabitacion(where?: { activo?: boolean }): Promise<TipoHabitacion[]> {
   const tiposHabitacion = await prisma.tiposHabitacion.findMany({
-    where,
+    where: await buildTenantWhere(where),
     orderBy: { nombre: 'asc' },
   })
 
@@ -57,10 +58,16 @@ export async function putTipoHabitacion({
   tipoHabitacion: TipoHabitacion
 }): Promise<boolean> {
   try {
-    await prisma.tiposHabitacion.update({
-      where: { id: requireEntityId(tipoHabitacion.id, 'tipo de habitación') },
+    const tenantId = await getTenantIdFromSession()
+    const tipoHabitacionId = requireEntityId(tipoHabitacion.id, 'tipo de habitación')
+    const updated = await prisma.tiposHabitacion.updateMany({
+      where: { id: tipoHabitacionId, tenantId },
       data: buildTipoHabitacionData(tipoHabitacion),
     })
+
+    if (updated.count === 0) {
+      throw new Error('Tipo de habitación no encontrado para el tenant actual.')
+    }
 
     return true
   } catch (error) {
@@ -75,8 +82,12 @@ export async function postTipoHabitacion({
   tipoHabitacion: TipoHabitacion
 }): Promise<boolean> {
   try {
+    const tenantId = await getTenantIdFromSession()
     await prisma.tiposHabitacion.create({
-      data: buildTipoHabitacionData(tipoHabitacion),
+      data: {
+        ...buildTipoHabitacionData(tipoHabitacion),
+        tenantId,
+      },
     })
 
     return true
@@ -88,8 +99,8 @@ export async function postTipoHabitacion({
 
 export async function getTipoHabitacionById(id: string): Promise<TipoHabitacion | null> {
   try {
-    const tipoHabitacion = await prisma.tiposHabitacion.findUnique({
-      where: { id },
+    const tipoHabitacion = await prisma.tiposHabitacion.findFirst({
+      where: await buildTenantWhere({ id }),
     })
 
     return tipoHabitacion ? mapTipoHabitacionToDto(tipoHabitacion) : null

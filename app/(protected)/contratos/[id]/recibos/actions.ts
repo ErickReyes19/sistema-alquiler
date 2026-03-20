@@ -1,19 +1,18 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 import {
   Recibo,
   ReciboCreate,
   ReciboUpdate,
   ReciboView,
-  ReciboDetalle,
   ReciboDetalleCreate,
   ReciboDetalleUpdate,
   DetallesParaNuevoRecibo,
   ReciboCompleto,
 } from "./type";
 
-// Mapea un recibo plano (sin detalles)
 function mapRecibo(data: any): Recibo {
   return {
     id: data.id,
@@ -23,11 +22,9 @@ function mapRecibo(data: any): Recibo {
   };
 }
 
-// Mapea un ReciboView (incluye detalles)
 function mapReciboView(data: any): ReciboView {
   return {
     id: data.id,
-
     contratoId: data.contratoId,
     fechaPago: data.fechaPago.toISOString(),
     total: parseFloat(data.total.toString()),
@@ -39,13 +36,12 @@ function mapReciboView(data: any): ReciboView {
   };
 }
 
-// Obtener todos los recibos de un contrato
 export async function getRecibosByContrato(
   contratoId: string
 ): Promise<ReciboView[]> {
   try {
     const recibos = await prisma.recibos.findMany({
-      where: { contratoId },
+      where: await buildTenantWhere({ contratoId }),
       include: {
         detalles: true,
       },
@@ -58,7 +54,6 @@ export async function getRecibosByContrato(
   }
 }
 
-// Crear un recibo con sus detalles
 export async function postReciboConDetalles({
   recibo,
   detalles,
@@ -67,17 +62,18 @@ export async function postReciboConDetalles({
   detalles: ReciboDetalleCreate[];
 }): Promise<ReciboView | null> {
   try {
-    // Calcula total sumando cada detalle
+    const tenantId = await getTenantIdFromSession()
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
 
-    // Crea el recibo
     const created = await prisma.recibos.create({
       data: {
+        tenantId,
         contratoId: recibo.contratoId,
         fechaPago: new Date(recibo.fechaPago),
         total,
         detalles: {
           create: detalles.map((d) => ({
+            tenantId,
             descripcion: d.descripcion,
             monto: d.monto,
           })),
@@ -93,9 +89,6 @@ export async function postReciboConDetalles({
   }
 }
 
-// Actualizar un recibo y reemplazar sus detalles
-
-
 export async function putReciboConDetalles({
   recibo,
   detalles,
@@ -103,63 +96,53 @@ export async function putReciboConDetalles({
   recibo: ReciboUpdate;
   detalles: ReciboDetalleUpdate[];
 }): Promise<ReciboView | null> {
-  console.log("🚀 ~ detalles: action", detalles)
-  console.log("🚀 ~ recibo: action ", recibo)
   try {
-    // 1) Recalcular el total
+    const tenantId = await getTenantIdFromSession()
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
+    const idsEntrantes = detalles.filter((d) => !!d.id).map((d) => d.id!) as string[];
 
-    // 2) Extraer IDs entrantes
-    const idsEntrantes = detalles
-      .filter((d) => !!d.id)
-      .map((d) => d.id!) as string[];
-
-    // 3) Ejecutar transacción
-    const [_, __] = await prisma.$transaction([
-      // 3.1) Actualizar recibo
-      prisma.recibos.update({
-        where: { id: recibo.id },
+    await prisma.$transaction([
+      prisma.recibos.updateMany({
+        where: { id: recibo.id, tenantId },
         data: {
           fechaPago: new Date(recibo.fechaPago),
           total,
         },
       }),
-      // 3.2) Eliminar detalles que ya no vienen
       prisma.reciboDetalles.deleteMany({
         where: {
+          tenantId,
           reciboId: recibo.id,
           id: { notIn: idsEntrantes },
         },
       }),
-      // 3.3) Actualizar detalles existentes
       ...detalles
         .filter((d) => d.id)
         .map((d) =>
-          prisma.reciboDetalles.update({
-            where: { id: d.id! },
+          prisma.reciboDetalles.updateMany({
+            where: { id: d.id!, tenantId },
             data: {
               descripcion: d.descripcion,
               monto: d.monto,
             },
           })
         ),
-      // 3.4) Crear los nuevos
       ...detalles
         .filter((d) => !d.id)
         .map((d) =>
           prisma.reciboDetalles.create({
             data: {
+              tenantId,
               descripcion: d.descripcion,
               monto: d.monto,
-              recibo: { connect: { id: recibo.id } },
+              reciboId: recibo.id!,
             },
           })
         ),
     ]);
 
-    // 4) Leer y devolver el recibo actualizado con sus detalles
-    const updated = await prisma.recibos.findUnique({
-      where: { id: recibo.id },
+    const updated = await prisma.recibos.findFirst({
+      where: { id: recibo.id, tenantId },
       include: { detalles: true },
     });
     return updated ? mapReciboView(updated) : null;
@@ -169,12 +152,10 @@ export async function putReciboConDetalles({
   }
 }
 
-
-// Obtener un recibo por su ID (con detalles)
 export async function getReciboById(id: string): Promise<ReciboView | null> {
   try {
-    const recibo = await prisma.recibos.findUnique({
-      where: { id },
+    const recibo = await prisma.recibos.findFirst({
+      where: await buildTenantWhere({ id }),
       include: { detalles: true },
     });
     if (!recibo) return null;
@@ -185,10 +166,9 @@ export async function getReciboById(id: string): Promise<ReciboView | null> {
   }
 }
 
-
 export async function getDetallesParaNuevoRecibo(contratoId: string): Promise<DetallesParaNuevoRecibo | null> {
-  const contrato = await prisma.contratos.findUnique({
-    where: { id: contratoId },
+  const contrato = await prisma.contratos.findFirst({
+    where: await buildTenantWhere({ id: contratoId }),
     include: {
       apartamento: {
         include: {
@@ -220,12 +200,10 @@ export async function getDetallesParaNuevoRecibo(contratoId: string): Promise<De
   }
 }
 
-
-
 export async function getReciboCompletoById(reciboId: string): Promise<ReciboCompleto | null> {
   try {
-    const recibo = await prisma.recibos.findUnique({
-      where: { id: reciboId },
+    const recibo = await prisma.recibos.findFirst({
+      where: await buildTenantWhere({ id: reciboId }),
       include: {
         detalles: true,
         contrato: {

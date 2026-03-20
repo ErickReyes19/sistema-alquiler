@@ -1,6 +1,8 @@
 "use server";
 
+import { Prisma, TipoUsuario } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
+import { requireTenantSession } from "@/lib/tenant-session";
 
 import { PermisosRol } from "../roles/type";
 import { Permiso as PermisoDTO } from "./type";
@@ -18,8 +20,19 @@ const mapPermisoToDto = (permiso: {
 });
 
 async function findActivePermisos(): Promise<PermisoDTO[]> {
+  const session = await requireTenantSession();
+  const where: Prisma.PermisoWhereInput = {
+    tenantId: session.tenantId,
+    activo: true,
+  };
+
+  if (session.tipoUsuario !== TipoUsuario.ROOT) {
+    where.esPermisoSistema = false;
+  }
+
   const permisos = await prisma.permiso.findMany({
-    where: { activo: true },
+    where,
+    orderBy: { nombre: "asc" },
   });
 
   return permisos.map(mapPermisoToDto);

@@ -26,7 +26,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Ruta a redirigir tras login exitoso
   const redirectTo = searchParams.get("redirect") ?? "/inquilinos";
 
   useEffect(() => {
@@ -35,29 +34,27 @@ export default function Login() {
 
   const form = useForm<TSchemaSignIn>({
     resolver: zodResolver(schemaSignIn),
-    defaultValues: { usuario: "", contrasena: "" },
+    defaultValues: { slug: "", usuario: "", contrasena: "" },
   });
 
   const onSubmit = (values: TSchemaSignIn) => {
     startTransition(async () => {
-      // 1) Hacemos login
       const response = await login(values, redirectTo);
       if (response.error) {
         form.setError("contrasena", { message: response.error });
         return;
       }
 
-      // 2) Obtenemos la sesión para leer DebeCambiarPassword
       const session = await getSession();
       if (session?.DebeCambiar) {
         router.replace("/reset-password");
       } else {
-        router.replace(response.redirect!);
+        router.replace(session?.tipoUsuario === "ROOT" ? "/tenants" : response.redirect!);
       }
     });
   };
 
-  if (!mounted) return null; // evitar errores de hidratación
+  if (!mounted) return null;
 
   return (
     <Form {...form}>
@@ -65,6 +62,25 @@ export default function Login() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 bg-gray-900 text-white p-6 rounded-lg"
       >
+        <FormField
+          control={form.control}
+          name="slug"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Slug del tenant</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="mi-tenant"
+                  disabled={isPending}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="usuario"

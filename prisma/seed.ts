@@ -1,76 +1,100 @@
-import { PrismaClient } from "../app/generated/prisma";
+import { PrismaClient, TipoUsuario } from "../app/generated/prisma";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
+
+import { ROOT_PERMISSION_NAMES, SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "../lib/platform-permissions";
 
 const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
-type SeederItem<T> = { create: T };
-
 async function main() {
   console.log("🔌 Conectando a la base de datos...");
-  const permisoNames = [
-    "ver_permisos", "ver_roles", "crear_roles", "editar_roles",
-    "ver_usuarios", "crear_usuario", "editar_usuario",
-    "ver_inquilinos", "crear_inquilino", "editar_inquilino",
-    "ver_acompanantes", "editar_tipo_habitacion",
-    "ver_tipos_habitacion", "crear_tipo_habitacion", "ver_apartamentos",
-    "crear_apartamento", "editar_apartamento", "crear_servicio", "ver_servicios",
-    "editar_servicio", "ver_contratos", "crear_contrato", "editar_contrato", "ver_recibos",
-    "crear_recibo", "editar_recibo"
-  ];
 
-  // Seed Permisos
-  const permisos = await Promise.all(
-    permisoNames.map((nombre) =>
+  const platformTenant = await prisma.tenant.upsert({
+    where: { slug: "platform-root" },
+    update: {},
+    create: {
+      id: randomUUID(),
+      nombre: "Plataforma",
+      slug: "platform-root",
+      activo: true,
+    },
+  });
+
+  const rootPermissions = await Promise.all(
+    ROOT_PERMISSION_NAMES.map((nombre) =>
       prisma.permiso.upsert({
-        where: { nombre },
+        where: { tenantId_nombre: { tenantId: platformTenant.id, nombre } },
         update: {},
-        create: { id: randomUUID(), nombre, descripcion: `Permite ${nombre.replace(/_/g, " ")}`, activo: true }
+        create: {
+          id: randomUUID(),
+          tenantId: platformTenant.id,
+          nombre,
+          descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
+          activo: true,
+          esPermisoSistema: true,
+        }
       })
     )
   );
-  console.log("✅ Permisos seed completado");
 
-  // Seed Rol Admin
-  const rolAdmin = await prisma.rol.upsert({
-    where: { nombre: "administrador" },
+  await Promise.all(
+    TENANT_PERMISSION_NAMES.map((nombre) =>
+      prisma.permiso.upsert({
+        where: { tenantId_nombre: { tenantId: platformTenant.id, nombre } },
+        update: {},
+        create: {
+          id: randomUUID(),
+          tenantId: platformTenant.id,
+          nombre,
+          descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
+          activo: true,
+          esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(nombre),
+        },
+      })
+    )
+  )
+  console.log("✅ Permisos root seed completado");
+
+  const rolRoot = await prisma.rol.upsert({
+    where: { tenantId_nombre: { tenantId: platformTenant.id, nombre: "root" } },
     update: {},
     create: {
-      id: randomUUID(), nombre: "administrador",
-      descripcion: "Rol con todos los permisos de administración", activo: true,
-      permisos: { create: permisos.map(p => ({ id: randomUUID(), permiso: { connect: { id: p.id } } })) }
+      id: randomUUID(),
+      tenantId: platformTenant.id,
+      nombre: "root",
+      descripcion: "Rol del dueño de la plataforma para gestionar tenants y sus usuarios",
+      activo: true,
+      permisos: {
+        create: rootPermissions.map((p: any) => ({
+          tenant: { connect: { id: platformTenant.id } },
+          permiso: { connect: { id: p.id } },
+        })),
+      },
     }
   });
-  console.log("✅ Rol administrador seed completado");
+  console.log("✅ Rol root seed completado");
 
-  // Seed Usuario Admin
   const email = "erickjosepineda33@gmail.com";
-  const email2 = "visitante@gmail.com";
   const hashedPassword = await bcrypt.hash("erick.reyes", 10);
-  const hashedPassword2 = await bcrypt.hash("visitante", 10);
+
   await prisma.usuario.upsert({
-    where: { email },
+    where: { tenantId_email: { tenantId: platformTenant.id, email } },
     update: {},
     create: {
-      id: randomUUID(), nombre: "erick.reyes", email,
-      password: hashedPassword, activo: true,
-      rolId: rolAdmin.id, DebeCambiar: true
+      id: randomUUID(),
+      tenantId: platformTenant.id,
+      nombre: "root.platform",
+      email,
+      password: hashedPassword,
+      activo: true,
+      rolId: rolRoot.id,
+      DebeCambiar: true,
+      tipoUsuario: TipoUsuario.ROOT,
     }
   });
 
-  await prisma.usuario.upsert({
-    where: { email: email2 },
-    update: {},
-    create: {
-      id: randomUUID(), nombre: "visitante", 
-      email: email2,
-      password: hashedPassword2, activo: true,
-      rolId: rolAdmin.id, DebeCambiar: false
-    }
-  });
-  console.log("✅ Usuario administrador seed completado");
-
+  console.log("✅ Usuario root seed completado");
   console.log("🎉 Seed completado exitosamente.");
 }
 
