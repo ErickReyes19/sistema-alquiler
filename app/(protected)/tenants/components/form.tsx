@@ -19,7 +19,8 @@ export function TenantForm() {
       className="grid gap-4 rounded-md border p-4"
       onSubmit={(event) => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+        const formElement = event.currentTarget
+        const formData = new FormData(formElement)
         startTransition(async () => {
           try {
             await createTenant({
@@ -27,7 +28,7 @@ export function TenantForm() {
               slug: String(formData.get('slug') ?? ''),
             })
             toast({ title: 'Tenant creado', description: 'Se creó el tenant y su rol administrador base.' })
-            ;(event.currentTarget as HTMLFormElement).reset()
+            formElement.reset()
             router.refresh()
           } catch (error) {
             toast({

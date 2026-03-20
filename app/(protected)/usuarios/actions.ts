@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 
 import { Prisma, TipoUsuario } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_USER_PASSWORD } from "@/lib/default-user-password";
 import {
   logServerActionError,
   normalizeOptionalText,
@@ -62,10 +63,10 @@ export async function getUsuarios(): Promise<Usuario[]> {
   }
 }
 
-export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Promise<Usuario> {
+export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Promise<{ usuario: Usuario; passwordTemporal: string }> {
   try {
     const session = await requireTenantSession();
-    const hashedPassword = await bcrypt.hash("password.123", 10);
+    const hashedPassword = await bcrypt.hash(DEFAULT_USER_PASSWORD, 10);
 
     const createdUsuario = await prisma.usuario.create({
       data: {
@@ -80,7 +81,10 @@ export async function postUsuario({ usuario }: { usuario: UsuarioCreate }): Prom
       include: usuarioInclude,
     });
 
-    return mapUsuarioToDto(createdUsuario);
+    return {
+      usuario: mapUsuarioToDto(createdUsuario),
+      passwordTemporal: DEFAULT_USER_PASSWORD,
+    };
   } catch (error) {
     logServerActionError("postUsuario", error);
     throw new Error("Error al crear el usuario");

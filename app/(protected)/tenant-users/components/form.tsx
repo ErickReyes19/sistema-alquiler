@@ -21,16 +21,17 @@ export function TenantUserForm({ tenants }: { tenants: TenantOption[] }) {
       className="grid gap-4 rounded-md border p-4"
       onSubmit={(event) => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+        const formElement = event.currentTarget
+        const formData = new FormData(formElement)
         startTransition(async () => {
           try {
-            await createTenantAssignedUser({
+            const result = await createTenantAssignedUser({
               tenantId,
               nombre: String(formData.get('nombre') ?? ''),
               email: String(formData.get('email') ?? ''),
             })
-            toast({ title: 'Usuario creado', description: 'Usuario administrador asignado al tenant.' })
-            ;(event.currentTarget as HTMLFormElement).reset()
+            toast({ title: 'Usuario creado', description: `Usuario administrador asignado al tenant. Contraseña temporal: ${result.passwordTemporal}` })
+            formElement.reset()
             setTenantId('')
             router.refresh()
           } catch (error) {

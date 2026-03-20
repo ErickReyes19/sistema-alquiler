@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postUsuario, putUsuario } from "../actions";
+import { DEFAULT_USER_PASSWORD_MESSAGE } from "@/lib/default-user-password";
 import { UsuarioSchema } from "../schema";
 import { UsuarioCreate, UsuarioUpdate } from "../type";
 import { Rol } from "../../roles/type";
@@ -57,17 +58,20 @@ export function Formulario({
     };
 
     try {
+      let passwordTemporal: string | null = null;
+
       if (isUpdate) {
         await putUsuario({ usuario: usuarioData as UsuarioUpdate });
       } else {
-        await postUsuario({ usuario: usuarioData as UsuarioCreate });
+        const result = await postUsuario({ usuario: usuarioData as UsuarioCreate });
+        passwordTemporal = result.passwordTemporal;
       }
 
       toast({
         title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
         description: isUpdate
           ? "El usuario ha sido actualizado."
-          : "El usuario ha sido creado.",
+          : `El usuario ha sido creado. ${passwordTemporal ?? DEFAULT_USER_PASSWORD_MESSAGE}`,
       });
 
       router.push("/usuarios");
