@@ -2,7 +2,7 @@
 
 import { randomUUID } from "crypto";
 
-import { Prisma } from "@/app/generated/prisma";
+import { Prisma } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import {
   logServerActionError,

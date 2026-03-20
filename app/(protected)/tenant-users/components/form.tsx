@@ -14,6 +14,7 @@ export function TenantUserForm({ tenants }: { tenants: TenantOption[] }) {
   const router = useRouter()
   const { toast } = useToast()
   const [tenantId, setTenantId] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [isPending, startTransition] = useTransition()
 
   return (
@@ -21,19 +22,22 @@ export function TenantUserForm({ tenants }: { tenants: TenantOption[] }) {
       className="grid gap-4 rounded-md border p-4"
       onSubmit={(event) => {
         event.preventDefault()
-        const formData = new FormData(event.currentTarget)
+        const formElement = event.currentTarget
+        const formData = new FormData(formElement)
         startTransition(async () => {
           try {
-            await createTenantAssignedUser({
+            const result = await createTenantAssignedUser({
               tenantId,
               nombre: String(formData.get('nombre') ?? ''),
               email: String(formData.get('email') ?? ''),
             })
             toast({ title: 'Usuario creado', description: 'Usuario administrador asignado al tenant.' })
-            ;(event.currentTarget as HTMLFormElement).reset()
+            setSuccessMessage(`Contraseña temporal del usuario: ${result.passwordTemporal}`)
+            formElement.reset()
             setTenantId('')
             router.refresh()
           } catch (error) {
+            setSuccessMessage('')
             toast({
               title: 'Error',
               description: error instanceof Error ? error.message : 'No se pudo crear el usuario.',
@@ -67,6 +71,11 @@ export function TenantUserForm({ tenants }: { tenants: TenantOption[] }) {
       <Button type="submit" disabled={isPending || tenants.length === 0 || !tenantId}>
         {isPending ? 'Creando...' : 'Crear usuario para tenant'}
       </Button>
+      {successMessage ? (
+        <p className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
+          {successMessage}
+        </p>
+      ) : null}
     </form>
   )
 }
