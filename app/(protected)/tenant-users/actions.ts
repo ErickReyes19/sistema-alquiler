@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"
 
 import { TipoUsuario } from "@/lib/generated/prisma"
 import { prisma } from "@/lib/prisma"
-import { DEFAULT_USER_PASSWORD } from "@/lib/default-user-password"
+import { generateTemporaryPassword } from "@/lib/default-user-password"
 import { requireTenantSession } from "@/lib/tenant-session"
 
 export type TenantOption = {
@@ -83,7 +83,8 @@ export async function createTenantAssignedUser(input: { tenantId: string; nombre
     throw new Error('El tenant no tiene rol administrador provisionado.')
   }
 
-  const hashedPassword = await bcrypt.hash(DEFAULT_USER_PASSWORD, 10)
+  const passwordTemporal = generateTemporaryPassword()
+  const hashedPassword = await bcrypt.hash(passwordTemporal, 10)
 
   const usuario = await prisma.usuario.create({
     data: {
@@ -101,6 +102,6 @@ export async function createTenantAssignedUser(input: { tenantId: string; nombre
 
   return {
     usuario,
-    passwordTemporal: DEFAULT_USER_PASSWORD,
+    passwordTemporal,
   }
 }

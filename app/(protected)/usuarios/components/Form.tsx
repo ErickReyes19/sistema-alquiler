@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postUsuario, putUsuario } from "../actions";
-import { DEFAULT_USER_PASSWORD_MESSAGE } from "@/lib/default-user-password";
+import { buildTemporaryPasswordMessage } from "@/lib/default-user-password";
 import { UsuarioSchema } from "../schema";
 import { UsuarioCreate, UsuarioUpdate } from "../type";
 import { Rol } from "../../roles/type";
@@ -71,7 +71,7 @@ export function Formulario({
         title: isUpdate ? "Actualización Exitosa" : "Creación Exitosa",
         description: isUpdate
           ? "El usuario ha sido actualizado."
-          : `El usuario ha sido creado. ${passwordTemporal ?? DEFAULT_USER_PASSWORD_MESSAGE}`,
+          : `El usuario ha sido creado. ${buildTemporaryPasswordMessage(passwordTemporal ?? "temporal-no-disponible")}`,
       });
 
       router.push("/usuarios");
