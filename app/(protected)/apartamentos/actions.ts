@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { buildTenantWhere, getTenantIdFromSession } from '@/lib/tenant-session'
 
 import {
   Apartamento,
@@ -80,25 +81,29 @@ const buildApartamentoData = (apartamento: Apartamento) => ({
   activo: apartamento.activo ?? true,
 })
 
-const buildHabitacionesCreateData = (habitaciones: Habitacion[]) =>
+const buildHabitacionesCreateData = (tenantId: string, habitaciones: Habitacion[]) =>
   habitaciones.map((habitacion) => ({
+    tenantId,
     tipoHabitacionId: habitacion.tipoHabitacionId,
     cantidad: habitacion.cantidad,
     activo: habitacion.activo ?? true,
   }))
 
-const buildServiciosCreateData = (servicios: ApartamentoServicio[]) =>
+const buildServiciosCreateData = (tenantId: string, servicios: ApartamentoServicio[]) =>
   servicios.map((servicio) => ({
+    tenantId,
     servicioId: servicio.servicioId,
     incluido: servicio.incluido ?? true,
     costoAdicional: servicio.costoAdicional ?? 0,
   }))
 
 const buildHabitacionesCreateManyData = (
+  tenantId: string,
   apartamentoId: string,
   habitaciones: Habitacion[],
 ) =>
   habitaciones.map((habitacion) => ({
+    tenantId: tenantId,
     apartamentoId,
     tipoHabitacionId: habitacion.tipoHabitacionId,
     cantidad: habitacion.cantidad,
@@ -106,10 +111,12 @@ const buildHabitacionesCreateManyData = (
   }))
 
 const buildServiciosCreateManyData = (
+  tenantId: string,
   apartamentoId: string,
   servicios: ApartamentoServicio[],
 ) =>
   servicios.map((servicio) => ({
+    tenantId: tenantId,
     apartamentoId,
     servicioId: servicio.servicioId,
     incluido: servicio.incluido ?? true,
@@ -126,15 +133,17 @@ export async function postApartamentoCompleto({
   servicios: ApartamentoServicio[]
 }): Promise<boolean> {
   try {
+    const tenantId = await getTenantIdFromSession()
     await prisma.apartamento.create({
       data: {
+        tenantId,
         ...buildApartamentoData(apartamento),
         apartamento: {
-          create: buildHabitacionesCreateData(habitaciones),
+          create: buildHabitacionesCreateData(tenantId, habitaciones),
         },
         ApartamentoServicios: servicios.length
           ? {
-              create: buildServiciosCreateData(servicios),
+              create: buildServiciosCreateData(tenantId, servicios),
             }
           : undefined,
       },
@@ -161,13 +170,22 @@ export async function putApartamentoCompleto({
   }
 
   try {
+    const tenantId = await getTenantIdFromSession()
     await prisma.$transaction(async (tx) => {
       await tx.apartamentoServicios.deleteMany({
-        where: { apartamentoId: apartamento.id! },
+        where: { apartamentoId: apartamento.id!, tenantId },
       })
       await tx.habitaciones.deleteMany({
-        where: { apartamentoId: apartamento.id! },
+        where: { apartamentoId: apartamento.id!, tenantId },
       })
+
+      const existingApartamento = await tx.apartamento.findFirst({
+        where: { id: apartamento.id!, tenantId },
+      })
+
+      if (!existingApartamento) {
+        throw new Error('Apartamento no encontrado para el tenant actual.')
+      }
 
       await tx.apartamento.update({
         where: { id: apartamento.id! },
@@ -176,13 +194,13 @@ export async function putApartamentoCompleto({
 
       if (habitaciones.length) {
         await tx.habitaciones.createMany({
-          data: buildHabitacionesCreateManyData(apartamento.id!, habitaciones),
+          data: buildHabitacionesCreateManyData(tenantId, apartamento.id!, habitaciones),
         })
       }
 
       if (servicios.length) {
         await tx.apartamentoServicios.createMany({
-          data: buildServiciosCreateManyData(apartamento.id!, servicios),
+          data: buildServiciosCreateManyData(tenantId, apartamento.id!, servicios),
         })
       }
     })
@@ -199,7 +217,7 @@ export async function getApartamentosCompleto(): Promise<
 > {
   try {
     const apartamentos = await prisma.apartamento.findMany({
-      where: { activo: true },
+      where: await buildTenantWhere({ activo: true }),
       include: apartamentoInclude,
     })
 
@@ -213,7 +231,7 @@ export async function getApartamentosCompleto(): Promise<
 export async function getServiciosActivos(): Promise<{ id: string; nombre: string }[]> {
   try {
     const servicios = await prisma.servicios.findMany({
-      where: { activo: true },
+      where: await buildTenantWhere({ activo: true }),
       orderBy: { nombre: 'asc' },
       select: {
         id: true,
@@ -232,8 +250,8 @@ export async function getApartamentoCompletoById(
   id: string,
 ): Promise<(Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] }) | null> {
   try {
-    const apartamento = await prisma.apartamento.findUnique({
-      where: { id },
+    const apartamento = await prisma.apartamento.findFirst({
+      where: await buildTenantWhere({ id }),
       include: apartamentoInclude,
     })
 
@@ -248,8 +266,8 @@ export async function getApartamentoCompletoConId(
   id: string,
 ): Promise<ApartamentoView | null> {
   try {
-    const apartamento = await prisma.apartamento.findUnique({
-      where: { id },
+    const apartamento = await prisma.apartamento.findFirst({
+      where: await buildTenantWhere({ id }),
       include: apartamentoViewInclude,
     })
 

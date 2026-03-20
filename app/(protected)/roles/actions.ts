@@ -2,13 +2,14 @@
 
 import { randomUUID } from "crypto";
 
-import { Prisma } from "@/app/generated/prisma";
+import { Prisma, TipoUsuario } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import {
   logServerActionError,
   requireEntityId,
   resolveActivo,
 } from "@/lib/server-action-utils";
+import { requireTenantSession } from "@/lib/tenant-session";
 
 import { PermisosRol, Rol as RolDTO } from "./type";
 
@@ -37,8 +38,9 @@ const mapRolToDto = (rol: RolWithPermisos): RolDTO => ({
   ),
 });
 
-const buildPermisosCreateData = (permisos: PermisosRol[]) =>
+const buildPermisosCreateData = (tenantId: string, permisos: PermisosRol[]) =>
   permisos.map((permiso) => ({
+    tenant: { connect: { id: tenantId } },
     permiso: { connect: { id: permiso.id } },
   }));
 
@@ -48,13 +50,23 @@ const buildRolData = (rol: RolDTO) => ({
   activo: resolveActivo(rol.activo),
 });
 
-async function findRoles(where?: { activo?: boolean }): Promise<RolDTO[]> {
+async function findRoles(where?: Prisma.RolWhereInput): Promise<RolDTO[]> {
+  const session = await requireTenantSession();
   const roles = await prisma.rol.findMany({
-    where,
+    where: {
+      tenantId: session.tenantId,
+      ...where,
+    },
     include: rolWithPermisosInclude,
   });
 
-  return roles.map(mapRolToDto);
+  return roles
+    .filter((rol) =>
+      session.tipoUsuario === TipoUsuario.ROOT
+        ? true
+        : rol.permisos.every((permiso) => !permiso.permiso.esPermisoSistema),
+    )
+    .map(mapRolToDto);
 }
 
 export async function getRolesPermisos(): Promise<RolDTO[]> {
@@ -77,13 +89,32 @@ export async function getRolesPermisosActivos(): Promise<RolDTO[]> {
 
 export async function putRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
   try {
+    const session = await requireTenantSession();
+    const rolId = requireEntityId(rol.id, "rol");
+
+    const existingRol = await prisma.rol.findFirst({
+      where: { id: rolId, tenantId: session.tenantId },
+      include: rolWithPermisosInclude,
+    });
+
+    if (!existingRol) {
+      throw new Error("Rol no encontrado para el tenant actual.");
+    }
+
+    if (
+      session.tipoUsuario !== TipoUsuario.ROOT &&
+      existingRol.permisos.some((rolPermiso) => rolPermiso.permiso.esPermisoSistema)
+    ) {
+      throw new Error("No puedes editar roles del sistema.");
+    }
+
     const updated = await prisma.rol.update({
-      where: { id: requireEntityId(rol.id, "rol") },
+      where: { id: rolId },
       data: {
         ...buildRolData(rol),
         permisos: {
-          deleteMany: {},
-          create: buildPermisosCreateData(rol.permisos),
+          deleteMany: { tenantId: session.tenantId },
+          create: buildPermisosCreateData(session.tenantId, rol.permisos),
         },
       },
       include: rolWithPermisosInclude,
@@ -98,12 +129,24 @@ export async function putRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
 
 export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
   try {
-    const rol = await prisma.rol.findUnique({
-      where: { id },
+    const session = await requireTenantSession();
+    const rol = await prisma.rol.findFirst({
+      where: { id, tenantId: session.tenantId },
       include: rolWithPermisosInclude,
     });
 
-    return rol ? mapRolToDto(rol) : null;
+    if (!rol) {
+      return null;
+    }
+
+    if (
+      session.tipoUsuario !== TipoUsuario.ROOT &&
+      rol.permisos.some((rolPermiso) => rolPermiso.permiso.esPermisoSistema)
+    ) {
+      return null;
+    }
+
+    return mapRolToDto(rol);
   } catch (error) {
     logServerActionError("getRolPermisoById", error);
     return null;
@@ -112,12 +155,14 @@ export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
 
 export async function postRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
   try {
+    const session = await requireTenantSession();
     const created = await prisma.rol.create({
       data: {
         id: randomUUID(),
+        tenantId: session.tenantId,
         ...buildRolData(rol),
         permisos: {
-          create: buildPermisosCreateData(rol.permisos),
+          create: buildPermisosCreateData(session.tenantId, rol.permisos),
         },
       },
       include: rolWithPermisosInclude,

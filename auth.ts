@@ -4,13 +4,13 @@
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { TSchemaResetPassword, schemaResetPassword } from "./app/(public)/reset-password/schema";
-import { TSchemaSignIn, schemaSignIn } from "./lib/shemas";   // ajusta ruta si hace falta
-import { Prisma, } from '@/app/generated/prisma';
+import { TSchemaSignIn, schemaSignIn } from "./lib/shemas";
+import { Prisma, TipoUsuario } from '@/app/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import bcrypt from "bcryptjs";
+
 const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 
-// 1) Extendemos JWTPayload para nuestro payload
 export interface UsuarioSesion extends JWTPayload {
     IdUser: string;
     User: string;
@@ -18,40 +18,38 @@ export interface UsuarioSesion extends JWTPayload {
     IdRol: string;
     Permiso: string[];
     DebeCambiar: boolean;
-    // exp, iss, aud ya vienen de JWTPayload
+    tenantId: string;
+    tenantSlug: string;
+    tipoUsuario: TipoUsuario;
 }
 
-// 2) Función para generar el JWT
 export async function encrypt(payload: UsuarioSesion) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()                            // pone iat automáticamente
-        .setExpirationTime("1 h from now")        // puedes usar un número o string
+        .setIssuedAt()
+        .setExpirationTime("1 h from now")
         .sign(key);
 }
 
-// 3) Función para verificar y extraer el payload
 export const decrypt = async (token: string): Promise<UsuarioSesion> => {
     const { payload } = await jwtVerify<JWTPayload>(token, key, {
         algorithms: ["HS256"],
     });
 
-    // Reconstruimos nuestro tipo
-    const session: UsuarioSesion = {
+    return {
         IdUser: payload.IdUser as string,
         User: payload.User as string,
         Rol: payload.Rol as string,
         IdRol: payload.IdRol as string,
         Permiso: (payload.Permiso as string[]) || [],
         DebeCambiar: payload.DebeCambiar === true || payload.DebeCambiar === "True",
-        Puesto: payload.Puesto as string,
-        PuestoId: payload.PuestoId as string,
+        tenantId: payload.tenantId as string,
+        tenantSlug: payload.tenantSlug as string,
+        tipoUsuario: payload.tipoUsuario as TipoUsuario,
         exp: payload.exp as number,
         iss: payload.iss as string,
         aud: payload.aud as string,
     };
-
-    return session;
 };
 
 export interface LoginResult {
@@ -65,22 +63,19 @@ export interface UserChangePassword {
     newPassword: string;
 }
 
-// ------------------------------------------------------------------
-// LOGIN
-// ------------------------------------------------------------------
 export const login = async (
     credentials: TSchemaSignIn,
     redirect: string
 ): Promise<LoginResult> => {
     const parsed = schemaSignIn.safeParse(credentials);
     if (!parsed.success) {
-        return { error: "Usuario o contraseña inválidos" };
+        return { error: "Slug, usuario o contraseña inválidos" };
     }
 
-    const { usuario, contrasena } = parsed.data;
-    const tokenAD = await getADAuthentication(usuario, contrasena);
+    const { slug, usuario, contrasena } = parsed.data;
+    const tokenAD = await getADAuthentication(slug, usuario, contrasena);
     if (!tokenAD) {
-        return { error: "Usuario o contraseña inválidos" };
+        return { error: "Slug, usuario o contraseña inválidos" };
     }
 
     const sessionToken = tokenAD;
@@ -92,9 +87,6 @@ export const login = async (
     return { success: "Login OK", redirect };
 };
 
-// ------------------------------------------------------------------
-// RESET PASSWORD
-// ------------------------------------------------------------------
 export const resetPassword = async (
     credentials: TSchemaResetPassword,
     username: string
@@ -104,8 +96,13 @@ export const resetPassword = async (
         return { error: "Error al cambiar la contraseña" };
     }
 
+    const session = await getSession();
+    if (!session) {
+        return { error: "Sesión inválida" };
+    }
+
     const { confirmar } = parsed.data;
-    const tokenAD = await changePassword(username, confirmar);
+    const tokenAD = await changePassword(session.tenantId, username, confirmar);
     if (!tokenAD) {
         return { error: "Error al cambiar la contraseña" };
     }
@@ -118,9 +115,6 @@ export const resetPassword = async (
     return { success: "Contraseña cambiada con éxito" };
 };
 
-// ------------------------------------------------------------------
-// SESSION HELPERS
-// ------------------------------------------------------------------
 export const getSession = async (): Promise<UsuarioSesion | null> => {
     const token = cookies().get("session")?.value;
     if (!token) return null;
@@ -136,13 +130,9 @@ export const signOut = async () => {
     cookies().delete("session");
 };
 
-// ------------------------------------------------------------------
-// AUTH VIA DB (Prisma)
-// ------------------------------------------------------------------
-
-// 4) Definimos nuestro include para traer rol + permisos
 const usuarioWithRolArgs = Prisma.validator<Prisma.UsuarioDefaultArgs>()({
     include: {
+        tenant: true,
         rol: {
             include: {
                 permisos: {
@@ -153,99 +143,79 @@ const usuarioWithRolArgs = Prisma.validator<Prisma.UsuarioDefaultArgs>()({
     },
 });
 
-// 5) Tipo resultante que incluye las relaciones
 type UsuarioConRol = Prisma.UsuarioGetPayload<typeof usuarioWithRolArgs>;
 
-/**
- * Autenticación contra la BD, genera JWT con cargo y permisos.
- */
-export async function getADAuthentication(
-    username: string,
-    password: string
-): Promise<string | null> {
-    const user: UsuarioConRol | null = await prisma.usuario.findFirst({
-        where: { nombre: username },      // ahora sí acepta campos no-únicos
-        include: usuarioWithRolArgs.include,
-    });
+function buildSessionPayload(user: UsuarioConRol): UsuarioSesion {
+    const permisos = user.rol.permisos
+      .filter((rp) => user.tipoUsuario === TipoUsuario.ROOT || !rp.permiso.esPermisoSistema)
+      .map((rp) => rp.permiso.nombre);
 
-    if (
-        !user ||
-        !(await bcrypt.compare(password, user.password))
-      ) {
-        return null;
-      }
-
-    const permisos = user.rol.permisos.map(rp => rp.permiso.nombre);
-
-    const payload: UsuarioSesion = {
+    return {
         IdUser: user.id,
         User: user.nombre,
         Rol: user.rol.nombre,
         IdRol: user.rolId,
         Permiso: permisos,
         DebeCambiar: user.DebeCambiar,
-        Puesto: "",
-        PuestoId: "",
+        tenantId: user.tenantId,
+        tenantSlug: user.tenant.slug,
+        tipoUsuario: user.tipoUsuario,
         exp: Math.floor(Date.now() / 1000) + 3600,
         iss: "your-issuer",
         aud: "your-audience",
     };
-
-    return encrypt(payload);
 }
 
-// ------------------------------------------------------------------
-// Si quieres implementar cambio de contraseña en BD con Prisma, reemplaza este fetch
-// ------------------------------------------------------------------
+export async function getADAuthentication(
+    slug: string,
+    username: string,
+    password: string
+): Promise<string | null> {
+    const user: UsuarioConRol | null = await prisma.usuario.findFirst({
+        where: {
+            nombre: username,
+            tenant: {
+                slug,
+                activo: true,
+            },
+            activo: true,
+        },
+        include: usuarioWithRolArgs.include,
+    });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return null;
+    }
+
+    return encrypt(buildSessionPayload(user));
+}
+
 export async function changePassword(
+    tenantId: string,
     username: string,
     newPassword: string
 ): Promise<string | null> {
-    // 1) Buscar el usuario por nombre
     const existing = await prisma.usuario.findFirst({
-        where: { nombre: username }
+        where: { nombre: username, tenantId }
     });
     if (!existing) {
         return null;
     }
 
-    // 2) Actualizar usando el id
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
   
-    // 3) Actualizar usando el id
-        const updated = await prisma.usuario.update({
-            where: { id: existing.id },
-            data: {
-                password: hashedPassword,
-                DebeCambiar: false,
-            },
-            include: {
-                rol: {
-                    include: {
-                        permisos: { include: { permiso: true } },
-                    },
-                },
-            },
-        });
+    const updated = await prisma.usuario.update({
+        where: { id: existing.id },
+        data: {
+            password: hashedPassword,
+            DebeCambiar: false,
+        },
+        include: usuarioWithRolArgs.include,
+    });
 
-    // 3) (Opcional) Reconstruye y devuelve un token nuevo
-
-    const permisos = updated.rol.permisos.map((rp) => rp.permiso.nombre);
-    const payload: UsuarioSesion = {
-        IdUser: updated.id,
-        User: updated.nombre,
-        Rol: updated.rol.nombre,      // o updated.rol.nombre si lo incluyes
-        IdRol: updated.rolId,
-        Permiso: permisos,
-        DebeCambiar: updated.DebeCambiar,
-        exp: Math.floor(Date.now() / 1000) + 3600,
-        iss: "your-issuer",
-        aud: "your-audience",
-    };
-    return encrypt(payload);
+    return encrypt(buildSessionPayload(updated));
 }
-
 
 export const getSessionUsuario = async (): Promise<UsuarioSesion | null> => {
     const session = cookies().get("session")?.value;

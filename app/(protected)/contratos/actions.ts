@@ -1,9 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 import { Contrato, ContratoCreate, ContratoUpdate, ContratoView } from "./type";
 
-// Utilidad para mapear
 function mapContrato(data: any): Contrato {
   return {
     id: data.id,
@@ -21,6 +21,7 @@ function mapContrato(data: any): Contrato {
 export async function getContratos(): Promise<Contrato[]> {
   try {
     const response = await prisma.contratos.findMany({
+      where: await buildTenantWhere(),
       include: {
         inquilino: true,
         apartamento: true,
@@ -39,9 +40,10 @@ export async function getContratos(): Promise<Contrato[]> {
 
 export async function postContrato({ contrato }: { contrato: ContratoCreate }): Promise<Contrato> {
   try {
-    // Crear el contrato
+    const tenantId = await getTenantIdFromSession()
     const newContrato = await prisma.contratos.create({
       data: {
+        tenantId,
         inquilinoId: contrato.inquilinoId,
         apartamentoId: contrato.apartamentoId,
         fechaInicio: new Date(contrato.fechaInicio),
@@ -55,9 +57,8 @@ export async function postContrato({ contrato }: { contrato: ContratoCreate }): 
       },
     });
 
-    // Marcar el apartamento como no disponible
-    await prisma.apartamento.update({
-      where: { id: contrato.apartamentoId },
+    await prisma.apartamento.updateMany({
+      where: { id: contrato.apartamentoId, tenantId },
       data: {
         disponible: false,
       },
@@ -70,9 +71,17 @@ export async function postContrato({ contrato }: { contrato: ContratoCreate }): 
   }
 }
 
-
 export async function putContrato({ contrato }: { contrato: ContratoUpdate }): Promise<Contrato> {
  try {
+    const tenantId = await getTenantIdFromSession()
+    const existing = await prisma.contratos.findFirst({
+      where: { id: contrato.id, tenantId },
+    })
+
+    if (!existing) {
+      throw new Error('Contrato no encontrado para el tenant actual')
+    }
+
     const updatedContrato = await prisma.contratos.update({
       where: { id: contrato.id },
       data: {
@@ -89,10 +98,9 @@ export async function putContrato({ contrato }: { contrato: ContratoUpdate }): P
       },
     });
 
-    // Si se establece fechaFin, actualizar disponibilidad del apartamento
     if (contrato.fechaFin) {
-      await prisma.apartamento.update({
-        where: { id: contrato.apartamentoId },
+      await prisma.apartamento.updateMany({
+        where: { id: contrato.apartamentoId, tenantId },
         data: {
           disponible: true,
         },
@@ -106,11 +114,10 @@ export async function putContrato({ contrato }: { contrato: ContratoUpdate }): P
   }
 }
 
-
 export async function getContratoById(id: string): Promise<Contrato | null> {
   try {
-    const contrato = await prisma.contratos.findUnique({
-      where: { id },
+    const contrato = await prisma.contratos.findFirst({
+      where: await buildTenantWhere({ id }),
       include: {
         inquilino: true,
         apartamento: true,
@@ -126,20 +133,20 @@ export async function getContratoById(id: string): Promise<Contrato | null> {
 
 export async function getContratoByIdView(id: string): Promise<ContratoView | null> {
   try {
-    const contrato = await prisma.contratos.findUnique({
-      where: { id },
+    const contrato = await prisma.contratos.findFirst({
+      where: await buildTenantWhere({ id }),
       include: {
-        inquilino: true, // Relación con el inquilino
+        inquilino: true,
         apartamento: {
           include: {
             apartamento: {
               include: {
-                tipoHabitacion: true, // Relación con TiposHabitacion
+                tipoHabitacion: true,
               },
             },
             ApartamentoServicios: {
               include: {
-                servicio: true, // Relación con Servicios
+                servicio: true,
               },
             },
           },
@@ -185,4 +192,3 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
     return null;
   }
 }
-

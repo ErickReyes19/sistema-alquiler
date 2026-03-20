@@ -219,13 +219,14 @@ model ReciboDetalles {
 }
 
 model Permiso {
-  id          String       @id @default(uuid())
-  tenantId    String
-  nombre      String
-  descripcion String
-  createAt    DateTime     @default(now())
-  updateAt    DateTime     @updatedAt
-  activo      Boolean
+  id               String       @id @default(uuid())
+  tenantId         String
+  nombre           String
+  descripcion      String
+  createAt         DateTime     @default(now())
+  updateAt         DateTime     @updatedAt
+  activo           Boolean
+  esPermisoSistema Boolean      @default(false)
   tenant      Tenant       @relation(fields: [tenantId], references: [id])
   roles       RolPermiso[]
 
@@ -248,17 +249,23 @@ model RolPermiso {
   @@index([permisoId], map: "RolPermiso_permisoId_fkey")
 }
 
+enum TipoUsuario {
+  ROOT
+  TENANT_ADMIN
+}
+
 model Usuario {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   tenantId    String
   nombre      String
   email       String
   password    String
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
+  createAt    DateTime    @default(now())
+  updateAt    DateTime    @updatedAt
   activo      Boolean
   rolId       String
   DebeCambiar Boolean
+  tipoUsuario TipoUsuario @default(TENANT_ADMIN)
   tenant      Tenant   @relation(fields: [tenantId], references: [id])
   rol         Rol      @relation(fields: [rolId], references: [id])
 

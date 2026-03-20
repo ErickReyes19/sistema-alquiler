@@ -10,6 +10,7 @@ import {
   requireEntityId,
   resolveActivo,
 } from "@/lib/server-action-utils";
+import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 
 import { Acompanante, Inquilino } from "./type";
 
@@ -37,17 +38,20 @@ const mapInquilinoToDto = (inquilino: InquilinoWithAcompanantes): Inquilino => (
   })),
 });
 
-const buildAcompanantesCreateData = (acompanantes: Acompanante[]) =>
+const buildAcompanantesCreateData = (tenantId: string, acompanantes: Acompanante[]) =>
   acompanantes.map((acompanante) => ({
     id: acompanante.id ?? randomUUID(),
+    tenantId,
     nombreCompleto: acompanante.nombreCompleto,
     Parentesco: acompanante.parentesco,
     activo: resolveActivo(acompanante.activo),
   }));
 
 const buildInquilinoData = (
+  tenantId: string,
   inquilino: Inquilino & { acompanantes: Acompanante[] },
 ) => ({
+  tenantId,
   nombreCompleto: inquilino.nombreCompleto,
   dni: inquilino.dni,
   activo: resolveActivo(inquilino.activo),
@@ -55,13 +59,13 @@ const buildInquilinoData = (
   correo: normalizeOptionalText(inquilino.correo, "Sin Correo"),
   fechaNacimiento: new Date(inquilino.fechaNacimiento),
   Acompañante: {
-    create: buildAcompanantesCreateData(inquilino.acompanantes),
+    create: buildAcompanantesCreateData(tenantId, inquilino.acompanantes),
   },
 });
 
 async function findInquilinos(where?: { activo?: boolean }): Promise<Inquilino[]> {
   const inquilinos = await prisma.inquilino.findMany({
-    where,
+    where: await buildTenantWhere(where),
     include: inquilinoInclude,
     orderBy: { nombreCompleto: "asc" },
   });
@@ -89,8 +93,8 @@ export async function getInquilinosActivosSinContrato(): Promise<Inquilino[]> {
 
 export async function getInquilinoById(id: string): Promise<Inquilino | null> {
   try {
-    const inquilino = await prisma.inquilino.findUnique({
-      where: { id },
+    const inquilino = await prisma.inquilino.findFirst({
+      where: await buildTenantWhere({ id }),
       include: inquilinoInclude,
     });
 
@@ -107,10 +111,11 @@ export async function postInquilino({
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
   try {
+    const tenantId = await getTenantIdFromSession()
     const created = await prisma.inquilino.create({
       data: {
         id: inquilino.id ?? randomUUID(),
-        ...buildInquilinoData(inquilino),
+        ...buildInquilinoData(tenantId, inquilino),
       },
       include: inquilinoInclude,
     });
@@ -128,16 +133,25 @@ export async function putInquilino({
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
   try {
+    const tenantId = await getTenantIdFromSession()
     const inquilinoId = requireEntityId(inquilino.id, "inquilino");
+
+    const existing = await prisma.inquilino.findFirst({
+      where: { id: inquilinoId, tenantId },
+    })
+
+    if (!existing) {
+      throw new Error('Inquilino no encontrado para el tenant actual.')
+    }
 
     const updated = await prisma.$transaction(async (tx) => {
       await tx.acompañante.deleteMany({
-        where: { inquilinoId },
+        where: { inquilinoId, tenantId },
       });
 
       return tx.inquilino.update({
         where: { id: inquilinoId },
-        data: buildInquilinoData(inquilino),
+        data: buildInquilinoData(tenantId, inquilino),
         include: inquilinoInclude,
       });
     });
