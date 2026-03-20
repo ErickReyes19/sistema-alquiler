@@ -49,7 +49,7 @@ export default function Login() {
       if (session?.DebeCambiar) {
         router.replace("/reset-password");
       } else {
-        router.replace(response.redirect!);
+        router.replace(session?.tipoUsuario === "ROOT" ? "/tenants" : response.redirect!);
       }
     });
   };
