@@ -72,35 +72,36 @@ export async function createTenant(input: { nombre: string; slug: string }) {
         throw new Error('No se pudo confirmar la creación del tenant.')
       }
 
-      const tenantPermissions = await Promise.all(
-        TENANT_PERMISSION_NAMES.map((permissionName) =>
-          tx.permiso.create({
-            data: {
-              id: randomUUID(),
-              tenantId: createdTenant.id,
-              nombre: permissionName,
-              descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-              activo: true,
-              esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
-            },
-          }),
-        ),
-      )
+      const tenantPermissions: Array<{ id: string }> = []
 
-      await Promise.all(
-        ROOT_PERMISSION_NAMES.map((permissionName) =>
-          tx.permiso.create({
-            data: {
-              id: randomUUID(),
-              tenantId: createdTenant.id,
-              nombre: permissionName,
-              descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-              activo: true,
-              esPermisoSistema: true,
-            },
-          }),
-        ),
-      )
+      for (const permissionName of TENANT_PERMISSION_NAMES) {
+        const permiso = await tx.permiso.create({
+          data: {
+            id: randomUUID(),
+            tenantId: createdTenant.id,
+            nombre: permissionName,
+            descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
+            activo: true,
+            esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
+          },
+          select: { id: true },
+        })
+
+        tenantPermissions.push(permiso)
+      }
+
+      for (const permissionName of ROOT_PERMISSION_NAMES) {
+        await tx.permiso.create({
+          data: {
+            id: randomUUID(),
+            tenantId: createdTenant.id,
+            nombre: permissionName,
+            descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
+            activo: true,
+            esPermisoSistema: true,
+          },
+        })
+      }
 
       await tx.rol.create({
         data: {
