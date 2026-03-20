@@ -5,7 +5,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { TSchemaResetPassword, schemaResetPassword } from "./app/(public)/reset-password/schema";
 import { TSchemaSignIn, schemaSignIn } from "./lib/shemas";
-import { Prisma, TipoUsuario } from '@/app/generated/prisma';
+import { Prisma, TipoUsuario } from '@/lib/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import bcrypt from "bcryptjs";
 
