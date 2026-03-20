@@ -54,8 +54,25 @@ export async function createTenant(input: { nombre: string; slug: string }) {
   try {
     return await prisma.$transaction(async (tx) => {
       const tenantId = randomUUID()
+      const roleId = randomUUID()
+      const tenantPermissionRecords = TENANT_PERMISSION_NAMES.map((permissionName) => ({
+        id: randomUUID(),
+        tenantId,
+        nombre: permissionName,
+        descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
+        activo: true,
+        esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
+      }))
+      const rootPermissionRecords = ROOT_PERMISSION_NAMES.map((permissionName) => ({
+        id: randomUUID(),
+        tenantId,
+        nombre: permissionName,
+        descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
+        activo: true,
+        esPermisoSistema: true,
+      }))
 
-      await tx.tenant.createMany({
+      const createdTenant = await tx.tenant.create({
         data: {
           id: tenantId,
           nombre,
@@ -64,59 +81,27 @@ export async function createTenant(input: { nombre: string; slug: string }) {
         },
       })
 
-      const createdTenant = await tx.tenant.findUnique({
-        where: { id: tenantId },
+      await tx.permiso.createMany({
+        data: [...tenantPermissionRecords, ...rootPermissionRecords],
       })
-
-      if (!createdTenant) {
-        throw new Error('No se pudo confirmar la creación del tenant.')
-      }
-
-      const tenantPermissions: Array<{ id: string }> = []
-
-      for (const permissionName of TENANT_PERMISSION_NAMES) {
-        const permiso = await tx.permiso.create({
-          data: {
-            id: randomUUID(),
-            tenantId: createdTenant.id,
-            nombre: permissionName,
-            descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-            activo: true,
-            esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
-          },
-          select: { id: true },
-        })
-
-        tenantPermissions.push(permiso)
-      }
-
-      for (const permissionName of ROOT_PERMISSION_NAMES) {
-        await tx.permiso.create({
-          data: {
-            id: randomUUID(),
-            tenantId: createdTenant.id,
-            nombre: permissionName,
-            descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-            activo: true,
-            esPermisoSistema: true,
-          },
-        })
-      }
 
       await tx.rol.create({
         data: {
-          id: randomUUID(),
-          tenantId: createdTenant.id,
+          id: roleId,
+          tenantId,
           nombre: 'administrador',
           descripcion: 'Administrador principal del tenant',
           activo: true,
-          permisos: {
-            create: tenantPermissions.map((permiso) => ({
-              tenant: { connect: { id: createdTenant.id } },
-              permiso: { connect: { id: permiso.id } },
-            })),
-          },
         },
+      })
+
+      await tx.rolPermiso.createMany({
+        data: tenantPermissionRecords.map((permiso) => ({
+          id: randomUUID(),
+          tenantId,
+          rolId: roleId,
+          permisoId: permiso.id,
+        })),
       })
 
       return createdTenant
