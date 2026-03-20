@@ -1,6 +1,6 @@
 "use server";
 
-import { Prisma, TipoUsuario } from "@/app/generated/prisma";
+import { Prisma, TipoUsuario } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { requireTenantSession } from "@/lib/tenant-session";
 
