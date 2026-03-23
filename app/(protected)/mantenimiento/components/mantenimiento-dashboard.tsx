@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Camera, PencilLine, Plus, Wrench } from "lucide-react";
+import { PencilLine, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +62,6 @@ const defaultForm: MaintenanceFormInput = {
   fechaAtencion: "",
   afectaDisponibilidad: false,
   estado: "REPORTADO",
-  evidenciaFotos: "",
 };
 
 const statusVariant: Record<MaintenanceListItem["estado"], "outline" | "default" | "secondary"> = {
@@ -117,7 +116,6 @@ function MantenimientoFormDialog({
           fechaAtencion: editingItem.fechaAtencion ? format(new Date(editingItem.fechaAtencion), "yyyy-MM-dd") : "",
           afectaDisponibilidad: editingItem.afectaDisponibilidad,
           estado: editingItem.estado,
-          evidenciaFotos: editingItem.evidenciaFotos.join("\n"),
         }
       : defaultForm;
 
@@ -135,9 +133,12 @@ function MantenimientoFormDialog({
         const payload: MaintenanceFormInput = {
           ...form,
           costoEstimado: Number(form.costoEstimado ?? 0),
-          costoReal: form.costoReal === undefined || form.costoReal === null || Number(form.costoReal) === 0
-            ? (form.costoReal === 0 ? 0 : undefined)
-            : Number(form.costoReal),
+          costoReal:
+            form.costoReal === undefined || form.costoReal === null || Number(form.costoReal) === 0
+              ? form.costoReal === 0
+                ? 0
+                : undefined
+              : Number(form.costoReal),
           fechaReporte: new Date(`${form.fechaReporte}T00:00:00`).toISOString(),
           fechaAtencion: form.fechaAtencion
             ? new Date(`${form.fechaAtencion}T00:00:00`).toISOString()
@@ -172,10 +173,13 @@ function MantenimientoFormDialog({
   if (!allowed) return null;
 
   return (
-    <Dialog open={open} onOpenChange={(nextOpen) => {
-      setOpen(nextOpen);
-      if (!nextOpen) resetForm();
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) resetForm();
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant={isEditing ? "outline" : "default"} size={isEditing ? "sm" : "default"}>
           {isEditing ? (
@@ -307,16 +311,6 @@ function MantenimientoFormDialog({
             </div>
           </div>
 
-          <div className="grid gap-2">
-            <Label>Evidencia fotográfica (URLs)</Label>
-            <textarea
-              className="min-h-24 rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              value={form.evidenciaFotos ?? ""}
-              onChange={(e) => setForm((current) => ({ ...current, evidenciaFotos: e.target.value }))}
-              placeholder="Pegue una URL por línea. Ej. https://.../foto-1.jpg"
-            />
-          </div>
-
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
               <p className="font-medium">¿Saca la unidad de servicio?</p>
@@ -359,7 +353,7 @@ export function MantenimientoDashboard({
         <div>
           <h2 className="text-xl font-semibold">Operación del activo y resolución de incidencias</h2>
           <p className="text-sm text-muted-foreground">
-            Corte del mes de {data.metadata.mesActual}. Este módulo centraliza tickets, daños, preventivos, correctivos, proveedores, costos y evidencia por propiedad.
+            Corte del mes de {data.metadata.mesActual}. Este módulo centraliza tickets, daños, preventivos, correctivos, proveedores y costos por propiedad.
           </p>
         </div>
         <MantenimientoFormDialog apartamentos={data.apartamentos} canCreate={canCreate} canEdit={canEdit} />
@@ -384,7 +378,7 @@ export function MantenimientoDashboard({
               Apartamento {topOpen.apartamento} · {topOpen.titulo}
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-4">
+          <CardContent className="grid gap-3 md:grid-cols-3">
             <div className="rounded-lg border p-4">
               <p className="text-sm text-muted-foreground">Estado</p>
               <p className="text-xl font-semibold">{topOpen.estadoLabel}</p>
@@ -397,10 +391,6 @@ export function MantenimientoDashboard({
               <p className="text-sm text-muted-foreground">Costo estimado</p>
               <p className="text-xl font-semibold">{currencyFormatter.format(topOpen.costoEstimado)}</p>
             </div>
-            <div className="rounded-lg border p-4">
-              <p className="text-sm text-muted-foreground">Evidencias</p>
-              <p className="text-xl font-semibold">{topOpen.evidenciaFotos.length}</p>
-            </div>
           </CardContent>
         </Card>
       )}
@@ -409,7 +399,7 @@ export function MantenimientoDashboard({
         <CardHeader>
           <CardTitle className="text-lg">Bitácora de mantenimiento e incidencias</CardTitle>
           <CardDescription>
-            Cada registro conserva apartamento, origen, tipo, proveedor, costos, fecha de atención y evidencia fotográfica.
+            Cada registro conserva apartamento, origen, tipo, proveedor, costos y fecha de atención.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -452,7 +442,7 @@ export function MantenimientoDashboard({
                   </div>
                 </div>
 
-                <div className="mt-4 grid gap-3 md:grid-cols-3">
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <div className="rounded-lg border p-3">
                     <p className="text-xs text-muted-foreground">Costo estimado</p>
                     <p className="font-semibold">{currencyFormatter.format(item.costoEstimado)}</p>
@@ -461,32 +451,7 @@ export function MantenimientoDashboard({
                     <p className="text-xs text-muted-foreground">Costo real</p>
                     <p className="font-semibold">{currencyFormatter.format(item.costoReal)}</p>
                   </div>
-                  <div className="rounded-lg border p-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <div>
-                        <p className="text-xs text-muted-foreground">Evidencia fotográfica</p>
-                        <p className="font-semibold">{item.evidenciaFotos.length} archivo(s)</p>
-                      </div>
-                      <Camera className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
                 </div>
-
-                {item.evidenciaFotos.length > 0 && (
-                  <div className="mt-4 rounded-lg border border-dashed p-3">
-                    <div className="mb-2 flex items-center gap-2">
-                      <Wrench className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-sm font-medium">Evidencias</p>
-                    </div>
-                    <div className="flex flex-col gap-2 text-sm">
-                      {item.evidenciaFotos.map((url) => (
-                        <a key={url} href={url} target="_blank" rel="noreferrer" className="truncate text-primary underline-offset-4 hover:underline">
-                          {url}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             ))
           )}

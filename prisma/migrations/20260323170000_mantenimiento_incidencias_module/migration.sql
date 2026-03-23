@@ -26,27 +26,10 @@ CREATE TABLE `MantenimientoIncidencia` (
   PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `MantenimientoEvidencia` (
-  `id` VARCHAR(191) NOT NULL,
-  `tenantId` VARCHAR(191) NOT NULL,
-  `mantenimientoId` VARCHAR(191) NOT NULL,
-  `url` VARCHAR(191) NOT NULL,
-  `descripcion` VARCHAR(191) NULL,
-  `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updateAt` DATETIME(3) NOT NULL,
-
-  INDEX `MantenimientoEvidencia_tenantId_idx`(`tenantId`),
-  INDEX `MantenimientoEvidencia_mantenimientoId_idx`(`mantenimientoId`),
-  PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 -- AddForeignKey
 ALTER TABLE `MantenimientoIncidencia` ADD CONSTRAINT `MantenimientoIncidencia_tenantId_fkey` FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE `MantenimientoIncidencia` ADD CONSTRAINT `MantenimientoIncidencia_apartamentoId_fkey` FOREIGN KEY (`apartamentoId`) REFERENCES `Apartamento`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE `MantenimientoIncidencia` ADD CONSTRAINT `MantenimientoIncidencia_contratoId_fkey` FOREIGN KEY (`contratoId`) REFERENCES `Contratos`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-ALTER TABLE `MantenimientoEvidencia` ADD CONSTRAINT `MantenimientoEvidencia_tenantId_fkey` FOREIGN KEY (`tenantId`) REFERENCES `Tenant`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `MantenimientoEvidencia` ADD CONSTRAINT `MantenimientoEvidencia_mantenimientoId_fkey` FOREIGN KEY (`mantenimientoId`) REFERENCES `MantenimientoIncidencia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- Seed permissions for existing tenants
 INSERT INTO `Permiso` (`id`, `tenantId`, `nombre`, `descripcion`, `createAt`, `updateAt`, `activo`, `esPermisoSistema`)

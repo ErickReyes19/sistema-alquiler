@@ -20,7 +20,7 @@ export default async function MantenimientoPage() {
       <HeaderComponent
         Icon={Wrench}
         screenName="Mantenimiento e incidencias"
-        description="Controle tickets, daños reportados, mantenimiento preventivo/correctivo, proveedor, costos y evidencia fotográfica por apartamento."
+        description="Controle tickets, daños reportados, mantenimiento preventivo/correctivo, proveedor, costos y fecha de atención por apartamento."
       />
 
       <MantenimientoDashboard

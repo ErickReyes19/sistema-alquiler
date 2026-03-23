@@ -34,7 +34,6 @@ model Tenant {
   usuarios              Usuario[]
   gastosApartamento     GastoApartamento[]
   mantenimientos        MantenimientoIncidencia[]
-  mantenimientoEvidencias MantenimientoEvidencia[]
 }
 
 model Rol {
@@ -375,28 +374,12 @@ model MantenimientoIncidencia {
   tenant              Tenant                @relation(fields: [tenantId], references: [id])
   apartamento         Apartamento           @relation(fields: [apartamentoId], references: [id])
   contrato            Contratos?            @relation(fields: [contratoId], references: [id])
-  evidencias          MantenimientoEvidencia[]
 
   @@index([tenantId])
   @@index([apartamentoId])
   @@index([contratoId])
   @@index([estado, fechaReporte])
   @@index([tipo])
-}
-
-model MantenimientoEvidencia {
-  id               String                  @id @default(uuid())
-  tenantId         String
-  mantenimientoId  String
-  url              String
-  descripcion      String?
-  createAt         DateTime                @default(now())
-  updateAt         DateTime                @updatedAt
-  tenant           Tenant                  @relation(fields: [tenantId], references: [id])
-  mantenimiento    MantenimientoIncidencia @relation(fields: [mantenimientoId], references: [id], onDelete: Cascade)
-
-  @@index([tenantId])
-  @@index([mantenimientoId])
 }
 
 model Permiso {

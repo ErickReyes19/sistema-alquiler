@@ -37,7 +37,6 @@ export type MaintenanceFormInput = {
   fechaAtencion?: string;
   afectaDisponibilidad?: boolean;
   estado: EstadoMantenimiento;
-  evidenciaFotos?: string;
 };
 
 export type MaintenanceListItem = {
@@ -61,7 +60,6 @@ export type MaintenanceListItem = {
   afectaDisponibilidad: boolean;
   estado: EstadoMantenimiento;
   estadoLabel: string;
-  evidenciaFotos: string[];
 };
 
 export type MaintenanceModuleData = {
@@ -92,13 +90,6 @@ function normalizeDate(value?: string, label = "fecha") {
   }
 
   return parsed;
-}
-
-function parseEvidence(value?: string) {
-  return (value ?? "")
-    .split(/\r?\n|,/)
-    .map((item) => item.trim())
-    .filter(Boolean);
 }
 
 async function resolveContratoId(apartamentoId: string, tenantId: string) {
@@ -165,7 +156,6 @@ function normalizeInput(input: MaintenanceFormInput) {
     fechaAtencion,
     afectaDisponibilidad: Boolean(input.afectaDisponibilidad),
     estado: input.estado,
-    evidenciaFotos: parseEvidence(input.evidenciaFotos),
   };
 }
 
@@ -191,7 +181,6 @@ function mapMaintenance(data: any): MaintenanceListItem {
     afectaDisponibilidad: data.afectaDisponibilidad,
     estado: data.estado,
     estadoLabel: statusLabelMap.get(data.estado) ?? data.estado,
-    evidenciaFotos: data.evidencias.map((item: { url: string }) => item.url),
   };
 }
 
@@ -214,9 +203,6 @@ export async function getMaintenanceModuleData(): Promise<MaintenanceModuleData>
           include: {
             inquilino: true,
           },
-        },
-        evidencias: {
-          orderBy: { createAt: "asc" },
         },
       },
       orderBy: [{ estado: "asc" }, { fechaReporte: "desc" }, { createAt: "desc" }],
@@ -300,14 +286,6 @@ export async function createMaintenance(input: MaintenanceFormInput) {
       fechaAtencion: data.fechaAtencion,
       afectaDisponibilidad: data.afectaDisponibilidad,
       estado: data.estado,
-      evidencias: data.evidenciaFotos.length
-        ? {
-            create: data.evidenciaFotos.map((url) => ({
-              tenantId,
-              url,
-            })),
-          }
-        : undefined,
     },
   });
 
@@ -363,13 +341,6 @@ export async function updateMaintenance(input: MaintenanceFormInput) {
       fechaAtencion: data.fechaAtencion,
       afectaDisponibilidad: data.afectaDisponibilidad,
       estado: data.estado,
-      evidencias: {
-        deleteMany: {},
-        create: data.evidenciaFotos.map((url) => ({
-          tenantId,
-          url,
-        })),
-      },
     },
   });
 
