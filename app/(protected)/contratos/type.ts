@@ -6,6 +6,7 @@ export type EstadoRenovacionContrato =
   | "NO_RENOVADO";
 
 export type EstadoOperacionContrato =
+  | "POR_INICIAR"
   | "VIGENTE"
   | "POR_VENCER"
   | "VENCIDO"

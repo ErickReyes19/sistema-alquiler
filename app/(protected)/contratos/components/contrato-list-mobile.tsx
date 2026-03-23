@@ -57,7 +57,7 @@ export default function ContratoListMobile({ contratos }: ContratoListProps) {
                   : "Sin fecha de vencimiento definida"}
               </p>
             </div>
-            <Badge variant={contrato.alertaVencimiento ? "secondary" : "outline"}>
+            <Badge variant={contrato.estadoOperacion === "POR_INICIAR" || contrato.alertaVencimiento ? "secondary" : "outline"}>
               {(contrato.estadoOperacion ?? "VIGENTE").replaceAll("_", " ")}
             </Badge>
           </div>
