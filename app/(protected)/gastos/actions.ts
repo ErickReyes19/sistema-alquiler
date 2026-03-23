@@ -2,9 +2,10 @@
 
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { es } from "date-fns/locale";
-import { CategoriaGasto } from "@/lib/generated/prisma";
+import { CategoriaGasto, EstadoMantenimiento } from "@/lib/generated/prisma";
 
 import { prisma } from "@/lib/prisma";
+import { resolveEstadoOperativoUnidad, type EstadoOperativoUnidad } from "@/lib/property-status";
 import { categoriaOptions } from "./constants";
 import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 
@@ -46,7 +47,7 @@ export type RentabilidadApartamentoItem = {
   utilidadMes: number;
   margen: number;
   gastoCount: number;
-  disponible: boolean;
+  estadoOperativo: EstadoOperativoUnidad;
 };
 
 export type GastosModuleData = {
@@ -109,7 +110,7 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
   const start = startOfMonth(now);
   const end = endOfMonth(now);
 
-  const [apartamentos, contratosActivos, recibosMes, gastosMes, gastosRecientes] = await Promise.all([
+  const [apartamentos, contratosActivos, recibosMes, gastosMes, gastosRecientes, mantenimientosAbiertos] = await Promise.all([
     prisma.apartamento.findMany({
       where: await buildTenantWhere({ activo: true }),
       orderBy: { numero: "asc" },
@@ -144,6 +145,15 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
       orderBy: [{ fecha: "desc" }, { createAt: "desc" }],
       take: 50,
     }),
+    prisma.mantenimientoIncidencia.findMany({
+      where: await buildTenantWhere({
+        afectaDisponibilidad: true,
+        estado: {
+          not: EstadoMantenimiento.RESUELTO,
+        },
+      }),
+      select: { apartamentoId: true },
+    }),
   ]);
 
   const ingresosPorApartamento = new Map<string, number>();
@@ -166,6 +176,7 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
   const contratoPorApartamento = new Map(
     contratosActivos.map((contrato) => [contrato.apartamentoId, contrato])
   );
+  const mantenimientoPorApartamento = new Set(mantenimientosAbiertos.map((item) => item.apartamentoId));
 
   const rentabilidadPorApartamento = apartamentos
     .map((apartamento) => {
@@ -185,7 +196,10 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
         utilidadMes,
         margen,
         gastoCount: gastosInfo.count,
-        disponible: apartamento.disponible,
+        estadoOperativo: resolveEstadoOperativoUnidad({
+          hasActiveContract: Boolean(contrato),
+          hasBlockingMaintenance: mantenimientoPorApartamento.has(apartamento.id),
+        }),
       };
     })
     .sort((a, b) => b.utilidadMes - a.utilidadMes);

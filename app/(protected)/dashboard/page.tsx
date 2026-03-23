@@ -32,6 +32,12 @@ const currencyFormatter = new Intl.NumberFormat("es-HN", {
   maximumFractionDigits: 2,
 });
 
+const estadoOperativoBadge = {
+  DISPONIBLE: { label: "Disponible", variant: "secondary" as const },
+  OCUPADO: { label: "Ocupado", variant: "outline" as const },
+  MANTENIMIENTO: { label: "Mantenimiento", variant: "destructive" as const },
+};
+
 function formatMetricValue(metric: DashboardMetricCard) {
   if (metric.title.includes("Monto") || metric.title.includes("Gastos")) {
     return currencyFormatter.format(metric.value);
@@ -90,14 +96,14 @@ function AlertList({
             <div key={item.id} className="rounded-lg border p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <p className="font-medium">
-                    {item.apartamento ? `Apartamento ${item.apartamento}` : "Registro"}
-                  </p>
+                  <p className="font-medium">{item.apartamento ? `Apartamento ${item.apartamento}` : "Registro"}</p>
                   {item.inquilino && <p className="text-sm text-muted-foreground">{item.inquilino}</p>}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {typeof item.dias === "number" && <Badge variant="outline">{item.dias} días</Badge>}
-                  {typeof item.monto === "number" && <Badge variant="destructive">{currencyFormatter.format(item.monto)}</Badge>}
+                  {typeof item.monto === "number" && (
+                    <Badge variant="destructive">{currencyFormatter.format(item.monto)}</Badge>
+                  )}
                 </div>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">{item.detalle}</p>
@@ -122,50 +128,52 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
         {items.length === 0 ? (
           <p className="text-sm text-muted-foreground">No hay contratos activos para calcular rentabilidad.</p>
         ) : (
-          items.map((item) => (
-            <div key={item.apartamentoId} className="rounded-lg border p-4">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold">Apartamento {item.apartamento}</p>
-                    <Badge variant={item.disponible ? "secondary" : "destructive"}>
-                      {item.disponible ? "Operativo" : "Mantenimiento"}
-                    </Badge>
+          items.map((item) => {
+            const status = estadoOperativoBadge[item.estadoOperativo];
+
+            return (
+              <div key={item.apartamentoId} className="rounded-lg border p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">Apartamento {item.apartamento}</p>
+                      <Badge variant={status.variant}>{status.label}</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">Inquilino: {item.inquilino}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">Inquilino: {item.inquilino}</p>
+                  <div className="flex items-center gap-2">
+                    {item.rentabilidad >= 0 ? (
+                      <ArrowUpRight className="h-4 w-4 text-emerald-500" />
+                    ) : (
+                      <ArrowDownRight className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className="text-lg font-semibold">{currencyFormatter.format(item.rentabilidad)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {item.rentabilidad >= 0 ? (
-                    <ArrowUpRight className="h-4 w-4 text-emerald-500" />
-                  ) : (
-                    <ArrowDownRight className="h-4 w-4 text-red-500" />
-                  )}
-                  <span className="text-lg font-semibold">{currencyFormatter.format(item.rentabilidad)}</span>
+                <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
+                  <div>
+                    <p className="text-muted-foreground">Ingreso mensual</p>
+                    <p className="font-medium">{currencyFormatter.format(item.ingresoMensual)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Gasto real</p>
+                    <p className="font-medium">{currencyFormatter.format(item.gastoEstimado)}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Margen</p>
+                    <p className="font-medium">{item.margen.toFixed(1)}%</p>
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Margen operativo</span>
+                    <span>{item.margen.toFixed(1)}%</span>
+                  </div>
+                  <Progress value={Math.max(0, Math.min(item.margen, 100))} />
                 </div>
               </div>
-              <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
-                <div>
-                  <p className="text-muted-foreground">Ingreso mensual</p>
-                  <p className="font-medium">{currencyFormatter.format(item.ingresoMensual)}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Gasto real</p>
-                  <p className="font-medium">{currencyFormatter.format(item.gastoEstimado)}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Margen</p>
-                  <p className="font-medium">{item.margen.toFixed(1)}%</p>
-                </div>
-              </div>
-              <div className="mt-3">
-                <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Margen operativo</span>
-                  <span>{item.margen.toFixed(1)}%</span>
-                </div>
-                <Progress value={Math.max(0, Math.min(item.margen, 100))} />
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </CardContent>
     </Card>
@@ -266,11 +274,11 @@ export default async function DashboardPage() {
               <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.montoPendienteMes.value)}</p>
             </div>
             <Separator />
-            <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {dashboard.metadata.gastosEstimados
                 ? "Los gastos del mes se estiman con base en los costos adicionales configurados en servicios por apartamento."
-                : "Los gastos del mes corresponden a registros operativos reales del nuevo módulo de egresos por propiedad."}
-            </div>
+                : "Los gastos del mes corresponden a registros operativos reales del módulo de egresos por propiedad."}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -280,21 +288,21 @@ export default async function DashboardPage() {
       <div className="grid gap-4 xl:grid-cols-3">
         <AlertList
           title="Contratos por vencer"
-          description="Renovaciones o salidas que requieren atención inmediata."
+          description="Casos que conviene renegociar con anticipación."
           items={dashboard.alertas.contratosPorVencer}
           emptyMessage="No hay contratos por vencer en los próximos 30 días."
         />
         <AlertList
-          title="Inquilinos con atraso"
-          description="Contratos activos con diferencia entre renta esperada y cobros del mes."
+          title="Atrasos de cobranza"
+          description="Inquilinos con saldo pendiente dentro del mes actual."
           items={dashboard.alertas.inquilinosConAtraso}
-          emptyMessage="No se detectan atrasos para el mes actual."
+          emptyMessage="No hay atrasos de cobranza en contratos activos."
         />
         <AlertList
           title="Apartamentos fuera de servicio"
-          description="Unidades marcadas como no disponibles para operación."
+          description="Solo se muestran unidades bloqueadas por mantenimiento o incidencias abiertas."
           items={dashboard.alertas.apartamentosFueraServicio}
-          emptyMessage="No hay apartamentos fuera de servicio o en mantenimiento."
+          emptyMessage="No hay apartamentos fuera de servicio por mantenimiento o incidencias activas."
         />
       </div>
     </div>

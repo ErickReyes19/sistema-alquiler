@@ -35,6 +35,9 @@ export const TENANT_PERMISSION_NAMES = [
   'ver_gastos',
   'crear_gasto',
   'editar_gasto',
+  'ver_mantenimientos',
+  'crear_mantenimiento',
+  'editar_mantenimiento',
 ] as const
 
 export const SYSTEM_HIDDEN_PERMISSION_NAMES = new Set<string>([

@@ -25,11 +25,33 @@ import {
 } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
+
+const parentescoOptions = [
+  "Cónyuge / pareja",
+  "Hijo(a)",
+  "Padre / madre",
+  "Hermano(a)",
+  "Abuelo(a)",
+  "Nieto(a)",
+  "Tío(a)",
+  "Sobrino(a)",
+  "Primo(a)",
+  "Cuñado(a)",
+  "Suegro(a)",
+  "Yerno / nuera",
+  "Tutor(a)",
+  "Amigo(a)",
+  "Compañero(a)",
+] as const
+
+const OTRO_PARENTESCO = "__otro__"
+const parentescoPresetSet = new Set<string>(parentescoOptions)
 
 export function FormularioInquilino({
   isUpdate,
@@ -70,13 +92,15 @@ export function FormularioInquilino({
     defaultValues: { id: undefined, nombreCompleto: "", parentesco: "", activo: true },
   })
 
-  const { control: controlA, handleSubmit: handleA, formState: stateA } = acompForm
+  const { control: controlA, formState: stateA } = acompForm
+  const [showCustomParentesco, setShowCustomParentesco] = React.useState(false)
 
   // Función para agregar
   const onAddAcompanante = (data: Acompanante, e?: React.BaseSyntheticEvent) => {
     e?.preventDefault()
     append(data)
     acompForm.reset()
+    setShowCustomParentesco(false)
     setOpen(false)
   }
 
@@ -139,7 +163,14 @@ export function FormularioInquilino({
               <FormItem>
                 <FormLabel className="text-sm font-medium">Teléfono</FormLabel>
                 <FormControl>
-                  <Input className="rounded-md" placeholder="Número de teléfono" {...field} />
+                  <Input
+                    className="rounded-md"
+                    placeholder="8 dígitos"
+                    inputMode="numeric"
+                    maxLength={8}
+                    value={field.value}
+                    onChange={(event) => field.onChange(event.target.value.replace(/\D/g, "").slice(0, 8))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -227,7 +258,13 @@ export function FormularioInquilino({
         <div className="mt-8 border-t pt-6">
           <div className="flex justify-between items-center mb-4">
             <FormLabel className="text-lg font-medium">Acompañantes</FormLabel>
-            <Dialog open={open} onOpenChange={setOpen}>
+            <Dialog open={open} onOpenChange={(nextOpen) => {
+              setOpen(nextOpen)
+              if (!nextOpen) {
+                acompForm.reset()
+                setShowCustomParentesco(false)
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="rounded-md">
                   + Agregar Acompañante
@@ -257,15 +294,59 @@ export function FormularioInquilino({
                     <FormField
                       control={controlA}
                       name="parentesco"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium">Parentesco</FormLabel>
-                          <FormControl>
-                            <Input className="rounded-md" placeholder="Tipo de relación" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        const currentIsCustom = Boolean(field.value) && !parentescoPresetSet.has(field.value)
+                        const selectValue = currentIsCustom
+                          ? OTRO_PARENTESCO
+                          : field.value || undefined
+                        const shouldShowCustomInput = showCustomParentesco || currentIsCustom
+
+                        return (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Parentesco</FormLabel>
+                            <Select
+                              value={selectValue}
+                              onValueChange={(value) => {
+                                if (value === OTRO_PARENTESCO) {
+                                  setShowCustomParentesco(true)
+                                  field.onChange("")
+                                  return
+                                }
+
+                                setShowCustomParentesco(false)
+                                field.onChange(value)
+                              }}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="rounded-md">
+                                  <SelectValue placeholder="Seleccione un parentesco" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {parentescoOptions.map((option) => (
+                                  <SelectItem key={option} value={option}>
+                                    {option}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value={OTRO_PARENTESCO}>Otro</SelectItem>
+                              </SelectContent>
+                            </Select>
+
+                            {shouldShowCustomInput && (
+                              <FormControl>
+                                <Input
+                                  className="rounded-md"
+                                  placeholder="Escriba el parentesco"
+                                  value={field.value}
+                                  onChange={(event) => field.onChange(event.target.value)}
+                                />
+                              </FormControl>
+                            )}
+
+                            <FormMessage />
+                          </FormItem>
+                        )
+                      }}
                     />
 
                     {isUpdate && (
@@ -287,7 +368,7 @@ export function FormularioInquilino({
                     )}
 
                     <DialogFooter className="mt-6">
-                      <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+                      <Button variant="outline" type="button" onClick={() => { acompForm.reset(); setShowCustomParentesco(false); setOpen(false) }}>
                         Cancelar
                       </Button>
                       <Button
