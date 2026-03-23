@@ -30,6 +30,9 @@ model Tenant {
   depositosGarantia     DepositoGarantia[]
   movimientosDeposito   MovimientoDepositoGarantia[]
   inquilinos            Inquilino[]
+  expedientesArrendamiento ExpedienteArrendamiento[]
+  referenciasArrendamiento ReferenciaArrendamiento[]
+  garantesArrendamiento GaranteArrendamiento[]
   recibos               Recibos[]
   reciboDetalles        ReciboDetalles[]
   pagosRecibo           PagoRecibo[]
@@ -194,23 +197,87 @@ model Contratos {
 }
 
 model Inquilino {
-  id              String         @id @default(uuid())
-  tenantId        String
-  nombreCompleto  String
-  dni             String
-  numero          String
-  correo          String
-  fechaNacimiento DateTime       @db.DateTime(6) // armada a partir de "Dia"/"Mes"/"Año"
-  createAt        DateTime       @default(now())
-  updateAt        DateTime       @updatedAt
-  activo          Boolean
-  tenant          Tenant         @relation(fields: [tenantId], references: [id])
-  Acompañante    Acompañante[]
-  Contratos       Contratos[]
+  id                     String                      @id @default(uuid())
+  tenantId               String
+  nombreCompleto         String
+  dni                    String
+  numero                 String
+  correo                 String
+  fechaNacimiento        DateTime                    @db.DateTime(6) // armada a partir de "Dia"/"Mes"/"Año"
+  createAt               DateTime                    @default(now())
+  updateAt               DateTime                    @updatedAt
+  activo                 Boolean
+  tenant                 Tenant                      @relation(fields: [tenantId], references: [id])
+  Acompañante            Acompañante[]
+  Contratos              Contratos[]
+  expedienteArrendamiento ExpedienteArrendamiento?
 
   @@unique([tenantId, dni])
   @@unique([tenantId, correo])
   @@index([tenantId])
+}
+
+model ExpedienteArrendamiento {
+  id                         String                           @id @default(uuid())
+  tenantId                   String
+  inquilinoId                String                           @unique
+  ocupacion                  String?
+  empresa                    String?
+  ingresosMensuales          Decimal?                         @db.Decimal(10, 2)
+  historialAlquiler          String?
+  motivoSolicitud            String?
+  estadoDecision            EstadoDecisionArrendamiento      @default(PENDIENTE)
+  decisionTomadaPor          String?
+  fechaDecision              DateTime?
+  motivoDecision             String?
+  createAt                   DateTime                         @default(now())
+  updateAt                   DateTime                         @updatedAt
+  tenant                     Tenant                           @relation(fields: [tenantId], references: [id])
+  inquilino                  Inquilino                        @relation(fields: [inquilinoId], references: [id])
+  referencias                ReferenciaArrendamiento[]
+  garantes                   GaranteArrendamiento[]
+
+  @@index([tenantId])
+  @@index([estadoDecision])
+}
+
+model ReferenciaArrendamiento {
+  id                         String                         @id @default(uuid())
+  tenantId                   String
+  expedienteArrendamientoId  String
+  tipo                       TipoReferenciaArrendamiento
+  nombreCompleto             String
+  telefono                   String
+  correo                     String?
+  relacion                   String?
+  notas                      String?
+  createAt                   DateTime                       @default(now())
+  updateAt                   DateTime                       @updatedAt
+  tenant                     Tenant                         @relation(fields: [tenantId], references: [id])
+  expedienteArrendamiento    ExpedienteArrendamiento        @relation(fields: [expedienteArrendamientoId], references: [id])
+
+  @@index([tenantId])
+  @@index([expedienteArrendamientoId])
+}
+
+model GaranteArrendamiento {
+  id                         String                         @id @default(uuid())
+  tenantId                   String
+  expedienteArrendamientoId  String
+  nombreCompleto             String
+  dni                        String
+  telefono                   String
+  correo                     String?
+  empresa                    String?
+  ingresosMensuales          Decimal?                       @db.Decimal(10, 2)
+  notas                      String?
+  createAt                   DateTime                       @default(now())
+  updateAt                   DateTime                       @updatedAt
+  tenant                     Tenant                         @relation(fields: [tenantId], references: [id])
+  expedienteArrendamiento    ExpedienteArrendamiento        @relation(fields: [expedienteArrendamientoId], references: [id])
+
+  @@index([tenantId])
+  @@index([expedienteArrendamientoId])
 }
 
 model Recibos {
@@ -606,4 +673,17 @@ model Usuario {
   @@unique([tenantId, email])
   @@index([tenantId])
   @@index([rolId], map: "Usuario_rolId_fkey")
+}
+
+
+enum TipoReferenciaArrendamiento {
+  PERSONAL
+  LABORAL
+  ARRENDADOR_ANTERIOR
+}
+
+enum EstadoDecisionArrendamiento {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
 }
