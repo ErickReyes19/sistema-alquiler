@@ -1,6 +1,15 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -11,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -19,20 +29,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
+
+import { Apartamento } from "../../apartamentos/type";
+import { Inquilino } from "../../inquilinos/type";
 import { postContrato, putContrato } from "../actions";
 import { ContratoSchema } from "../schema";
-import type { ContratoCreate, ContratoUpdate } from "../type";
-import { Inquilino } from "../../inquilinos/type";
-import { Apartamento } from "../../apartamentos/type";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { es } from "date-fns/locale";
+import type { ContratoCreate, ContratoUpdate, EstadoRenovacionContrato } from "../type";
+
+type FormValues = z.input<typeof ContratoSchema>;
 
 export function Formulario({
   isUpdate,
@@ -46,9 +51,13 @@ export function Formulario({
     inquilinoId: string;
     apartamentoId: string;
     fechaInicio: string;
-    fechaFin?: string;
+    fechaFin?: string | null;
     montoMensual: number;
+    preavisoDias?: number;
     activo?: boolean;
+    estadoRenovacion?: EstadoRenovacionContrato;
+    motivoCancelacion?: string | null;
+    fechaDesocupacion?: string | null;
   };
   inquilinos: Inquilino[];
   apartamentos: Apartamento[];
@@ -56,48 +65,58 @@ export function Formulario({
   const { toast } = useToast();
   const router = useRouter();
 
-  // Convertir initialData de strings a Date para el calendario
-  const defaultValues = initialData
+  const defaultValues: FormValues = initialData
     ? {
-        ...initialData,
+        inquilinoId: initialData.inquilinoId,
+        apartamentoId: initialData.apartamentoId,
         fechaInicio: new Date(initialData.fechaInicio),
         fechaFin: initialData.fechaFin ? new Date(initialData.fechaFin) : undefined,
+        montoMensual: initialData.montoMensual,
+        preavisoDias: initialData.preavisoDias ?? 30,
+        activo: initialData.activo ?? true,
       }
-    : { inquilinoId: "", apartamentoId: "", fechaInicio: undefined, fechaFin: undefined, montoMensual: 0, activo: true };
+    : {
+        inquilinoId: "",
+        apartamentoId: "",
+        fechaInicio: new Date(),
+        fechaFin: undefined,
+        montoMensual: 0,
+        preavisoDias: 30,
+        activo: true,
+      };
 
-  const form = useForm<{
-    inquilinoId: string;
-    apartamentoId: string;
-    fechaInicio: Date;
-    fechaFin?: Date;
-    montoMensual: number;
-    activo?: boolean;
-  }>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(ContratoSchema),
     defaultValues,
   });
 
-  async function onSubmit(values: typeof defaultValues) {
+  async function onSubmit(values: FormValues) {
     try {
       if (isUpdate) {
         const dto: ContratoUpdate = {
           id: initialData!.id!,
           inquilinoId: values.inquilinoId,
           apartamentoId: values.apartamentoId,
-          fechaInicio: values.fechaInicio!.toISOString(),
+          fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
           montoMensual: values.montoMensual,
-          activo: values.activo!,
+          preavisoDias: values.preavisoDias ?? 30,
+          activo: values.activo ?? true,
+          estadoRenovacion: initialData?.estadoRenovacion ?? "SIN_GESTION",
+          fechaDesocupacion: initialData?.fechaDesocupacion ?? null,
+          motivoCancelacion: initialData?.motivoCancelacion ?? null,
         };
         await putContrato({ contrato: dto });
       } else {
         const dto: ContratoCreate = {
           inquilinoId: values.inquilinoId,
           apartamentoId: values.apartamentoId,
-          fechaInicio: values.fechaInicio!.toISOString(),
+          fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
           montoMensual: values.montoMensual,
-          activo: values.activo!,
+          preavisoDias: values.preavisoDias ?? 30,
+          activo: values.activo ?? true,
+          estadoRenovacion: values.fechaFin ? "ALERTA_GENERADA" : "SIN_GESTION",
         };
         await postContrato({ contrato: dto });
       }
@@ -116,10 +135,8 @@ export function Formulario({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-md">
-        {/* Información principal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Inquilino */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 rounded-md border p-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="inquilinoId"
@@ -132,9 +149,9 @@ export function Formulario({
                       <SelectValue placeholder="Selecciona un inquilino" />
                     </SelectTrigger>
                     <SelectContent>
-                      {inquilinos.map((i) => (
-                        <SelectItem key={i.id} value={i.id || ""}>
-                          {i.nombreCompleto}
+                      {inquilinos.map((inquilino) => (
+                        <SelectItem key={inquilino.id} value={inquilino.id || ""}>
+                          {inquilino.nombreCompleto}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -145,7 +162,6 @@ export function Formulario({
             )}
           />
 
-          {/* Apartamento */}
           <FormField
             control={form.control}
             name="apartamentoId"
@@ -158,9 +174,9 @@ export function Formulario({
                       <SelectValue placeholder="Selecciona un apartamento" />
                     </SelectTrigger>
                     <SelectContent>
-                      {apartamentos.map((a) => (
-                        <SelectItem key={a.id} value={a.id || ""}>
-                          Apartamento {a.numero}
+                      {apartamentos.map((apartamento) => (
+                        <SelectItem key={apartamento.id} value={apartamento.id || ""}>
+                          Apartamento {apartamento.numero}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -172,9 +188,7 @@ export function Formulario({
           />
         </div>
 
-        {/* Fechas */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Fecha de inicio */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="fechaInicio"
@@ -185,10 +199,7 @@ export function Formulario({
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn(
-                        "w-full text-left",
-                        !field.value && "text-muted-foreground"
-                      )}
+                      className={cn("w-full text-left", !field.value && "text-muted-foreground")}
                     >
                       {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha"}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
@@ -208,23 +219,19 @@ export function Formulario({
             )}
           />
 
-          {/* Fecha de fin */}
           <FormField
             control={form.control}
             name="fechaFin"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Fecha de fin (opcional)</FormLabel>
+                <FormLabel>Fecha de fin</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn(
-                        "w-full text-left",
-                        !field.value && "text-muted-foreground"
-                      )}
+                      className={cn("w-full text-left", !field.value && "text-muted-foreground")}
                     >
-                      {field.value ? format(field.value, "PPP", { locale: es }) : "No aplica"}
+                      {field.value ? format(field.value, "PPP", { locale: es }) : "No definida"}
                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                     </Button>
                   </PopoverTrigger>
@@ -237,72 +244,62 @@ export function Formulario({
                     />
                   </PopoverContent>
                 </Popover>
+                <FormDescription>
+                  Si define fecha de fin, el sistema podrá generar alertas y gestionar renovaciones.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* Monto mensual */}
-        <FormField
-          control={form.control}
-          name="montoMensual"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Monto Mensual</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  min={0}
-                  step={0.01}
-                  value={field.value?.toString() || ""}
-                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Estado (solo en actualización) */}
-        {isUpdate && (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
-            name="activo"
+            name="montoMensual"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Estado</FormLabel>
+                <FormLabel>Monto mensual</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={(v) => field.onChange(v === "true")}
-                    defaultValue={field.value ? "true" : "false"}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Estado" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="true">Activo</SelectItem>
-                      <SelectItem value="false">Inactivo</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={field.value?.toString() || ""}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
 
-        {/* Botón de envío */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? (
-              <Loader2 className="animate-spin h-4 w-4 mr-2" />
-            ) : isUpdate ? (
-              "Actualizar"
-            ) : (
-              "Crear"
+          <FormField
+            control={form.control}
+            name="preavisoDias"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Preaviso de renovación / salida (días)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    step={1}
+                    value={field.value?.toString() || "0"}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Determina cuántos días antes del vencimiento se activa la alerta operativa.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )}
-          </Button>
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <Button type="submit">{isUpdate ? "Actualizar contrato" : "Crear contrato"}</Button>
         </div>
       </form>
     </Form>

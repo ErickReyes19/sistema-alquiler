@@ -1,35 +1,30 @@
 import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
-import { FilePlus, PlusCircle } from "lucide-react";
-import { getRolesPermisosActivos } from "../../roles/actions";
-import { Formulario } from "../components/Form";
-import { getInquilinosActivosSinContrato } from "../../inquilinos/actions"; // Función para obtener inquilinos activos
-import { getApartamentosCompleto, getServiciosActivos } from "../../apartamentos/actions"; // Función para obtener apartamentos activos
 import NoAcceso from "@/components/noAccess";
+import { FilePlus } from "lucide-react";
+
+import { getApartamentosCompleto } from "../../apartamentos/actions";
+import { getInquilinosActivosSinContrato } from "../../inquilinos/actions";
+import { Formulario } from "../components/Form";
 
 export default async function Create() {
-  // Verificar permisos de sesión
   const permisos = await getSessionPermisos();
-  if (!permisos?.includes("crear_usuario")) {
+  if (!permisos?.includes("crear_contrato")) {
     return <NoAcceso />;
   }
 
+  const inquilinosActivos = await getInquilinosActivosSinContrato();
+  const apartamentosActivos = await getApartamentosCompleto();
 
-  // Obtener inquilinos y apartamentos activos
-  const inquilinosActivos = await getInquilinosActivosSinContrato(); // Función para obtener inquilinos activos
-  const apartamentosActivos = await getApartamentosCompleto(); // Función para obtener apartamentos activos
-
-  // Definir datos iniciales para el formulario (en este caso para un nuevo usuario)
   const initialData = {
-    usuario: "",
-    contrasena: "",
-    rol_id: "",
+    inquilinoId: "",
+    apartamentoId: "",
+    fechaInicio: new Date().toISOString(),
+    fechaFin: undefined,
+    montoMensual: 0,
+    preavisoDias: 30,
     activo: true,
-    email: "",
-    inquilinoId: "", // Updated to match expected property name
-    apartamentoId: "", // Updated to match expected property name
-    fechaInicio: new Date().toISOString(), // Convert Date to ISO string
-    montoMensual: 0, // Added required property
+    estadoRenovacion: "SIN_GESTION" as const,
   };
 
   return (
@@ -39,12 +34,12 @@ export default async function Create() {
         description="En este apartado podrás crear un nuevo contrato"
         screenName="Contrato"
       />
-      
-      <Formulario 
-        isUpdate={false} 
-        initialData={initialData}  
-        inquilinos={inquilinosActivos} // Pasamos los inquilinos activos al formulario
-        apartamentos={apartamentosActivos} // Pasamos los apartamentos activos al formulario
+
+      <Formulario
+        isUpdate={false}
+        initialData={initialData}
+        inquilinos={inquilinosActivos}
+        apartamentos={apartamentosActivos}
       />
     </div>
   );
