@@ -33,6 +33,8 @@ model Tenant {
   rolPermisos           RolPermiso[]
   usuarios              Usuario[]
   gastosApartamento     GastoApartamento[]
+  mantenimientos        MantenimientoIncidencia[]
+  mantenimientoEvidencias MantenimientoEvidencia[]
 }
 
 model Rol {
@@ -112,6 +114,7 @@ model Apartamento {
   activo               Boolean
   Contratos            Contratos[]
   gastos               GastoApartamento[]
+  mantenimientos       MantenimientoIncidencia[]
 
   @@unique([tenantId, numero])
   @@index([tenantId])
@@ -165,6 +168,7 @@ model Contratos {
   inquilino     Inquilino   @relation(fields: [inquilinoId], references: [id])
   apartamento   Apartamento @relation(fields: [apartamentoId], references: [id])
   recibos       Recibos[]
+  mantenimientos MantenimientoIncidencia[]
 
   @@index([tenantId])
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
@@ -328,6 +332,71 @@ enum CategoriaGasto {
   IMPUESTO
   EXTRAORDINARIO
   OTRO
+}
+
+enum TipoMantenimiento {
+  TICKET
+  DANIO_REPORTADO
+  PREVENTIVO
+  CORRECTIVO
+}
+
+enum OrigenMantenimiento {
+  INQUILINO
+  ADMINISTRACION
+  INSPECCION
+  PROPIETARIO
+}
+
+enum EstadoMantenimiento {
+  REPORTADO
+  EN_PROCESO
+  RESUELTO
+}
+
+model MantenimientoIncidencia {
+  id                  String                @id @default(uuid())
+  tenantId            String
+  apartamentoId       String
+  contratoId          String?
+  tipo                TipoMantenimiento
+  origen              OrigenMantenimiento   @default(ADMINISTRACION)
+  titulo              String
+  descripcion         String
+  proveedorAsignado   String?
+  costoEstimado       Decimal               @default(0.00)
+  costoReal           Decimal?
+  fechaReporte        DateTime              @default(now())
+  fechaAtencion       DateTime?
+  afectaDisponibilidad Boolean              @default(false)
+  estado              EstadoMantenimiento   @default(REPORTADO)
+  createAt            DateTime              @default(now())
+  updateAt            DateTime              @updatedAt
+  tenant              Tenant                @relation(fields: [tenantId], references: [id])
+  apartamento         Apartamento           @relation(fields: [apartamentoId], references: [id])
+  contrato            Contratos?            @relation(fields: [contratoId], references: [id])
+  evidencias          MantenimientoEvidencia[]
+
+  @@index([tenantId])
+  @@index([apartamentoId])
+  @@index([contratoId])
+  @@index([estado, fechaReporte])
+  @@index([tipo])
+}
+
+model MantenimientoEvidencia {
+  id               String                  @id @default(uuid())
+  tenantId         String
+  mantenimientoId  String
+  url              String
+  descripcion      String?
+  createAt         DateTime                @default(now())
+  updateAt         DateTime                @updatedAt
+  tenant           Tenant                  @relation(fields: [tenantId], references: [id])
+  mantenimiento    MantenimientoIncidencia @relation(fields: [mantenimientoId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([mantenimientoId])
 }
 
 model Permiso {

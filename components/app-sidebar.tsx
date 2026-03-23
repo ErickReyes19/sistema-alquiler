@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Building2, ChevronDown, ChevronUp, HandCoins, HouseIcon, LayoutDashboard, LayersIcon, ListOrderedIcon, ReceiptText, Settings, UserCog, UserIcon, Users2 } from 'lucide-react';
+import { Building2, ChevronDown, ChevronUp, HandCoins, HouseIcon, LayoutDashboard, LayersIcon, ListOrderedIcon, ReceiptText, Settings, UserCog, UserIcon, Users2, Wrench } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -104,6 +104,12 @@ const items = [
     url: "/gastos",
     icon: ReceiptText,
     permiso: "ver_gastos",
+  },
+  {
+    title: "Mantenimiento",
+    url: "/mantenimiento",
+    icon: Wrench,
+    permiso: "ver_mantenimientos",
   },
 ];
 

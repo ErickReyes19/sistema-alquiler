@@ -39,6 +39,12 @@ const currencyFormatter = new Intl.NumberFormat("es-HN", {
   maximumFractionDigits: 2,
 });
 
+const operationalBadge = {
+  DISPONIBLE: { label: "Disponible", variant: "secondary" as const },
+  OCUPADO: { label: "Ocupado", variant: "outline" as const },
+  MANTENIMIENTO: { label: "Mantenimiento", variant: "destructive" as const },
+};
+
 const defaultForm: GastoFormInput = {
   apartamentoId: "",
   fecha: format(new Date(), "yyyy-MM-dd"),
@@ -328,49 +334,51 @@ export function GastosDashboard({ data, canCreate, canEdit }: { data: GastosModu
           {data.rentabilidadPorApartamento.length === 0 ? (
             <p className="text-sm text-muted-foreground">No hay apartamentos activos para calcular rentabilidad.</p>
           ) : (
-            data.rentabilidadPorApartamento.map((item) => (
-              <div key={item.apartamentoId} className="rounded-lg border p-4">
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold">Apartamento {item.apartamento}</p>
-                      <Badge variant={item.disponible ? "secondary" : "destructive"}>
-                        {item.disponible ? "Operativo" : "No disponible"}
-                      </Badge>
-                      {item.gastosMes > item.ingresosMes && <Badge variant="destructive">Pérdida</Badge>}
+            data.rentabilidadPorApartamento.map((item) => {
+              const badge = operationalBadge[item.estadoOperativo];
+
+              return (
+                <div key={item.apartamentoId} className="rounded-lg border p-4">
+                  <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-semibold">Apartamento {item.apartamento}</p>
+                        <Badge variant={badge.variant}>{badge.label}</Badge>
+                        {item.gastosMes > item.ingresosMes && <Badge variant="destructive">Pérdida</Badge>}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{item.inquilino}</p>
+                      {item.direccion && <p className="text-xs text-muted-foreground">{item.direccion}</p>}
                     </div>
-                    <p className="text-sm text-muted-foreground">{item.inquilino}</p>
-                    {item.direccion && <p className="text-xs text-muted-foreground">{item.direccion}</p>}
+                    <div className="flex items-center gap-2">
+                      {item.utilidadMes >= 0 ? (
+                        <ArrowUpRight className="h-4 w-4 text-emerald-500" />
+                      ) : (
+                        <ArrowDownRight className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className="text-lg font-semibold">{currencyFormatter.format(item.utilidadMes)}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {item.utilidadMes >= 0 ? (
-                      <ArrowUpRight className="h-4 w-4 text-emerald-500" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className="text-lg font-semibold">{currencyFormatter.format(item.utilidadMes)}</span>
-                  </div>
-                </div>
-                <div className="mt-4 grid gap-3 md:grid-cols-4">
-                  <div className="rounded-lg border p-3">
-                    <p className="text-xs text-muted-foreground">Ingresos del mes</p>
-                    <p className="font-semibold">{currencyFormatter.format(item.ingresosMes)}</p>
-                  </div>
-                  <div className="rounded-lg border p-3">
-                    <p className="text-xs text-muted-foreground">Gastos del mes</p>
-                    <p className="font-semibold">{currencyFormatter.format(item.gastosMes)}</p>
-                  </div>
-                  <div className="rounded-lg border p-3">
-                    <p className="text-xs text-muted-foreground">Margen</p>
-                    <p className="font-semibold">{item.margen.toFixed(1)}%</p>
-                  </div>
-                  <div className="rounded-lg border p-3">
-                    <p className="text-xs text-muted-foreground">Registros de gasto</p>
-                    <p className="font-semibold">{item.gastoCount}</p>
+                  <div className="mt-4 grid gap-3 md:grid-cols-4">
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Ingresos del mes</p>
+                      <p className="font-semibold">{currencyFormatter.format(item.ingresosMes)}</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Gastos del mes</p>
+                      <p className="font-semibold">{currencyFormatter.format(item.gastosMes)}</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Margen</p>
+                      <p className="font-semibold">{item.margen.toFixed(1)}%</p>
+                    </div>
+                    <div className="rounded-lg border p-3">
+                      <p className="text-xs text-muted-foreground">Registros de gasto</p>
+                      <p className="font-semibold">{item.gastoCount}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </CardContent>
       </Card>

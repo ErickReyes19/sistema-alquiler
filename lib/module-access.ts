@@ -33,6 +33,10 @@ export function resolveModulePermissions(pathname: string): string[] | null {
   if (pathname.startsWith("/gastos/") && pathname.endsWith("/edit")) return ["editar_gasto"];
   if (pathname.startsWith("/gastos")) return ["ver_gastos"];
 
+  if (pathname === "/mantenimiento/create") return ["crear_mantenimiento"];
+  if (pathname.startsWith("/mantenimiento/") && pathname.endsWith("/edit")) return ["editar_mantenimiento"];
+  if (pathname.startsWith("/mantenimiento")) return ["ver_mantenimientos"];
+
   if (pathname.startsWith("/cobranza")) return ["ver_cobranza"];
 
   if (pathname.includes("/recibos/")) {

@@ -2,7 +2,9 @@
 
 import { addDays, differenceInCalendarDays, endOfMonth, startOfMonth } from "date-fns";
 
+import { EstadoMantenimiento } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
+import { resolveEstadoOperativoUnidad, type EstadoOperativoUnidad } from "@/lib/property-status";
 import { buildTenantWhere } from "@/lib/tenant-session";
 
 const toNumber = (value: { toString(): string } | number | null | undefined) => Number(value ?? 0);
@@ -21,7 +23,7 @@ export type DashboardRentabilidadItem = {
   gastoEstimado: number;
   rentabilidad: number;
   margen: number;
-  disponible: boolean;
+  estadoOperativo: EstadoOperativoUnidad;
 };
 
 export type DashboardAlertItem = {
@@ -69,7 +71,7 @@ export async function getDashboardData(): Promise<DashboardData> {
   const end = endOfMonth(now);
   const cutoff = addDays(now, 30);
 
-  const [apartamentos, contratosActivos, recibosMes, gastosMes] = await Promise.all([
+  const [apartamentos, contratosActivos, recibosMes, gastosMes, mantenimientosAbiertos] = await Promise.all([
     prisma.apartamento.findMany({
       where: await buildTenantWhere({ activo: true }),
       orderBy: {
@@ -112,6 +114,23 @@ export async function getDashboardData(): Promise<DashboardData> {
         apartamento: true,
       },
     }),
+    prisma.mantenimientoIncidencia.findMany({
+      where: await buildTenantWhere({
+        afectaDisponibilidad: true,
+        estado: {
+          not: EstadoMantenimiento.RESUELTO,
+        },
+      }),
+      include: {
+        apartamento: true,
+        contrato: {
+          include: {
+            inquilino: true,
+          },
+        },
+      },
+      orderBy: [{ fechaReporte: "desc" }, { createAt: "desc" }],
+    }),
   ]);
 
   const recibosPorContrato = new Map<string, number>();
@@ -134,9 +153,16 @@ export async function getDashboardData(): Promise<DashboardData> {
   }
 
   const apartamentosOcupadosIds = new Set(contratosActivos.map((contrato) => contrato.apartamentoId));
+  const mantenimientoPorApartamento = new Map(
+    mantenimientosAbiertos.map((mantenimiento) => [mantenimiento.apartamentoId, mantenimiento])
+  );
+
   const apartamentosOcupados = apartamentos.filter((apartamento) => apartamentosOcupadosIds.has(apartamento.id));
-  const apartamentosVacios = apartamentos.filter((apartamento) => !apartamentosOcupadosIds.has(apartamento.id));
-  const apartamentosFueraServicio = apartamentos.filter((apartamento) => !apartamento.disponible);
+  const apartamentosVacios = apartamentos.filter(
+    (apartamento) =>
+      !apartamentosOcupadosIds.has(apartamento.id) && !mantenimientoPorApartamento.has(apartamento.id)
+  );
+  const apartamentosFueraServicio = apartamentos.filter((apartamento) => mantenimientoPorApartamento.has(apartamento.id));
 
   const contratosPorVencer = contratosActivos
     .filter((contrato) => contrato.fechaFin && contrato.fechaFin >= now && contrato.fechaFin <= cutoff)
@@ -159,6 +185,10 @@ export async function getDashboardData(): Promise<DashboardData> {
       const gastoEstimado = gastosPorApartamento.get(apartamento.id) ?? 0;
       const rentabilidad = ingresoMensual - gastoEstimado;
       const margen = ingresoMensual > 0 ? (rentabilidad / ingresoMensual) * 100 : gastoEstimado > 0 ? -100 : 0;
+      const estadoOperativo = resolveEstadoOperativoUnidad({
+        hasActiveContract: Boolean(contrato),
+        hasBlockingMaintenance: mantenimientoPorApartamento.has(apartamento.id),
+      });
 
       return {
         apartamentoId: apartamento.id,
@@ -168,7 +198,7 @@ export async function getDashboardData(): Promise<DashboardData> {
         gastoEstimado,
         rentabilidad,
         margen,
-        disponible: apartamento.disponible,
+        estadoOperativo,
       };
     })
     .sort((a, b) => b.rentabilidad - a.rentabilidad);
@@ -207,7 +237,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       apartamentosVacios: {
         title: "Apartamentos vacíos",
         value: apartamentosVacios.length,
-        subtitle: "Disponibles para nueva colocación",
+        subtitle: "Disponibles para nueva colocación y sin bloqueo operativo",
       },
       contratosPorVencer: {
         title: "Contratos por vencer",
@@ -237,7 +267,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       fueraServicio: {
         title: "Apartamentos fuera de servicio",
         value: apartamentosFueraServicio.length,
-        subtitle: "Unidades no disponibles o en mantenimiento",
+        subtitle: "Solo unidades bloqueadas por incidencias o mantenimiento abierto",
       },
     },
     ocupacion: {
@@ -250,10 +280,11 @@ export async function getDashboardData(): Promise<DashboardData> {
     alertas: {
       contratosPorVencer,
       inquilinosConAtraso,
-      apartamentosFueraServicio: apartamentosFueraServicio.map((apartamento) => ({
-        id: apartamento.id,
-        apartamento: apartamento.numero,
-        detalle: apartamento.direccion || "Marcado como no disponible",
+      apartamentosFueraServicio: Array.from(mantenimientoPorApartamento.values()).map((mantenimiento) => ({
+        id: mantenimiento.id,
+        apartamento: mantenimiento.apartamento.numero,
+        inquilino: mantenimiento.contrato?.inquilino?.nombreCompleto,
+        detalle: `${mantenimiento.titulo}. ${mantenimiento.proveedorAsignado ? `Proveedor: ${mantenimiento.proveedorAsignado}. ` : ""}Estado: ${mantenimiento.estado.toLowerCase().replace("_", " ")}`,
       })),
     },
     metadata: {
