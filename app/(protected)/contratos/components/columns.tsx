@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowUpDown, CheckCircleIcon } from "lucide-react";
-import { formatearFecha } from "@/lib/utils";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, XCircleIcon } from "lucide-react";
+import Link from "next/link";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,11 +13,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import { Contrato } from "../type";  // Cambié Usuario por Contrato
+import { formatearFecha } from "@/lib/utils";
 
-export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
+import { Contrato } from "../type";
 
+const estadoOperacionVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  VIGENTE: "default",
+  POR_VENCER: "secondary",
+  VENCIDO: "destructive",
+  DESOCUPADO: "outline",
+  INACTIVO: "outline",
+};
+
+export const columns: ColumnDef<Contrato>[] = [
   {
     accessorKey: "inquilino",
     header: ({ column }) => (
@@ -31,7 +39,6 @@ export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
       </Button>
     ),
   },
-
   {
     accessorKey: "apartamento",
     header: ({ column }) => (
@@ -45,68 +52,36 @@ export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
       </Button>
     ),
   },
-
-  {
-    accessorKey: "fechaInicio",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Fecha Inicio
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      const fechaInicio = row.getValue<string>("fechaInicio");
-      const fechaFormateada = new Date(fechaInicio).toLocaleDateString();
-      return <span>{fechaFormateada}</span>;
-    },
-  },
   {
     accessorKey: "fechaFin",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Fecha de fin
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    header: "Vencimiento",
     cell: ({ row }) => {
-      const fechaFin = row.getValue<string | null>("fechaFin");
-      return (
-        <span>{fechaFin ? new Date(fechaFin).toLocaleDateString() : "No disponible"}</span>
-      );
+      const fechaFin = row.original.fechaFin;
+      return <span>{fechaFin ? formatearFecha(fechaFin) : "Sin fecha definida"}</span>;
     },
   },
   {
-    accessorKey: "activo",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Activo
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    accessorKey: "estadoOperacion",
+    header: "Estado operativo",
     cell: ({ row }) => {
-      const isActive = row.getValue("activo");
+      const estado = row.original.estadoOperacion ?? "VIGENTE";
+      return <Badge variant={estadoOperacionVariant[estado] ?? "outline"}>{estado.replaceAll("_", " ")}</Badge>;
+    },
+  },
+  {
+    accessorKey: "estadoRenovacion",
+    header: "Renovación",
+    cell: ({ row }) => {
+      const contrato = row.original;
       return (
-        <div className="">
-          {isActive ? (
-            <div className="flex gap-2">
-              <CheckCircleIcon color="green" /> Activo{" "}
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <XCircleIcon color="red" /> Inactivo{" "}
-            </div>
+        <div className="space-y-1">
+          <Badge variant="outline">{contrato.estadoRenovacion.replaceAll("_", " ")}</Badge>
+          {contrato.diasParaVencer !== null && contrato.diasParaVencer !== undefined && (
+            <p className="text-xs text-muted-foreground">
+              {contrato.diasParaVencer >= 0
+                ? `${contrato.diasParaVencer} día(s) para vencer`
+                : `${Math.abs(contrato.diasParaVencer)} día(s) vencido`}
+            </p>
           )}
         </div>
       );
@@ -122,7 +97,7 @@ export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir Menu</span>
+              <span className="sr-only">Abrir menú</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -132,7 +107,7 @@ export const columns: ColumnDef<Contrato>[] = [  // Cambié Usuario por Contrato
               <DropdownMenuItem>Editar</DropdownMenuItem>
             </Link>
             <Link href={`/contratos/${contrato.id}/view`}>
-              <DropdownMenuItem>Visualizar</DropdownMenuItem>
+              <DropdownMenuItem>Operación del contrato</DropdownMenuItem>
             </Link>
             <Link href={`/contratos/${contrato.id}/recibos`}>
               <DropdownMenuItem>Recibos</DropdownMenuItem>

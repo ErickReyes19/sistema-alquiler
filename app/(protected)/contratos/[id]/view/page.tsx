@@ -1,11 +1,11 @@
-// app/apartamento/[id]/edit/page.tsx
+import { redirect } from "next/navigation";
+import { View } from "lucide-react";
 
 import { getSessionPermisos } from "@/auth";
 import HeaderComponent from "@/components/HeaderComponent";
 import NoAcceso from "@/components/noAccess";
-import {  getContratoByIdView } from "../../actions";
-import { redirect } from "next/navigation";
-import { View } from "lucide-react";
+
+import { getContratoByIdView } from "../../actions";
 import ContratoViewComponent from "../../components/contratoVIew";
 
 export default async function EditApartamentoPage({ params }: { params: { id: string } }) {
@@ -15,8 +15,8 @@ export default async function EditApartamentoPage({ params }: { params: { id: st
     return <NoAcceso />;
   }
 
-  const contrato = await getContratoByIdView(params.id); 
-  
+  const contrato = await getContratoByIdView(params.id);
+
   if (!contrato) {
     redirect("/contratos");
   }
@@ -25,12 +25,10 @@ export default async function EditApartamentoPage({ params }: { params: { id: st
     <div>
       <HeaderComponent
         Icon={View}
-        description="En este apartado podrá ver detalles de un apartamento."
-        screenName="Ver detalle Apartamento"
+        description="En este apartado podrá operar renovaciones, cierres y rotación de un contrato."
+        screenName="Operación del contrato"
       />
-      <ContratoViewComponent
-      contrato={contrato}
-      />
+      <ContratoViewComponent contrato={contrato} />
     </div>
   );
 }
