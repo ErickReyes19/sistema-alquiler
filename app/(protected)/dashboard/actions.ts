@@ -1,0 +1,246 @@
+"use server";
+
+import { addDays, differenceInCalendarDays, endOfMonth, startOfMonth } from "date-fns";
+
+import { prisma } from "@/lib/prisma";
+import { buildTenantWhere } from "@/lib/tenant-session";
+
+const toNumber = (value: { toString(): string } | number | null | undefined) => Number(value ?? 0);
+
+export type DashboardMetricCard = {
+  title: string;
+  value: number;
+  subtitle: string;
+};
+
+export type DashboardRentabilidadItem = {
+  apartamentoId: string;
+  apartamento: string;
+  inquilino: string;
+  ingresoMensual: number;
+  gastoEstimado: number;
+  rentabilidad: number;
+  margen: number;
+  disponible: boolean;
+};
+
+export type DashboardAlertItem = {
+  id: string;
+  apartamento?: string;
+  inquilino?: string;
+  detalle: string;
+  dias?: number;
+  monto?: number;
+};
+
+export type DashboardData = {
+  resumen: {
+    apartamentosOcupados: DashboardMetricCard;
+    apartamentosVacios: DashboardMetricCard;
+    contratosPorVencer: DashboardMetricCard;
+    inquilinosConAtraso: DashboardMetricCard;
+    montoCobradoMes: DashboardMetricCard;
+    montoPendienteMes: DashboardMetricCard;
+    gastosMes: DashboardMetricCard;
+    fueraServicio: DashboardMetricCard;
+  };
+  ocupacion: {
+    total: number;
+    ocupados: number;
+    vacios: number;
+    porcentaje: number;
+  };
+  rentabilidadPorApartamento: DashboardRentabilidadItem[];
+  alertas: {
+    contratosPorVencer: DashboardAlertItem[];
+    inquilinosConAtraso: DashboardAlertItem[];
+    apartamentosFueraServicio: DashboardAlertItem[];
+  };
+  metadata: {
+    fechaCorte: string;
+    mesActual: string;
+    gastosEstimados: boolean;
+  };
+};
+
+export async function getDashboardData(): Promise<DashboardData> {
+  const now = new Date();
+  const start = startOfMonth(now);
+  const end = endOfMonth(now);
+  const cutoff = addDays(now, 30);
+
+  const [apartamentos, contratosActivos, recibosMes] = await Promise.all([
+    prisma.apartamento.findMany({
+      where: await buildTenantWhere({ activo: true }),
+      include: {
+        ApartamentoServicios: {
+          include: {
+            servicio: true,
+          },
+        },
+      },
+      orderBy: {
+        numero: "asc",
+      },
+    }),
+    prisma.contratos.findMany({
+      where: await buildTenantWhere({ activo: true }),
+      include: {
+        inquilino: true,
+        apartamento: {
+          include: {
+            ApartamentoServicios: true,
+          },
+        },
+      },
+      orderBy: {
+        fechaFin: "asc",
+      },
+    }),
+    prisma.recibos.findMany({
+      where: await buildTenantWhere({
+        fechaPago: {
+          gte: start,
+          lte: end,
+        },
+      }),
+      include: {
+        contrato: true,
+      },
+    }),
+  ]);
+
+  const recibosPorContrato = new Map<string, number>();
+  for (const recibo of recibosMes) {
+    const totalActual = recibosPorContrato.get(recibo.contratoId) ?? 0;
+    recibosPorContrato.set(recibo.contratoId, totalActual + toNumber(recibo.total));
+  }
+
+  const apartamentosOcupadosIds = new Set(contratosActivos.map((contrato) => contrato.apartamentoId));
+  const apartamentosOcupados = apartamentos.filter((apartamento) => apartamentosOcupadosIds.has(apartamento.id));
+  const apartamentosVacios = apartamentos.filter((apartamento) => !apartamentosOcupadosIds.has(apartamento.id));
+  const apartamentosFueraServicio = apartamentos.filter((apartamento) => !apartamento.disponible);
+
+  const contratosPorVencer = contratosActivos
+    .filter((contrato) => contrato.fechaFin && contrato.fechaFin >= now && contrato.fechaFin <= cutoff)
+    .map((contrato) => ({
+      id: contrato.id,
+      apartamento: contrato.apartamento.numero,
+      inquilino: contrato.inquilino.nombreCompleto,
+      dias: differenceInCalendarDays(contrato.fechaFin!, now),
+      detalle: `Finaliza el ${contrato.fechaFin!.toLocaleDateString("es-HN")}`,
+    }));
+
+  const rentabilidadPorApartamento = contratosActivos
+    .map((contrato) => {
+      const gastoEstimado = contrato.apartamento.ApartamentoServicios.reduce(
+        (total, servicio) => total + toNumber(servicio.costoAdicional),
+        0
+      );
+      const ingresoMensual = toNumber(contrato.montoMensual);
+      const rentabilidad = ingresoMensual - gastoEstimado;
+      const margen = ingresoMensual > 0 ? (rentabilidad / ingresoMensual) * 100 : 0;
+
+      return {
+        apartamentoId: contrato.apartamento.id,
+        apartamento: contrato.apartamento.numero,
+        inquilino: contrato.inquilino.nombreCompleto,
+        ingresoMensual,
+        gastoEstimado,
+        rentabilidad,
+        margen,
+        disponible: contrato.apartamento.disponible,
+      };
+    })
+    .sort((a, b) => b.rentabilidad - a.rentabilidad);
+
+  const inquilinosConAtraso = contratosActivos
+    .map((contrato) => {
+      const cobradoContrato = recibosPorContrato.get(contrato.id) ?? 0;
+      const esperado = toNumber(contrato.montoMensual);
+      const pendiente = Math.max(esperado - cobradoContrato, 0);
+
+      return {
+        id: contrato.id,
+        apartamento: contrato.apartamento.numero,
+        inquilino: contrato.inquilino.nombreCompleto,
+        monto: pendiente,
+        detalle:
+          pendiente > 0
+            ? `Cobrado ${cobradoContrato.toLocaleString("es-HN", { style: "currency", currency: "HNL" })} de ${esperado.toLocaleString("es-HN", { style: "currency", currency: "HNL" })}`
+            : "Sin saldo pendiente",
+      };
+    })
+    .filter((contrato) => (contrato.monto ?? 0) > 0)
+    .sort((a, b) => (b.monto ?? 0) - (a.monto ?? 0));
+
+  const montoCobradoMes = recibosMes.reduce((total, recibo) => total + toNumber(recibo.total), 0);
+  const montoPendienteMes = inquilinosConAtraso.reduce((total, contrato) => total + (contrato.monto ?? 0), 0);
+  const gastosMes = rentabilidadPorApartamento.reduce((total, item) => total + item.gastoEstimado, 0);
+
+  return {
+    resumen: {
+      apartamentosOcupados: {
+        title: "Apartamentos ocupados",
+        value: apartamentosOcupados.length,
+        subtitle: `${apartamentos.length} unidades activas en cartera`,
+      },
+      apartamentosVacios: {
+        title: "Apartamentos vacíos",
+        value: apartamentosVacios.length,
+        subtitle: "Disponibles para nueva colocación",
+      },
+      contratosPorVencer: {
+        title: "Contratos por vencer",
+        value: contratosPorVencer.length,
+        subtitle: "Próximos 30 días",
+      },
+      inquilinosConAtraso: {
+        title: "Inquilinos con atraso",
+        value: inquilinosConAtraso.length,
+        subtitle: "Con saldo pendiente este mes",
+      },
+      montoCobradoMes: {
+        title: "Monto cobrado este mes",
+        value: montoCobradoMes,
+        subtitle: "Pagos registrados en el mes corriente",
+      },
+      montoPendienteMes: {
+        title: "Monto pendiente por cobrar",
+        value: montoPendienteMes,
+        subtitle: "Saldo pendiente sobre renta mensual activa",
+      },
+      gastosMes: {
+        title: "Gastos del mes",
+        value: gastosMes,
+        subtitle: "Estimado según costos adicionales configurados",
+      },
+      fueraServicio: {
+        title: "Apartamentos fuera de servicio",
+        value: apartamentosFueraServicio.length,
+        subtitle: "Unidades no disponibles o en mantenimiento",
+      },
+    },
+    ocupacion: {
+      total: apartamentos.length,
+      ocupados: apartamentosOcupados.length,
+      vacios: apartamentosVacios.length,
+      porcentaje: apartamentos.length > 0 ? (apartamentosOcupados.length / apartamentos.length) * 100 : 0,
+    },
+    rentabilidadPorApartamento,
+    alertas: {
+      contratosPorVencer,
+      inquilinosConAtraso,
+      apartamentosFueraServicio: apartamentosFueraServicio.map((apartamento) => ({
+        id: apartamento.id,
+        apartamento: apartamento.numero,
+        detalle: apartamento.direccion || "Marcado como no disponible",
+      })),
+    },
+    metadata: {
+      fechaCorte: now.toISOString(),
+      mesActual: now.toLocaleDateString("es-HN", { month: "long", year: "numeric" }),
+      gastosEstimados: true,
+    },
+  };
+}

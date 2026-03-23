@@ -1,4 +1,5 @@
 export function resolveModulePermissions(pathname: string): string[] | null {
+  if (pathname.startsWith("/dashboard")) return null;
   if (pathname.startsWith("/tenants")) return ["ver_tenants"];
   if (pathname.startsWith("/tenant-users")) return ["ver_usuarios_tenant"];
 

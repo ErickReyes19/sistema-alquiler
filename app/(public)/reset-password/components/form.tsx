@@ -27,7 +27,7 @@ export default function ResetPassword() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [username, setUsername] = useState<string>("");
-    const [nextRoute, setNextRoute] = useState("/inquilinos");
+    const [nextRoute, setNextRoute] = useState("/dashboard");
     // Solo en montaje validamos que haya sesión y flag
     useEffect(() => {
         (async () => {
@@ -37,7 +37,7 @@ export default function ResetPassword() {
                 return;
             }
             setUsername(session.User);
-            setNextRoute(session.tipoUsuario === "ROOT" ? "/tenants" : "/inquilinos");
+            setNextRoute(session.tipoUsuario === "ROOT" ? "/tenants" : "/dashboard");
             setMounted(true);
         })();
     }, [router]);

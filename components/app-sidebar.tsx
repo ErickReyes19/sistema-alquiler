@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Building2, ChevronDown, ChevronUp, HouseIcon, LayersIcon, ListOrderedIcon, Settings, UserCog, UserIcon, Users2 } from 'lucide-react';
+import { Building2, ChevronDown, ChevronUp, HouseIcon, LayoutDashboard, LayersIcon, ListOrderedIcon, Settings, UserCog, UserIcon, Users2 } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -58,6 +58,12 @@ const mantenimientoItems = [
 
 const items = [
   {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+    permiso: null,
+  },
+  {
     title: "Apartamentos",
     url: "/apartamentos",
     icon: HouseIcon,
@@ -94,7 +100,7 @@ export async function AppSidebar() {
   const permisosUsuario = usuario?.Permiso || [];
 
   const filteredRootItems = rootItems.filter((item) => permisosUsuario.includes(item.permiso))
-  const filteredItems = items.filter(item => permisosUsuario.includes(item.permiso));
+  const filteredItems = items.filter((item) => item.permiso === null || permisosUsuario.includes(item.permiso));
   const filteredMantenimientoItems = mantenimientoItems.filter(item => permisosUsuario.includes(item.permiso));
   const showMantenimiento = filteredMantenimientoItems.length > 0;
   const showRootModules = filteredRootItems.length > 0
