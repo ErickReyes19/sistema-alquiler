@@ -1,6 +1,6 @@
 generator client {
-  provider      = "prisma-client-js"
-  output        = "../lib/generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -9,26 +9,29 @@ datasource db {
 }
 
 model Tenant {
-  id                   String                 @id @default(uuid())
-  nombre               String
-  slug                 String                 @unique
-  createAt             DateTime               @default(now())
-  updateAt             DateTime               @updatedAt
-  activo               Boolean                @default(true)
-  roles                Rol[]
-  acompanantes         Acompañante[]
-  habitaciones         Habitaciones[]
-  tiposHabitacion      TiposHabitacion[]
-  apartamentos         Apartamento[]
-  servicios            Servicios[]
-  apartamentoServicios ApartamentoServicios[]
-  contratos            Contratos[]
-  inquilinos           Inquilino[]
-  recibos              Recibos[]
-  reciboDetalles       ReciboDetalles[]
-  permisos             Permiso[]
-  rolPermisos          RolPermiso[]
-  usuarios             Usuario[]
+  id                    String                 @id @default(uuid())
+  nombre                String
+  slug                  String                 @unique
+  createAt              DateTime               @default(now())
+  updateAt              DateTime               @updatedAt
+  activo                Boolean                @default(true)
+  roles                 Rol[]
+  acompanantes          Acompañante[]
+  habitaciones          Habitaciones[]
+  tiposHabitacion       TiposHabitacion[]
+  apartamentos          Apartamento[]
+  servicios             Servicios[]
+  apartamentoServicios  ApartamentoServicios[]
+  contratos             Contratos[]
+  inquilinos            Inquilino[]
+  recibos               Recibos[]
+  reciboDetalles        ReciboDetalles[]
+  pagosRecibo           PagoRecibo[]
+  promesasPago          PromesaPago[]
+  recordatoriosCobranza RecordatorioCobranza[]
+  permisos              Permiso[]
+  rolPermisos           RolPermiso[]
+  usuarios              Usuario[]
 }
 
 model Rol {
@@ -178,7 +181,7 @@ model Inquilino {
   updateAt        DateTime       @updatedAt
   activo          Boolean
   tenant          Tenant         @relation(fields: [tenantId], references: [id])
-  Acompañante     Acompañante[]
+  Acompañante    Acompañante[]
   Contratos       Contratos[]
 
   @@unique([tenantId, dni])
@@ -187,19 +190,28 @@ model Inquilino {
 }
 
 model Recibos {
-  id         String           @id @default(uuid())
-  tenantId   String
-  contratoId String
-  fechaPago  DateTime
-  total      Decimal          @default(0.00)
-  createAt   DateTime         @default(now())
-  updateAt   DateTime         @updatedAt
-  tenant     Tenant           @relation(fields: [tenantId], references: [id])
-  contrato   Contratos        @relation(fields: [contratoId], references: [id])
-  detalles   ReciboDetalles[]
+  id                    String                 @id @default(uuid())
+  tenantId              String
+  contratoId            String
+  fechaPago             DateTime
+  fechaVencimiento      DateTime
+  estado                EstadoRecibo           @default(PENDIENTE)
+  total                 Decimal                @default(0.00)
+  cargoMora             Decimal                @default(0.00)
+  saldoPendiente        Decimal                @default(0.00)
+  observacionesCobranza String?
+  createAt              DateTime               @default(now())
+  updateAt              DateTime               @updatedAt
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id])
+  contrato              Contratos              @relation(fields: [contratoId], references: [id])
+  detalles              ReciboDetalles[]
+  pagosParciales        PagoRecibo[]
+  promesasPago          PromesaPago[]
+  recordatorios         RecordatorioCobranza[]
 
   @@index([tenantId])
   @@index([contratoId], map: "Recibos_contratoId_fkey")
+  @@index([estado, fechaVencimiento])
 }
 
 model ReciboDetalles {
@@ -217,6 +229,71 @@ model ReciboDetalles {
   @@index([reciboId], map: "ReciboDetalles_reciboId_fkey")
 }
 
+model PagoRecibo {
+  id         String   @id @default(uuid())
+  tenantId   String
+  reciboId   String
+  fechaPago  DateTime
+  monto      Decimal  @default(0.00)
+  referencia String?
+  nota       String?
+  createAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  recibo     Recibos  @relation(fields: [reciboId], references: [id])
+
+  @@index([tenantId])
+  @@index([reciboId])
+}
+
+model PromesaPago {
+  id                String    @id @default(uuid())
+  tenantId          String
+  reciboId          String
+  fechaPrometida    DateTime
+  montoPrometido    Decimal   @default(0.00)
+  nota              String?
+  cumplida          Boolean   @default(false)
+  fechaCumplimiento DateTime?
+  createAt          DateTime  @default(now())
+  updateAt          DateTime  @updatedAt
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  recibo            Recibos   @relation(fields: [reciboId], references: [id])
+
+  @@index([tenantId])
+  @@index([reciboId])
+  @@index([fechaPrometida])
+}
+
+model RecordatorioCobranza {
+  id           String            @id @default(uuid())
+  tenantId     String
+  reciboId     String
+  canal        CanalRecordatorio
+  destinatario String
+  mensaje      String
+  enviadoAt    DateTime          @default(now())
+  createAt     DateTime          @default(now())
+  tenant       Tenant            @relation(fields: [tenantId], references: [id])
+  recibo       Recibos           @relation(fields: [reciboId], references: [id])
+
+  @@index([tenantId])
+  @@index([reciboId])
+  @@index([canal, enviadoAt])
+}
+
+enum EstadoRecibo {
+  PENDIENTE
+  PAGADO
+  VENCIDO
+  PARCIALMENTE_PAGADO
+}
+
+enum CanalRecordatorio {
+  WHATSAPP
+  EMAIL
+}
+
 model Permiso {
   id               String       @id @default(uuid())
   tenantId         String
@@ -226,8 +303,8 @@ model Permiso {
   updateAt         DateTime     @updatedAt
   activo           Boolean
   esPermisoSistema Boolean      @default(false)
-  tenant      Tenant       @relation(fields: [tenantId], references: [id])
-  roles       RolPermiso[]
+  tenant           Tenant       @relation(fields: [tenantId], references: [id])
+  roles            RolPermiso[]
 
   @@unique([tenantId, nombre])
   @@index([tenantId])
@@ -265,8 +342,8 @@ model Usuario {
   rolId       String
   DebeCambiar Boolean
   tipoUsuario TipoUsuario @default(TENANT_ADMIN)
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  rol         Rol      @relation(fields: [rolId], references: [id])
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  rol         Rol         @relation(fields: [rolId], references: [id])
 
   @@unique([tenantId, email])
   @@index([tenantId])

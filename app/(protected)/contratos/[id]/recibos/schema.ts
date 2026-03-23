@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Esquema para un detalle de recibo
 export const ReciboDetalleSchema = z.object({
   id: z.string().uuid().optional(),
   reciboId: z.string(),
@@ -10,22 +9,28 @@ export const ReciboDetalleSchema = z.object({
     .min(0, { message: "El monto no puede ser negativo" }),
 });
 
-// Tipo para el detalle
 export type ReciboDetalle = z.infer<typeof ReciboDetalleSchema>;
 
-
-// Esquema para el recibo, que incluye un array de detalles
 export const ReciboSchema = z.object({
   id: z.string().uuid().optional(),
   contratoId: z.string().uuid({ message: "El contrato es requerido" }),
-  fechaPago: z.coerce.date({ required_error: "La fecha de pago es requerida" }),
+  fechaPago: z.coerce.date({ required_error: "La fecha de emisión es requerida" }),
+  fechaVencimiento: z.coerce.date({ required_error: "La fecha de vencimiento es requerida" }),
   total: z.coerce
     .number({ invalid_type_error: "El total debe ser un número" })
     .min(0, { message: "El total no puede ser negativo" }),
+  cargoMora: z.coerce
+    .number({ invalid_type_error: "El recargo mora debe ser un número" })
+    .min(0, { message: "El recargo mora no puede ser negativo" }),
+  saldoPendiente: z.coerce.number().min(0),
+  estado: z.enum(["PENDIENTE", "PAGADO", "VENCIDO", "PARCIALMENTE_PAGADO"]),
+  observacionesCobranza: z.string().max(500, { message: "Máximo 500 caracteres" }).optional().nullable(),
   detalles: z
     .array(ReciboDetalleSchema)
     .min(1, { message: "Debe haber al menos un concepto en el recibo" }),
+}).refine((data) => data.fechaVencimiento >= data.fechaPago, {
+  message: "La fecha de vencimiento no puede ser anterior a la fecha de emisión",
+  path: ["fechaVencimiento"],
 });
 
-// Tipo para el recibo completo, con detalles
 export type Recibo = z.infer<typeof ReciboSchema>;

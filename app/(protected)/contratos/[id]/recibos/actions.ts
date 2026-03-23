@@ -1,52 +1,156 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { prisma } from "@/lib/prisma";
+import { calcularEstadoRecibo } from "@/lib/cobranza";
 import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 import {
+  DetallesParaNuevoRecibo,
   Recibo,
+  ReciboCompleto,
   ReciboCreate,
-  ReciboUpdate,
-  ReciboView,
   ReciboDetalleCreate,
   ReciboDetalleUpdate,
-  DetallesParaNuevoRecibo,
-  ReciboCompleto,
+  ReciboUpdate,
+  ReciboView,
 } from "./type";
 
+const toNumber = (value: { toString(): string } | number | null | undefined) => Number(value ?? 0);
+
 function mapRecibo(data: any): Recibo {
+  const montoPagado = data.pagosParciales?.reduce((sum: number, pago: any) => sum + toNumber(pago.monto), 0) ?? 0;
+  const financials = calcularEstadoRecibo({
+    total: toNumber(data.total),
+    cargoMora: toNumber(data.cargoMora),
+    montoPagado,
+    fechaVencimiento: new Date(data.fechaVencimiento),
+  });
+
   return {
     id: data.id,
     contratoId: data.contratoId,
     fechaPago: data.fechaPago.toISOString(),
-    total: parseFloat(data.total.toString()),
+    fechaVencimiento: data.fechaVencimiento.toISOString(),
+    total: toNumber(data.total),
+    cargoMora: toNumber(data.cargoMora),
+    saldoPendiente: financials.saldoPendiente,
+    estado: financials.estado,
+    observacionesCobranza: data.observacionesCobranza,
   };
 }
 
 function mapReciboView(data: any): ReciboView {
+  const montoPagado = data.pagosParciales?.reduce((sum: number, pago: any) => sum + toNumber(pago.monto), 0) ?? 0;
+  const financials = calcularEstadoRecibo({
+    total: toNumber(data.total),
+    cargoMora: toNumber(data.cargoMora),
+    montoPagado,
+    fechaVencimiento: new Date(data.fechaVencimiento),
+  });
+
   return {
     id: data.id,
     contratoId: data.contratoId,
     fechaPago: data.fechaPago.toISOString(),
-    total: parseFloat(data.total.toString()),
-    detalles: data.detalles.map((d: any) => ({
+    fechaVencimiento: data.fechaVencimiento.toISOString(),
+    total: toNumber(data.total),
+    cargoMora: toNumber(data.cargoMora),
+    saldoPendiente: financials.saldoPendiente,
+    estado: financials.estado,
+    observacionesCobranza: data.observacionesCobranza,
+    montoPagado,
+    detalles: (data.detalles ?? []).map((d: any) => ({
       id: d.id,
+      reciboId: d.reciboId,
       descripcion: d.descripcion,
-      monto: parseFloat(d.monto.toString()),
+      monto: toNumber(d.monto),
+    })),
+    pagosParciales: (data.pagosParciales ?? []).map((pago: any) => ({
+      id: pago.id,
+      fechaPago: pago.fechaPago.toISOString(),
+      monto: toNumber(pago.monto),
+      referencia: pago.referencia,
+      nota: pago.nota,
+    })),
+    promesasPago: (data.promesasPago ?? []).map((promesa: any) => ({
+      id: promesa.id,
+      fechaPrometida: promesa.fechaPrometida.toISOString(),
+      montoPrometido: toNumber(promesa.montoPrometido),
+      nota: promesa.nota,
+      cumplida: promesa.cumplida,
+      fechaCumplimiento: promesa.fechaCumplimiento?.toISOString() ?? null,
+    })),
+    recordatorios: (data.recordatorios ?? []).map((recordatorio: any) => ({
+      id: recordatorio.id,
+      canal: recordatorio.canal,
+      destinatario: recordatorio.destinatario,
+      mensaje: recordatorio.mensaje,
+      enviadoAt: recordatorio.enviadoAt.toISOString(),
     })),
   };
 }
 
-export async function getRecibosByContrato(
-  contratoId: string
-): Promise<ReciboView[]> {
+async function syncReciboState(reciboId: string, tenantId: string) {
+  const recibo = await prisma.recibos.findFirst({
+    where: { id: reciboId, tenantId },
+    include: { pagosParciales: true },
+  });
+
+  if (!recibo) {
+    return null;
+  }
+
+  const montoPagado = recibo.pagosParciales.reduce((sum, pago) => sum + toNumber(pago.monto), 0);
+  const financials = calcularEstadoRecibo({
+    total: toNumber(recibo.total),
+    cargoMora: toNumber(recibo.cargoMora),
+    montoPagado,
+    fechaVencimiento: recibo.fechaVencimiento,
+  });
+
+  if (
+    recibo.estado !== financials.estado ||
+    Number(recibo.saldoPendiente) !== financials.saldoPendiente
+  ) {
+    await prisma.recibos.update({
+      where: { id: reciboId },
+      data: {
+        estado: financials.estado,
+        saldoPendiente: financials.saldoPendiente,
+      },
+    });
+  }
+
+  return financials;
+}
+
+function revalidateReciboPaths(contratoId: string, reciboId?: string) {
+  revalidatePath(`/contratos/${contratoId}/recibos`);
+  if (reciboId) {
+    revalidatePath(`/contratos/${contratoId}/recibos/${reciboId}/view`);
+    revalidatePath(`/contratos/${contratoId}/recibos/${reciboId}/edit`);
+    revalidatePath(`/recibo/${reciboId}/imprimir`);
+  }
+  revalidatePath("/cobranza");
+  revalidatePath("/dashboard");
+}
+
+export async function getRecibosByContrato(contratoId: string): Promise<ReciboView[]> {
   try {
+    const tenantId = await getTenantIdFromSession();
     const recibos = await prisma.recibos.findMany({
       where: await buildTenantWhere({ contratoId }),
       include: {
         detalles: true,
+        pagosParciales: { orderBy: { fechaPago: "desc" } },
+        promesasPago: { orderBy: { fechaPrometida: "desc" } },
+        recordatorios: { orderBy: { enviadoAt: "desc" } },
       },
-      orderBy: { fechaPago: "desc" },
+      orderBy: [{ fechaVencimiento: "desc" }, { fechaPago: "desc" }],
     });
+
+    await Promise.all(recibos.map((recibo) => syncReciboState(recibo.id, tenantId)));
     return recibos.map(mapReciboView);
   } catch (error) {
     console.error("Error al obtener recibos:", error);
@@ -62,15 +166,26 @@ export async function postReciboConDetalles({
   detalles: ReciboDetalleCreate[];
 }): Promise<ReciboView | null> {
   try {
-    const tenantId = await getTenantIdFromSession()
+    const tenantId = await getTenantIdFromSession();
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
+    const financials = calcularEstadoRecibo({
+      total,
+      cargoMora: recibo.cargoMora,
+      montoPagado: 0,
+      fechaVencimiento: new Date(recibo.fechaVencimiento),
+    });
 
     const created = await prisma.recibos.create({
       data: {
         tenantId,
         contratoId: recibo.contratoId,
         fechaPago: new Date(recibo.fechaPago),
+        fechaVencimiento: new Date(recibo.fechaVencimiento),
         total,
+        cargoMora: recibo.cargoMora,
+        saldoPendiente: financials.saldoPendiente,
+        estado: financials.estado,
+        observacionesCobranza: recibo.observacionesCobranza?.trim() || null,
         detalles: {
           create: detalles.map((d) => ({
             tenantId,
@@ -79,9 +194,15 @@ export async function postReciboConDetalles({
           })),
         },
       },
-      include: { detalles: true },
+      include: {
+        detalles: true,
+        pagosParciales: true,
+        promesasPago: true,
+        recordatorios: true,
+      },
     });
 
+    revalidateReciboPaths(recibo.contratoId, created.id);
     return mapReciboView(created);
   } catch (error) {
     console.error("Error al crear recibo:", error);
@@ -97,16 +218,32 @@ export async function putReciboConDetalles({
   detalles: ReciboDetalleUpdate[];
 }): Promise<ReciboView | null> {
   try {
-    const tenantId = await getTenantIdFromSession()
+    const tenantId = await getTenantIdFromSession();
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
     const idsEntrantes = detalles.filter((d) => !!d.id).map((d) => d.id!) as string[];
+
+    const pagosActuales = await prisma.pagoRecibo.findMany({
+      where: { tenantId, reciboId: recibo.id! },
+    });
+    const montoPagado = pagosActuales.reduce((sum, pago) => sum + toNumber(pago.monto), 0);
+    const financials = calcularEstadoRecibo({
+      total,
+      cargoMora: recibo.cargoMora,
+      montoPagado,
+      fechaVencimiento: new Date(recibo.fechaVencimiento),
+    });
 
     await prisma.$transaction([
       prisma.recibos.updateMany({
         where: { id: recibo.id, tenantId },
         data: {
           fechaPago: new Date(recibo.fechaPago),
+          fechaVencimiento: new Date(recibo.fechaVencimiento),
           total,
+          cargoMora: recibo.cargoMora,
+          saldoPendiente: financials.saldoPendiente,
+          estado: financials.estado,
+          observacionesCobranza: recibo.observacionesCobranza?.trim() || null,
         },
       }),
       prisma.reciboDetalles.deleteMany({
@@ -143,8 +280,15 @@ export async function putReciboConDetalles({
 
     const updated = await prisma.recibos.findFirst({
       where: { id: recibo.id, tenantId },
-      include: { detalles: true },
+      include: {
+        detalles: true,
+        pagosParciales: { orderBy: { fechaPago: "desc" } },
+        promesasPago: { orderBy: { fechaPrometida: "desc" } },
+        recordatorios: { orderBy: { enviadoAt: "desc" } },
+      },
     });
+
+    revalidateReciboPaths(recibo.contratoId, recibo.id);
     return updated ? mapReciboView(updated) : null;
   } catch (error) {
     console.error("Error al actualizar recibo:", error);
@@ -154,11 +298,19 @@ export async function putReciboConDetalles({
 
 export async function getReciboById(id: string): Promise<ReciboView | null> {
   try {
+    const tenantId = await getTenantIdFromSession();
     const recibo = await prisma.recibos.findFirst({
       where: await buildTenantWhere({ id }),
-      include: { detalles: true },
+      include: {
+        detalles: true,
+        pagosParciales: { orderBy: { fechaPago: "desc" } },
+        promesasPago: { orderBy: { fechaPrometida: "desc" } },
+        recordatorios: { orderBy: { enviadoAt: "desc" } },
+      },
     });
     if (!recibo) return null;
+
+    await syncReciboState(id, tenantId);
     return mapReciboView(recibo);
   } catch (error) {
     console.error("Error al obtener recibo por ID:", error);
@@ -180,9 +332,9 @@ export async function getDetallesParaNuevoRecibo(contratoId: string): Promise<De
         },
       },
     },
-  })
+  });
 
-  if (!contrato || !contrato.apartamento) return null
+  if (!contrato || !contrato.apartamento) return null;
 
   return {
     contratoId: contrato.id,
@@ -197,15 +349,19 @@ export async function getDetallesParaNuevoRecibo(contratoId: string): Promise<De
       costoAdicional: aps.costoAdicional.toString(),
       incluido: aps.incluido,
     })),
-  }
+  };
 }
 
 export async function getReciboCompletoById(reciboId: string): Promise<ReciboCompleto | null> {
   try {
+    const tenantId = await getTenantIdFromSession();
     const recibo = await prisma.recibos.findFirst({
       where: await buildTenantWhere({ id: reciboId }),
       include: {
         detalles: true,
+        pagosParciales: { orderBy: { fechaPago: "desc" } },
+        promesasPago: { orderBy: { fechaPrometida: "desc" } },
+        recordatorios: { orderBy: { enviadoAt: "desc" } },
         contrato: {
           include: {
             inquilino: true,
@@ -217,10 +373,19 @@ export async function getReciboCompletoById(reciboId: string): Promise<ReciboCom
 
     if (!recibo) return null;
 
+    const synced = await syncReciboState(reciboId, tenantId);
+    const montoPagado = recibo.pagosParciales.reduce((sum, pago) => sum + toNumber(pago.monto), 0);
+
     return {
       id: recibo.id,
       fechaPago: recibo.fechaPago,
+      fechaVencimiento: recibo.fechaVencimiento,
       total: Number(recibo.total),
+      cargoMora: Number(recibo.cargoMora),
+      saldoPendiente: synced?.saldoPendiente ?? Number(recibo.saldoPendiente),
+      estado: synced?.estado ?? recibo.estado,
+      observacionesCobranza: recibo.observacionesCobranza,
+      montoPagado,
       contrato: {
         id: recibo.contrato.id,
         fechaInicio: recibo.contrato.fechaInicio,
@@ -232,6 +397,7 @@ export async function getReciboCompletoById(reciboId: string): Promise<ReciboCom
           nombre: recibo.contrato.inquilino.nombreCompleto,
           identidad: recibo.contrato.inquilino.dni,
           numero: recibo.contrato.inquilino.numero,
+          correo: recibo.contrato.inquilino.correo,
         },
         apartamento: {
           id: recibo.contrato.apartamento.id,
@@ -244,9 +410,144 @@ export async function getReciboCompletoById(reciboId: string): Promise<ReciboCom
         descripcion: d.descripcion,
         monto: Number(d.monto),
       })),
+      pagosParciales: recibo.pagosParciales.map((pago) => ({
+        id: pago.id,
+        fechaPago: pago.fechaPago.toISOString(),
+        monto: Number(pago.monto),
+        referencia: pago.referencia,
+        nota: pago.nota,
+      })),
+      promesasPago: recibo.promesasPago.map((promesa) => ({
+        id: promesa.id,
+        fechaPrometida: promesa.fechaPrometida.toISOString(),
+        montoPrometido: Number(promesa.montoPrometido),
+        nota: promesa.nota,
+        cumplida: promesa.cumplida,
+        fechaCumplimiento: promesa.fechaCumplimiento?.toISOString() ?? null,
+      })),
+      recordatorios: recibo.recordatorios.map((recordatorio) => ({
+        id: recordatorio.id,
+        canal: recordatorio.canal,
+        destinatario: recordatorio.destinatario,
+        mensaje: recordatorio.mensaje,
+        enviadoAt: recordatorio.enviadoAt.toISOString(),
+      })),
     };
   } catch (error) {
     console.error("Error al obtener el recibo completo:", error);
     return null;
   }
+}
+
+export async function registrarPagoParcialRecibo(input: {
+  reciboId: string;
+  monto: number;
+  fechaPago: string;
+  referencia?: string;
+  nota?: string;
+}) {
+  const tenantId = await getTenantIdFromSession();
+  const recibo = await prisma.recibos.findFirst({
+    where: { id: input.reciboId, tenantId },
+  });
+
+  if (!recibo) {
+    throw new Error("Recibo no encontrado.");
+  }
+
+  if (input.monto <= 0) {
+    throw new Error("El monto del pago parcial debe ser mayor a cero.");
+  }
+
+  await prisma.pagoRecibo.create({
+    data: {
+      tenantId,
+      reciboId: input.reciboId,
+      monto: input.monto,
+      fechaPago: new Date(input.fechaPago),
+      referencia: input.referencia?.trim() || null,
+      nota: input.nota?.trim() || null,
+    },
+  });
+
+  await syncReciboState(input.reciboId, tenantId);
+  revalidateReciboPaths(recibo.contratoId, recibo.id);
+}
+
+export async function registrarPromesaPagoRecibo(input: {
+  reciboId: string;
+  fechaPrometida: string;
+  montoPrometido: number;
+  nota?: string;
+}) {
+  const tenantId = await getTenantIdFromSession();
+  const recibo = await prisma.recibos.findFirst({
+    where: { id: input.reciboId, tenantId },
+  });
+
+  if (!recibo) {
+    throw new Error("Recibo no encontrado.");
+  }
+
+  await prisma.promesaPago.create({
+    data: {
+      tenantId,
+      reciboId: input.reciboId,
+      fechaPrometida: new Date(input.fechaPrometida),
+      montoPrometido: input.montoPrometido,
+      nota: input.nota?.trim() || null,
+    },
+  });
+
+  revalidateReciboPaths(recibo.contratoId, recibo.id);
+}
+
+export async function registrarRecordatorioRecibo(input: {
+  reciboId: string;
+  canal: "WHATSAPP" | "EMAIL";
+  destinatario: string;
+  mensaje: string;
+}) {
+  const tenantId = await getTenantIdFromSession();
+  const recibo = await prisma.recibos.findFirst({
+    where: { id: input.reciboId, tenantId },
+  });
+
+  if (!recibo) {
+    throw new Error("Recibo no encontrado.");
+  }
+
+  await prisma.recordatorioCobranza.create({
+    data: {
+      tenantId,
+      reciboId: input.reciboId,
+      canal: input.canal,
+      destinatario: input.destinatario,
+      mensaje: input.mensaje,
+    },
+  });
+
+  revalidateReciboPaths(recibo.contratoId, recibo.id);
+}
+
+export async function marcarPromesaPagoCumplida(promesaId: string) {
+  const tenantId = await getTenantIdFromSession();
+  const promesa = await prisma.promesaPago.findFirst({
+    where: { id: promesaId, tenantId },
+    include: { recibo: true },
+  });
+
+  if (!promesa) {
+    throw new Error("Promesa de pago no encontrada.");
+  }
+
+  await prisma.promesaPago.update({
+    where: { id: promesaId },
+    data: {
+      cumplida: true,
+      fechaCumplimiento: new Date(),
+    },
+  });
+
+  revalidateReciboPaths(promesa.recibo.contratoId, promesa.reciboId);
 }
