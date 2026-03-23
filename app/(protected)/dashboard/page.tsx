@@ -115,7 +115,7 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
       <CardHeader>
         <CardTitle className="text-lg">Rentabilidad por apartamento</CardTitle>
         <CardDescription>
-          Ranking mensual basado en renta activa menos costos adicionales configurados en servicios.
+          Ranking mensual basado en ingresos del período menos egresos reales registrados por propiedad.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -149,7 +149,7 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
                   <p className="font-medium">{currencyFormatter.format(item.ingresoMensual)}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Gasto estimado</p>
+                  <p className="text-muted-foreground">Gasto real</p>
                   <p className="font-medium">{currencyFormatter.format(item.gastoEstimado)}</p>
                 </div>
                 <div>
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
             <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
               {dashboard.metadata.gastosEstimados
                 ? "Los gastos del mes se estiman con base en los costos adicionales configurados en servicios por apartamento."
-                : "Los gastos del mes corresponden a registros operativos reales."}
+                : "Los gastos del mes corresponden a registros operativos reales del nuevo módulo de egresos por propiedad."}
             </div>
           </CardContent>
         </Card>
