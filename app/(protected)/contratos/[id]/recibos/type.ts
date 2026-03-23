@@ -1,20 +1,46 @@
-import { Decimal } from "@/lib/generated/prisma/runtime/library";
+export type EstadoRecibo = "PENDIENTE" | "PAGADO" | "VENCIDO" | "PARCIALMENTE_PAGADO";
 
-// Recibo básico
+export type PagoParcial = {
+  id: string;
+  fechaPago: string;
+  monto: number;
+  referencia?: string | null;
+  nota?: string | null;
+};
+
+export type PromesaPago = {
+  id: string;
+  fechaPrometida: string;
+  montoPrometido: number;
+  nota?: string | null;
+  cumplida: boolean;
+  fechaCumplimiento?: string | null;
+};
+
+export type RecordatorioCobranza = {
+  id: string;
+  canal: "WHATSAPP" | "EMAIL";
+  destinatario: string;
+  mensaje: string;
+  enviadoAt: string;
+};
+
 export type Recibo = {
   id?: string;
   contratoId: string;
-  fechaPago: string;          // ISO string
+  fechaPago: string;
+  fechaVencimiento: string;
   total: number;
+  cargoMora: number;
+  saldoPendiente: number;
+  estado: EstadoRecibo;
+  observacionesCobranza?: string | null;
 };
 
-// Para crear un recibo (el total podrías calcularlo en el servidor)
-export type ReciboCreate = Omit<Recibo, "id">;
+export type ReciboCreate = Omit<Recibo, "id" | "saldoPendiente" | "estado">;
 
-// Para actualizar un recibo (incluye todas las propiedades)
 export type ReciboUpdate = Recibo;
 
-// Detalle de un recibo
 export type ReciboDetalle = {
   id?: string;
   reciboId?: string;
@@ -22,47 +48,57 @@ export type ReciboDetalle = {
   monto: number;
 };
 
-// Para crear un detalle (se asigna reciboId en el servidor)
 export type ReciboDetalleCreate = Omit<ReciboDetalle, "id" | "reciboId">;
 
-// Para actualizar un detalle
 export type ReciboDetalleUpdate = ReciboDetalle;
 
-// View que retorna un recibo con sus detalles
 export interface ReciboView {
   id: string;
   contratoId: string;
   fechaPago: string;
+  fechaVencimiento: string;
   total: number;
+  cargoMora: number;
+  saldoPendiente: number;
+  estado: EstadoRecibo;
+  observacionesCobranza?: string | null;
+  montoPagado: number;
   detalles: {
-    reciboId: string
+    reciboId: string;
     id: string;
     descripcion: string;
     monto: number;
   }[];
+  pagosParciales: PagoParcial[];
+  promesasPago: PromesaPago[];
+  recordatorios: RecordatorioCobranza[];
 }
-
 
 export type DetallesParaNuevoRecibo = {
-  contratoId: string
-  montoMensual: string
+  contratoId: string;
+  montoMensual: string;
   apartamento: {
-    id: string
-    numero: string
-  }
+    id: string;
+    numero: string;
+  };
   servicios: {
-    id: string
-    nombre: string
-    costoAdicional: string
-    incluido: boolean
-  }[]
-}
-
+    id: string;
+    nombre: string;
+    costoAdicional: string;
+    incluido: boolean;
+  }[];
+};
 
 export type ReciboCompleto = {
   id: string;
   fechaPago: Date;
+  fechaVencimiento: Date;
   total: number;
+  cargoMora: number;
+  saldoPendiente: number;
+  estado: EstadoRecibo;
+  observacionesCobranza?: string | null;
+  montoPagado: number;
   contrato: {
     id: string;
     fechaInicio: Date;
@@ -74,6 +110,7 @@ export type ReciboCompleto = {
       nombre: string;
       identidad: string;
       numero: string;
+      correo?: string;
     };
     apartamento: {
       id: string;
@@ -86,8 +123,7 @@ export type ReciboCompleto = {
     descripcion: string;
     monto: number;
   }>;
+  pagosParciales: PagoParcial[];
+  promesasPago: PromesaPago[];
+  recordatorios: RecordatorioCobranza[];
 };
-
-
-// Ahora extendemos tu ContratoView para incluir recibos
-

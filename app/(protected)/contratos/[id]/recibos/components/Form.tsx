@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { addDays, format } from "date-fns";
+
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,22 +17,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+
 import { ReciboSchema } from "../schema";
 import type { Recibo, ReciboDetalle } from "../type";
 import { postReciboConDetalles, putReciboConDetalles } from "../actions";
 
 interface FormularioReciboProps {
   isUpdate: boolean;
-  initialData?: Recibo & { detalles: ReciboDetalle[]; montoMensual?: number };
+  initialData?: Partial<Recibo> & { detalles: ReciboDetalle[]; montoMensual?: number };
   contratoId: string;
+}
+
+function formatDateForInput(date: Date) {
+  return format(date, "yyyy-MM-dd");
 }
 
 export default function FormularioRecibo({
@@ -40,12 +42,22 @@ export default function FormularioRecibo({
   const { toast } = useToast();
   const router = useRouter();
 
+  const fechaEmision = initialData?.fechaPago ? new Date(initialData.fechaPago) : new Date();
+  const fechaVencimiento = initialData?.fechaVencimiento
+    ? new Date(initialData.fechaVencimiento)
+    : addDays(new Date(), 5);
+
   const form = useForm<z.infer<typeof ReciboSchema>>({
     resolver: zodResolver(ReciboSchema),
     defaultValues: {
       contratoId,
-      fechaPago: initialData ? new Date(initialData.fechaPago) : new Date(),
+      fechaPago: fechaEmision,
+      fechaVencimiento,
       total: initialData?.total ?? 0,
+      cargoMora: initialData?.cargoMora ?? 0,
+      saldoPendiente: initialData?.saldoPendiente ?? 0,
+      estado: initialData?.estado ?? "PENDIENTE",
+      observacionesCobranza: initialData?.observacionesCobranza ?? "",
       detalles: initialData?.detalles ?? [],
     },
     mode: "onChange",
@@ -57,8 +69,7 @@ export default function FormularioRecibo({
     name: "detalles",
   });
 
-  // Función para inicializar los detalles
-  const initializeDetalles = () => {
+  useEffect(() => {
     if (!initialData) return;
 
     const baseReciboId = isUpdate ? initialData.id! : "";
@@ -69,42 +80,35 @@ export default function FormularioRecibo({
       reciboId: baseReciboId,
     }));
 
-    const detallesFinal = !isUpdate
-      ? [
-          {
-            descripcion: "Monto Mensual",
-            monto: initialData.total,
-            reciboId: baseReciboId || "",
-          },
-          ...detallesParsed,
-        ]
-      : detallesParsed;
-
-    replace(detallesFinal);
-  };
-
-  // Inicializar detalles al cargar el componente
-  useEffect(() => {
-    initializeDetalles();
+    replace(detallesParsed);
   }, [initialData, isUpdate, replace]);
 
-  // Recalcular el total automáticamente
   const detalles = useWatch({ control, name: "detalles" });
+  const cargoMora = useWatch({ control, name: "cargoMora" });
+
   useEffect(() => {
     const total = Array.isArray(detalles)
       ? detalles.reduce((sum, d) => sum + (Number(d.monto) || 0), 0)
       : 0;
-    setValue("total", total, { shouldValidate: true, shouldDirty: true });
-  }, [detalles, setValue]);
 
-  // Manejo del submit
+    const saldoPendiente = total + (Number(cargoMora) || 0);
+
+    setValue("total", total, { shouldValidate: true, shouldDirty: true });
+    setValue("saldoPendiente", saldoPendiente, { shouldValidate: true, shouldDirty: true });
+  }, [cargoMora, detalles, setValue]);
+
   const onSubmit = async (data: z.infer<typeof ReciboSchema>) => {
     try {
       const reciboPayload = {
         id: isUpdate ? initialData?.id ?? "" : data.id!,
         contratoId: data.contratoId,
         fechaPago: data.fechaPago.toISOString(),
+        fechaVencimiento: data.fechaVencimiento.toISOString(),
         total: data.total,
+        cargoMora: data.cargoMora,
+        saldoPendiente: data.saldoPendiente,
+        estado: data.estado,
+        observacionesCobranza: data.observacionesCobranza,
       };
 
       const detallesPayload = data.detalles.map((d) => ({
@@ -118,9 +122,13 @@ export default function FormularioRecibo({
         ? await putReciboConDetalles({ recibo: reciboPayload, detalles: detallesPayload })
         : await postReciboConDetalles({ recibo: reciboPayload, detalles: detallesPayload });
 
+      if (!result) {
+        throw new Error("No fue posible guardar el recibo.");
+      }
+
       toast({
         title: isUpdate ? "Recibo actualizado" : "Recibo creado",
-        description: "Operación exitosa",
+        description: "La información de cobranza fue guardada correctamente.",
       });
       router.push(`/contratos/${contratoId}/recibos`);
       router.refresh();
@@ -133,65 +141,128 @@ export default function FormularioRecibo({
     }
   };
 
+  const totalPreview = form.watch("total") || 0;
+  const saldoPreview = form.watch("saldoPendiente") || 0;
+
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-6 border rounded-md">
-        {/* Fecha de pago */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-md border p-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={control}
+            name="fechaPago"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de emisión</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={field.value ? formatDateForInput(field.value) : ""}
+                    onChange={(e) => field.onChange(new Date(`${e.target.value}T00:00:00`))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="fechaVencimiento"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de vencimiento</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={field.value ? formatDateForInput(field.value) : ""}
+                    onChange={(e) => field.onChange(new Date(`${e.target.value}T00:00:00`))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <FormField
+            control={control}
+            name="cargoMora"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recargo por mora</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...field}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="total"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Total facturado</FormLabel>
+                <FormControl>
+                  <Input readOnly value={Number(field.value || 0).toFixed(2)} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="saldoPendiente"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Saldo inicial</FormLabel>
+                <FormControl>
+                  <Input readOnly value={Number(field.value || 0).toFixed(2)} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-2">
+            <span>Estado estimado al crear:</span>
+            <Badge variant="outline">{saldoPreview <= 0 ? "PAGADO" : "PENDIENTE"}</Badge>
+          </div>
+          <p className="mt-2">Total facturado: L. {totalPreview.toFixed(2)} · Saldo con mora: L. {saldoPreview.toFixed(2)}</p>
+        </div>
+
         <FormField
           control={control}
-          name="fechaPago"
+          name="observacionesCobranza"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Fecha de Pago</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full text-left",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? format(field.value, "PPP", { locale: es })
-                        : "Selecciona fecha"}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                  />
-                </PopoverContent>
-              </Popover>
+              <FormLabel>Observaciones de cobranza</FormLabel>
+              <FormControl>
+                <textarea
+                  className="min-h-24 w-full rounded-md border bg-background px-3 py-2 text-sm"
+                  placeholder="Notas internas de seguimiento, acuerdos o incidencias del cobro"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Total calculado */}
-        <FormField
-          control={control}
-          name="total"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Total</FormLabel>
-              <FormControl>
-                <Input readOnly value={field.value.toFixed(2)} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        {/* Detalles dinámicos */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Conceptos</h3>
+          <h3 className="text-lg font-semibold">Conceptos del recibo</h3>
           {fields.map((item, idx) => (
-            <div key={item.id} className="grid grid-cols-3 gap-4 items-end">
+            <div key={item.id} className="grid gap-4 md:grid-cols-[1.5fr_1fr_auto] md:items-end">
               <FormField
                 control={control}
                 name={`detalles.${idx}.descripcion`}
@@ -223,12 +294,7 @@ export default function FormularioRecibo({
                   </FormItem>
                 )}
               />
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => remove(idx)}
-                className="h-10"
-              >
+              <Button type="button" variant="destructive" onClick={() => remove(idx)} className="h-10">
                 Eliminar
               </Button>
             </div>
@@ -236,18 +302,15 @@ export default function FormularioRecibo({
           <div className="text-right">
             <Button
               type="button"
-              onClick={() =>
-                append({ reciboId: initialData?.id || "", descripcion: "", monto: 0 })
-              }
+              onClick={() => append({ reciboId: initialData?.id || "", descripcion: "", monto: 0 })}
             >
-              Añadir Concepto
+              Añadir concepto
             </Button>
           </div>
         </div>
 
-        {/* Submit */}
         <div className="flex justify-end">
-          <Button type="submit">{isUpdate ? "Actualizar Recibo" : "Crear Recibo"}</Button>
+          <Button type="submit">{isUpdate ? "Actualizar recibo" : "Crear recibo"}</Button>
         </div>
       </form>
     </Form>
