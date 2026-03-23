@@ -53,6 +53,8 @@ export function Formulario({
     fechaInicio: string;
     fechaFin?: string | null;
     montoMensual: number;
+    depositoGarantiaMonto: number;
+    fechaRecepcionDeposito?: string | null;
     preavisoDias?: number;
     activo?: boolean;
     estadoRenovacion?: EstadoRenovacionContrato;
@@ -72,6 +74,8 @@ export function Formulario({
         fechaInicio: new Date(initialData.fechaInicio),
         fechaFin: initialData.fechaFin ? new Date(initialData.fechaFin) : undefined,
         montoMensual: initialData.montoMensual,
+        depositoGarantiaMonto: initialData.depositoGarantiaMonto,
+        fechaRecepcionDeposito: initialData.fechaRecepcionDeposito ? new Date(initialData.fechaRecepcionDeposito) : undefined,
         preavisoDias: initialData.preavisoDias ?? 30,
         activo: initialData.activo ?? true,
       }
@@ -81,6 +85,8 @@ export function Formulario({
         fechaInicio: new Date(),
         fechaFin: undefined,
         montoMensual: 0,
+        depositoGarantiaMonto: 0,
+        fechaRecepcionDeposito: undefined,
         preavisoDias: 30,
         activo: true,
       };
@@ -99,7 +105,9 @@ export function Formulario({
           apartamentoId: values.apartamentoId,
           fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
-          montoMensual: values.montoMensual,
+          montoMensual: values.montoMensual ?? 0,
+          depositoGarantiaMonto: values.depositoGarantiaMonto ?? 0,
+          fechaRecepcionDeposito: values.fechaRecepcionDeposito ? values.fechaRecepcionDeposito.toISOString() : null,
           preavisoDias: values.preavisoDias ?? 30,
           activo: values.activo ?? true,
           estadoRenovacion: initialData?.estadoRenovacion ?? "SIN_GESTION",
@@ -113,7 +121,9 @@ export function Formulario({
           apartamentoId: values.apartamentoId,
           fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
-          montoMensual: values.montoMensual,
+          montoMensual: values.montoMensual ?? 0,
+          depositoGarantiaMonto: values.depositoGarantiaMonto ?? 0,
+          fechaRecepcionDeposito: values.fechaRecepcionDeposito ? values.fechaRecepcionDeposito.toISOString() : null,
           preavisoDias: values.preavisoDias ?? 30,
           activo: values.activo ?? true,
           estadoRenovacion: values.fechaFin ? "ALERTA_GENERADA" : "SIN_GESTION",
@@ -269,6 +279,64 @@ export function Formulario({
                     onChange={(event) => field.onChange(Number(event.target.value))}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="depositoGarantiaMonto"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Depósito de garantía</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={field.value?.toString() || ""}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Monto recibido en custodia para cubrir daños, saldos pendientes o devolución final.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="fechaRecepcionDeposito"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de recepción del depósito</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn("w-full text-left", !field.value && "text-muted-foreground")}
+                    >
+                      {field.value ? format(field.value, "PPP", { locale: es }) : "Pendiente por recibir"}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) => date < new Date("1900-01-01")}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  Déjelo vacío si el depósito aún no fue cobrado; el ledger quedará en estado pendiente.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
