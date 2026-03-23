@@ -18,6 +18,7 @@ import { formatearFecha } from "@/lib/utils";
 import { Contrato } from "../type";
 
 const estadoOperacionVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  POR_INICIAR: "secondary",
   VIGENTE: "default",
   POR_VENCER: "secondary",
   VENCIDO: "destructive",

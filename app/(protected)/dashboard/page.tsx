@@ -205,6 +205,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <SummaryCard metric={dashboard.resumen.apartamentosOcupados} icon={Building} />
         <SummaryCard metric={dashboard.resumen.apartamentosVacios} icon={Building} />
+        <SummaryCard metric={dashboard.resumen.contratosPorIniciar} icon={CalendarClock} />
         <SummaryCard metric={dashboard.resumen.contratosPorVencer} icon={CalendarClock} />
         <SummaryCard metric={dashboard.resumen.inquilinosConAtraso} icon={AlertTriangle} />
         <SummaryCard metric={dashboard.resumen.montoCobradoMes} icon={Receipt} />
@@ -285,7 +286,13 @@ export default async function DashboardPage() {
 
       <RentabilidadTable items={dashboard.rentabilidadPorApartamento} />
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-4">
+        <AlertList
+          title="Contratos por iniciar"
+          description="Reservas confirmadas que todavía no deben generar cobro ni morosidad."
+          items={dashboard.alertas.contratosPorIniciar}
+          emptyMessage="No hay contratos pendientes de iniciar."
+        />
         <AlertList
           title="Contratos por vencer"
           description="Casos que conviene renegociar con anticipación."

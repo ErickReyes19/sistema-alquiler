@@ -106,18 +106,22 @@ function calculatePercentage(previousAmount: number, nextAmount: number) {
 
 function getLifecycleSnapshot(data: {
   activo: boolean;
+  fechaInicio: Date;
   fechaFin: Date | null;
   fechaDesocupacion?: Date | null;
   preavisoDias?: number | null;
 }) {
   const today = startOfDay(new Date());
+  const fechaInicio = startOfDay(data.fechaInicio);
   const fechaFin = data.fechaFin ? startOfDay(data.fechaFin) : null;
   const fechaDesocupacion = data.fechaDesocupacion ? startOfDay(data.fechaDesocupacion) : null;
   const preavisoDias = data.preavisoDias ?? DEFAULT_PREAVISO_DIAS;
 
+  const contratoPendienteInicio = fechaInicio > today;
+  const diasParaInicio = contratoPendienteInicio ? differenceInCalendarDays(fechaInicio, today) : null;
   const diasParaVencer = fechaFin ? differenceInCalendarDays(fechaFin, today) : null;
-  const alertaVencimiento = diasParaVencer !== null && diasParaVencer >= 0 && diasParaVencer <= preavisoDias;
-  const vencido = diasParaVencer !== null && diasParaVencer < 0;
+  const alertaVencimiento = !contratoPendienteInicio && diasParaVencer !== null && diasParaVencer >= 0 && diasParaVencer <= preavisoDias;
+  const vencido = !contratoPendienteInicio && diasParaVencer !== null && diasParaVencer < 0;
   const desocupado = Boolean(fechaDesocupacion);
 
   let estadoOperacion: EstadoOperacionContrato = "VIGENTE";
@@ -126,6 +130,8 @@ function getLifecycleSnapshot(data: {
     estadoOperacion = "DESOCUPADO";
   } else if (!data.activo) {
     estadoOperacion = "INACTIVO";
+  } else if (contratoPendienteInicio) {
+    estadoOperacion = "POR_INICIAR";
   } else if (vencido) {
     estadoOperacion = "VENCIDO";
   } else if (alertaVencimiento) {
@@ -133,9 +139,11 @@ function getLifecycleSnapshot(data: {
   }
 
   return {
+    diasParaInicio,
     diasParaVencer,
     alertaVencimiento,
     requiereRenovacion: alertaVencimiento || vencido,
+    contratoPendienteInicio,
     estadoOperacion,
   };
 }
@@ -196,6 +204,7 @@ function mapEntrega(entrega: ContratoViewRecord["entrega"]): ContratoEntrega | n
 function mapContrato(data: ContratoWithRelations): Contrato {
   const lifecycle = getLifecycleSnapshot({
     activo: data.activo,
+    fechaInicio: data.fechaInicio,
     fechaFin: data.fechaFin,
     fechaDesocupacion: data.fechaDesocupacion,
     preavisoDias: data.preavisoDias,
@@ -249,6 +258,7 @@ async function getApartmentOccupancyHistory(apartamentoId: string): Promise<Hist
   return contratos.map((contrato) => {
     const lifecycle = getLifecycleSnapshot({
       activo: contrato.activo,
+      fechaInicio: contrato.fechaInicio,
       fechaFin: contrato.fechaFin,
       fechaDesocupacion: contrato.fechaDesocupacion,
       preavisoDias: contrato.preavisoDias,
@@ -399,6 +409,7 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
 
     const lifecycle = getLifecycleSnapshot({
       activo: contrato.activo,
+      fechaInicio: contrato.fechaInicio,
       fechaFin: contrato.fechaFin,
       fechaDesocupacion: contrato.fechaDesocupacion,
       preavisoDias: contrato.preavisoDias,
