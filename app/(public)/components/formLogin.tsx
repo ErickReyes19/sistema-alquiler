@@ -26,7 +26,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  const redirectTo = searchParams.get("from") ?? searchParams.get("redirect") ?? "/inquilinos";
+  const redirectTo = searchParams.get("from") ?? searchParams.get("redirect") ?? "/dashboard";
 
   useEffect(() => {
     setMounted(true);
