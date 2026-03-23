@@ -163,7 +163,14 @@ export function FormularioInquilino({
               <FormItem>
                 <FormLabel className="text-sm font-medium">Teléfono</FormLabel>
                 <FormControl>
-                  <Input className="rounded-md" placeholder="Número de teléfono" {...field} />
+                  <Input
+                    className="rounded-md"
+                    placeholder="8 dígitos"
+                    inputMode="numeric"
+                    maxLength={8}
+                    value={field.value}
+                    onChange={(event) => field.onChange(event.target.value.replace(/\D/g, "").slice(0, 8))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -4,7 +4,7 @@ export const InquilinoSchema = z.object({
   id: z.string().optional(),
   nombreCompleto: z.string().min(1, "El nombre completo es obligatorio"),
   dni: z.string().min(8, "El DNI debe tener al menos 8 caracteres"),
-  telefono: z.string().min(8, "El teléfono debe tener al menos 8 caracteres"),
+  telefono: z.string().regex(/^\d{8}$/, "El teléfono debe tener exactamente 8 dígitos numéricos"),
   correo: z.string().email("Debe ser un correo válido").optional(),
   fechaNacimiento: z
     .date({
