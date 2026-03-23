@@ -439,6 +439,45 @@ export async function getReciboCompletoById(reciboId: string): Promise<ReciboCom
   }
 }
 
+
+export async function registrarPagoTotalRecibo(reciboId: string) {
+  const tenantId = await getTenantIdFromSession();
+  const recibo = await prisma.recibos.findFirst({
+    where: { id: reciboId, tenantId },
+    include: { pagosParciales: true },
+  });
+
+  if (!recibo) {
+    throw new Error("Recibo no encontrado.");
+  }
+
+  const montoPagado = recibo.pagosParciales.reduce((sum, pago) => sum + toNumber(pago.monto), 0);
+  const financials = calcularEstadoRecibo({
+    total: toNumber(recibo.total),
+    cargoMora: toNumber(recibo.cargoMora),
+    montoPagado,
+    fechaVencimiento: recibo.fechaVencimiento,
+  });
+
+  if (financials.saldoPendiente <= 0) {
+    throw new Error("Este recibo ya está totalmente pagado.");
+  }
+
+  await prisma.pagoRecibo.create({
+    data: {
+      tenantId,
+      reciboId,
+      monto: financials.saldoPendiente,
+      fechaPago: new Date(),
+      referencia: "PAGO_TOTAL",
+      nota: "Pago total registrado desde el sistema.",
+    },
+  });
+
+  await syncReciboState(reciboId, tenantId);
+  revalidateReciboPaths(recibo.contratoId, recibo.id);
+}
+
 export async function registrarPagoParcialRecibo(input: {
   reciboId: string;
   monto: number;

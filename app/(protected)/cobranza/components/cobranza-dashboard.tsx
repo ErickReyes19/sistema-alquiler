@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Mail, MessageCircle, ReceiptText } from "lucide-react";
+import { CheckCircle2, Mail, MessageCircle, ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import {
   CobranzaData,
   CobranzaReciboItem,
   registrarPagoParcial,
+  registrarPagoTotal,
   registrarPromesaPago,
   registrarRecordatorio,
 } from "../actions";
@@ -65,6 +66,18 @@ function QuickForms({ recibo }: { recibo: CobranzaReciboItem }) {
   const [promesaMonto, setPromesaMonto] = useState<string>(recibo.saldoPendiente.toFixed(2));
   const [promesaFecha, setPromesaFecha] = useState<string>(format(new Date(recibo.fechaVencimiento), "yyyy-MM-dd"));
   const [promesaNota, setPromesaNota] = useState<string>("");
+
+  const submitPagoTotal = () => {
+    startTransition(async () => {
+      try {
+        await registrarPagoTotal(recibo.id);
+        toast({ title: "Recibo marcado como pagado", description: "Se registró el pago total pendiente del recibo." });
+        router.refresh();
+      } catch (error) {
+        toast({ title: "Error", description: (error as Error).message, variant: "destructive" });
+      }
+    });
+  };
 
   const submitPago = () => {
     startTransition(async () => {
@@ -145,18 +158,27 @@ function QuickForms({ recibo }: { recibo: CobranzaReciboItem }) {
             Correo
           </Button>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">No se usa API externa: el sistema registra el intento y abre WhatsApp o correo con el mensaje preparado.</p>
+        <p className="mt-3 text-xs text-muted-foreground">No se usa API externa: el sistema registra el intento y abre WhatsApp o correo con el mensaje preparado. Úsalo cuando el recibo siga pendiente y necesites insistir el cobro.</p>
       </div>
 
       <div className="rounded-lg border p-4 space-y-3">
-        <p className="font-medium">Registrar pago parcial</p>
-        <Input type="number" step="0.01" value={pagoMonto} onChange={(e) => setPagoMonto(e.target.value)} placeholder="Monto" />
+        <div className="flex items-center justify-between gap-2">
+          <p className="font-medium">Registrar pago</p>
+          <Badge variant="secondary">Pendiente: {currencyFormatter.format(recibo.saldoPendiente)}</Badge>
+        </div>
+        <Button className="w-full" onClick={submitPagoTotal} disabled={isPending || recibo.saldoPendiente <= 0}>
+          <CheckCircle2 className="mr-2 h-4 w-4" />
+          Marcar como pagado total
+        </Button>
+        <p className="text-xs text-muted-foreground">Usa esta opción cuando el inquilino ya pagó todo el saldo del recibo.</p>
+        <Input type="number" step="0.01" value={pagoMonto} onChange={(e) => setPagoMonto(e.target.value)} placeholder="Monto abonado" />
         <Input type="date" value={pagoFecha} onChange={(e) => setPagoFecha(e.target.value)} />
         <Input value={pagoReferencia} onChange={(e) => setPagoReferencia(e.target.value)} placeholder="Referencia" />
         <Input value={pagoNota} onChange={(e) => setPagoNota(e.target.value)} placeholder="Nota" />
-        <Button className="w-full" onClick={submitPago} disabled={isPending}>
-          Registrar pago
+        <Button className="w-full" variant="outline" onClick={submitPago} disabled={isPending}>
+          Registrar abono parcial
         </Button>
+        <p className="text-xs text-muted-foreground">Si pagó solo una parte, registra el abono aquí y el sistema dejará el recibo como parcial.</p>
       </div>
 
       <div className="rounded-lg border p-4 space-y-3">
@@ -224,13 +246,26 @@ function ReciboCard({ recibo }: { recibo: CobranzaReciboItem }) {
 export function CobranzaDashboard({ data }: { data: CobranzaData }) {
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Cómo usar cobranza</CardTitle>
+          <CardDescription>Este módulo es donde conviertes un recibo pendiente en un recibo pagado.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 md:grid-cols-4">
+          <div className="rounded-lg border p-3 text-sm"><span className="font-medium">1. Recibo emitido</span><p className="mt-1 text-muted-foreground">Cuando creas un recibo, nace como pendiente hasta registrar pago.</p></div>
+          <div className="rounded-lg border p-3 text-sm"><span className="font-medium">2. Pago total</span><p className="mt-1 text-muted-foreground">Usa “Marcar como pagado total” para cerrar el recibo completo.</p></div>
+          <div className="rounded-lg border p-3 text-sm"><span className="font-medium">3. Abono parcial</span><p className="mt-1 text-muted-foreground">Si el inquilino pagó solo una parte, registra el abono y quedará parcial.</p></div>
+          <div className="rounded-lg border p-3 text-sm"><span className="font-medium">4. Seguimiento</span><p className="mt-1 text-muted-foreground">Si no paga, registra promesa o envía recordatorio desde aquí mismo.</p></div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <SummaryCard title="Saldo pendiente total" value={currencyFormatter.format(data.resumen.saldoPendienteTotal)} subtitle="Exposición actual de cobranza sobre recibos abiertos." />
-        <SummaryCard title="Recibos vencidos" value={data.resumen.recibosVencidos.toString()} subtitle="Morosos que requieren acción inmediata." />
-        <SummaryCard title="Recibos parcialmente pagados" value={data.resumen.recibosParciales.toString()} subtitle="Casos con abonos pero saldo aún abierto." />
-        <SummaryCard title="Recibos pendientes" value={data.resumen.recibosPendientes.toString()} subtitle="Pendientes aún dentro de fecha o por vencer." />
-        <SummaryCard title="Contratos con saldo" value={data.resumen.contratosConSaldo.toString()} subtitle="Cartera activa que necesita seguimiento." />
-        <SummaryCard title="Promesas activas" value={data.resumen.promesasPendientes.toString()} subtitle="Compromisos de pago aún no cumplidos." />
+        <SummaryCard title="Total aún por cobrar" value={currencyFormatter.format(data.resumen.saldoPendienteTotal)} subtitle="Suma de todos los recibos que todavía no están totalmente pagados." />
+        <SummaryCard title="Recibos atrasados" value={data.resumen.recibosVencidos.toString()} subtitle="Recibos vencidos que ya deberían haber sido pagados." />
+        <SummaryCard title="Recibos con abonos" value={data.resumen.recibosParciales.toString()} subtitle="Recibos que ya tienen pago parcial, pero todavía no están cerrados." />
+        <SummaryCard title="Recibos pendientes" value={data.resumen.recibosPendientes.toString()} subtitle="Recibos emitidos que siguen pendientes dentro de fecha." />
+        <SummaryCard title="Contratos con deuda" value={data.resumen.contratosConSaldo.toString()} subtitle="Cantidad de contratos que hoy tienen algún saldo pendiente." />
+        <SummaryCard title="Promesas activas" value={data.resumen.promesasPendientes.toString()} subtitle="Promesas de pago registradas que aún no se han cumplido." />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">

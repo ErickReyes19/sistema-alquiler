@@ -19,8 +19,8 @@ export default async function CobranzaPage() {
     <div className="container mx-auto space-y-6 py-4">
       <HeaderComponent
         Icon={HandCoins}
-        screenName="Gestión de morosidad y cobranza"
-        description="Controla estados de recibos, pagos parciales, mora, promesas de pago, saldo por contrato y recordatorios listos para WhatsApp o correo."
+        screenName="Cobranza y seguimiento de pagos"
+        description="Aquí conviertes un recibo pendiente en pagado, registras abonos, ves atrasos reales y haces seguimiento con promesas o recordatorios."
       />
       <CobranzaDashboard data={data} />
     </div>

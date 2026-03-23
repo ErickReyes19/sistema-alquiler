@@ -220,19 +220,19 @@ export async function getDashboardData(): Promise<DashboardData> {
         subtitle: "Con saldo pendiente este mes",
       },
       montoCobradoMes: {
-        title: "Monto cobrado este mes",
+        title: "Cobrado del mes",
         value: montoCobradoMes,
-        subtitle: "Pagos registrados en el mes corriente",
+        subtitle: "Dinero cobrado en recibos del mes actual",
       },
       montoPendienteMes: {
-        title: "Monto pendiente por cobrar",
+        title: "Aún por cobrar este mes",
         value: montoPendienteMes,
-        subtitle: "Saldo pendiente sobre renta mensual activa",
+        subtitle: "Lo que todavía falta cobrar en contratos activos",
       },
       gastosMes: {
-        title: "Gastos del mes",
+        title: "Gastos operativos del mes",
         value: totalGastosMes,
-        subtitle: "Total real registrado en el módulo de gastos",
+        subtitle: "Egresos reales cargados por propiedad en este mes",
       },
       fueraServicio: {
         title: "Apartamentos fuera de servicio",

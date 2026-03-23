@@ -81,10 +81,10 @@ export const columns: ColumnDef<Recibo>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <Link href={`recibos/${recibo.id}/view`}>
-              <DropdownMenuItem>Ver detalles</DropdownMenuItem>
+              <DropdownMenuItem>Ver / cobrar recibo</DropdownMenuItem>
             </Link>
             <Link href={`recibos/${recibo.id}/edit`}>
-              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem>Editar recibo</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
         </DropdownMenu>

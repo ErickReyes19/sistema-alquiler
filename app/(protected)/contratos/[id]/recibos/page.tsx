@@ -26,8 +26,8 @@ export default async function RecibosPage({ params }: RecibosPageProps) {
     <div className="container mx-auto py-2">
       <HeaderComponent
         Icon={ListChecks}
-        description="En este apartado podrá ver todos los recibos de este contrato"
-        screenName="Recibos"
+        description="Aquí emites y revisas los recibos del contrato. Cuando el inquilino paga, puedes registrar el pago desde el detalle del recibo o desde Cobranza."
+        screenName="Recibos del contrato"
       />
 
       {/* Desktop */}
