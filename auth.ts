@@ -9,7 +9,14 @@ import { Prisma, TipoUsuario } from '@/lib/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import bcrypt from "bcryptjs";
 
-const key = new TextEncoder().encode(process.env.AUTH_SECRET);
+function getAuthKey(): Uint8Array | null {
+    const authSecret = process.env.AUTH_SECRET?.trim();
+    if (!authSecret) {
+        return null;
+    }
+
+    return new TextEncoder().encode(authSecret);
+}
 
 export interface UsuarioSesion extends JWTPayload {
     IdUser: string;
@@ -24,6 +31,11 @@ export interface UsuarioSesion extends JWTPayload {
 }
 
 export async function encrypt(payload: UsuarioSesion) {
+    const key = getAuthKey();
+    if (!key) {
+        throw new Error("AUTH_SECRET no está configurado");
+    }
+
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -32,6 +44,11 @@ export async function encrypt(payload: UsuarioSesion) {
 }
 
 export const decrypt = async (token: string): Promise<UsuarioSesion> => {
+    const key = getAuthKey();
+    if (!key) {
+        throw new Error("AUTH_SECRET no está configurado");
+    }
+
     const { payload } = await jwtVerify<JWTPayload>(token, key, {
         algorithms: ["HS256"],
     });
@@ -67,6 +84,10 @@ export const login = async (
     credentials: TSchemaSignIn,
     redirect: string
 ): Promise<LoginResult> => {
+    if (!getAuthKey()) {
+        return { error: "Falta configurar AUTH_SECRET en el servidor" };
+    }
+
     const parsed = schemaSignIn.safeParse(credentials);
     if (!parsed.success) {
         return { error: "Slug, usuario o contraseña inválidos" };
@@ -118,7 +139,12 @@ export const resetPassword = async (
 export const getSession = async (): Promise<UsuarioSesion | null> => {
     const token = cookies().get("session")?.value;
     if (!token) return null;
-    return await decrypt(token);
+
+    try {
+        return await decrypt(token);
+    } catch {
+        return null;
+    }
 };
 
 export const getSessionPermisos = async (): Promise<string[] | null> => {
@@ -222,6 +248,11 @@ export const getSessionUsuario = async (): Promise<UsuarioSesion | null> => {
     if (!session) {
         return null;
     }
-    const usuario = await decrypt(session);
-    return usuario;
+
+    try {
+        const usuario = await decrypt(session);
+        return usuario;
+    } catch {
+        return null;
+    }
 };
