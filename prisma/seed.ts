@@ -1,7 +1,8 @@
-import { PrismaClient, TipoUsuario } from "../lib/generated/prisma";
-import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 
+import bcrypt from "bcryptjs";
+
+import { PrismaClient, TipoUsuario } from "../lib/generated/prisma";
 import { ROOT_PERMISSION_NAMES } from "../lib/platform-permissions";
 
 const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
@@ -27,19 +28,23 @@ async function main() {
     },
   });
 
+  await prisma.permiso.createMany({
+    data: ROOT_PERMISSION_NAMES.map((nombre) => ({
+      id: randomUUID(),
+      tenantId: platformTenant.id,
+      nombre,
+      descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
+      activo: true,
+      esPermisoSistema: true,
+    })),
+    skipDuplicates: true,
+  });
+
   const permisosRoot = await Promise.all(
     ROOT_PERMISSION_NAMES.map((nombre) =>
-      prisma.permiso.upsert({
+      prisma.permiso.update({
         where: { tenantId_nombre: { tenantId: platformTenant.id, nombre } },
-        update: {
-          descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
-          activo: true,
-          esPermisoSistema: true,
-        },
-        create: {
-          id: randomUUID(),
-          tenantId: platformTenant.id,
-          nombre,
+        data: {
           descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
           activo: true,
           esPermisoSistema: true,
@@ -47,42 +52,7 @@ async function main() {
       })
     )
   );
-  console.log("✅ Permisos root seed completado");
-
-  await prisma.usuario.deleteMany({
-    where: {
-      tenantId: platformTenant.id,
-      email: { not: emailRoot },
-    },
-  });
-
-  await prisma.rolPermiso.deleteMany({
-    where: {
-      tenantId: platformTenant.id,
-      permiso: { nombre: { notIn: [...ROOT_PERMISSION_NAMES] } },
-    },
-  });
-
-  await prisma.rol.deleteMany({
-    where: {
-      tenantId: platformTenant.id,
-      nombre: { not: "root" },
-    },
-  });
-
-  await prisma.permiso.deleteMany({
-    where: {
-      tenantId: platformTenant.id,
-      nombre: { notIn: [...ROOT_PERMISSION_NAMES] },
-    },
-  });
-
-  await prisma.rolPermiso.deleteMany({
-    where: {
-      tenantId: platformTenant.id,
-      rol: { nombre: "root" },
-    },
-  });
+  console.log("✅ Permisos root verificados sin duplicados");
 
   const rolRoot = await prisma.rol.upsert({
     where: { tenantId_nombre: { tenantId: platformTenant.id, nombre: "root" } },
@@ -96,7 +66,7 @@ async function main() {
       nombre: "root",
       descripcion: "Dueño de la plataforma con acceso solo a tenants y usuarios asignables",
       activo: true,
-    }
+    },
   });
 
   await prisma.rolPermiso.createMany({
@@ -108,13 +78,12 @@ async function main() {
     })),
     skipDuplicates: true,
   });
-  console.log("✅ Rol root seed completado");
+  console.log("✅ Rol root verificado sin duplicados");
 
   await prisma.usuario.upsert({
     where: { tenantId_email: { tenantId: platformTenant.id, email: emailRoot } },
     update: {
       nombre: "root",
-      password: passwordRoot,
       activo: true,
       rolId: rolRoot.id,
       DebeCambiar: true,
@@ -130,13 +99,16 @@ async function main() {
       rolId: rolRoot.id,
       DebeCambiar: true,
       tipoUsuario: TipoUsuario.ROOT,
-    }
+    },
   });
-  console.log("✅ Usuario root seed completado");
+  console.log("✅ Usuario root verificado sin duplicados");
 
   console.log("🎉 Seed completado exitosamente.");
 }
 
 main()
-  .catch(e => console.error(e))
-  .finally(async () => { await prisma.$disconnect(); console.log("🔌 Desconectado de la base de datos."); });
+  .catch((error) => console.error(error))
+  .finally(async () => {
+    await prisma.$disconnect();
+    console.log("🔌 Desconectado de la base de datos.");
+  });
