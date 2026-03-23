@@ -10,6 +10,7 @@ import {
   Contrato,
   ContratoAjusteRenta,
   ContratoCreate,
+  DepositoGarantia,
   ContratoEntrega,
   ContratoInventario,
   ContratoRenovacion,
@@ -22,6 +23,7 @@ import {
   RegistrarEntregaInput,
   RegistrarInventarioInput,
   RegistrarRenovacionInput,
+  TipoMovimientoDepositoGarantia,
   TipoInventarioContrato,
 } from "./type";
 
@@ -29,6 +31,7 @@ const contratoInclude = {
   inquilino: true,
   apartamento: true,
   entrega: true,
+  depositoGarantia: true,
 } as const;
 
 const contratoViewInclude = {
@@ -63,6 +66,15 @@ const contratoViewInclude = {
     },
   },
   entrega: true,
+  depositoGarantia: {
+    include: {
+      movimientos: {
+        orderBy: {
+          fecha: "asc",
+        },
+      },
+    },
+  },
 } as const;
 
 type ContratoWithRelations = Prisma.ContratosGetPayload<{
@@ -94,6 +106,39 @@ function normalizeOptionalText(value?: string | null) {
 
 function normalizeInventoryItems(items: string[]) {
   return items.map((item) => item.trim()).filter(Boolean);
+}
+
+function resolveDepositStatus(data: {
+  monto: number;
+  fechaRecepcion: Date | null;
+  montoDevuelto: number;
+  montoAplicadoDanos: number;
+  montoAplicadoSaldo: number;
+}) {
+  if (data.monto <= 0) {
+    return "PENDIENTE" as const;
+  }
+
+  if (!data.fechaRecepcion) {
+    return "PENDIENTE" as const;
+  }
+
+  const totalAplicado = data.montoAplicadoDanos + data.montoAplicadoSaldo;
+  const totalLiquidado = totalAplicado + data.montoDevuelto;
+
+  if (totalLiquidado <= 0) {
+    return "RECIBIDO" as const;
+  }
+
+  if (totalLiquidado >= data.monto) {
+    return totalAplicado > 0 ? ("APLICADO" as const) : ("DEVUELTO" as const);
+  }
+
+  return "PARCIALMENTE_DEVUELTO" as const;
+}
+
+function calculateRetainedBalance(monto: number, montoDevuelto: number, montoAplicadoDanos: number, montoAplicadoSaldo: number) {
+  return Number(Math.max(monto - montoDevuelto - montoAplicadoDanos - montoAplicadoSaldo, 0).toFixed(2));
 }
 
 function calculatePercentage(previousAmount: number, nextAmount: number) {
@@ -201,6 +246,33 @@ function mapEntrega(entrega: ContratoViewRecord["entrega"]): ContratoEntrega | n
   };
 }
 
+function mapDepositoGarantia(deposito: ContratoViewRecord["depositoGarantia"]): DepositoGarantia | null {
+  if (!deposito) {
+    return null;
+  }
+
+  return {
+    id: deposito.id,
+    monto: toNumber(deposito.monto),
+    fechaRecepcion: deposito.fechaRecepcion?.toISOString() ?? null,
+    estado: deposito.estado,
+    montoDevuelto: toNumber(deposito.montoDevuelto),
+    montoAplicadoDanos: toNumber(deposito.montoAplicadoDanos),
+    montoAplicadoSaldo: toNumber(deposito.montoAplicadoSaldo),
+    saldoRetenido: toNumber(deposito.saldoRetenido),
+    reciboRecepcion: deposito.reciboRecepcion ?? null,
+    reciboLiquidacion: deposito.reciboLiquidacion ?? null,
+    observaciones: deposito.observaciones ?? null,
+    movimientos: deposito.movimientos.map((movimiento) => ({
+      id: movimiento.id,
+      fecha: movimiento.fecha.toISOString(),
+      tipo: movimiento.tipo as TipoMovimientoDepositoGarantia,
+      monto: toNumber(movimiento.monto),
+      descripcion: movimiento.descripcion ?? undefined,
+    })),
+  };
+}
+
 function mapContrato(data: ContratoWithRelations): Contrato {
   const lifecycle = getLifecycleSnapshot({
     activo: data.activo,
@@ -217,6 +289,8 @@ function mapContrato(data: ContratoWithRelations): Contrato {
     fechaInicio: data.fechaInicio.toISOString(),
     fechaFin: data.fechaFin?.toISOString() ?? null,
     montoMensual: toNumber(data.montoMensual),
+    depositoGarantiaMonto: toNumber(data.depositoGarantia?.monto),
+    fechaRecepcionDeposito: data.depositoGarantia?.fechaRecepcion?.toISOString() ?? null,
     activo: data.activo,
     preavisoDias: data.preavisoDias,
     estadoRenovacion: data.estadoRenovacion as EstadoRenovacionContrato,
@@ -320,6 +394,41 @@ export async function postContrato({ contrato }: { contrato: ContratoCreate }): 
         include: contratoInclude,
       });
 
+      if ((contrato.depositoGarantiaMonto ?? 0) > 0) {
+        await tx.depositoGarantia.create({
+          data: {
+            tenantId,
+            contratoId: created.id,
+            monto: contrato.depositoGarantiaMonto,
+            fechaRecepcion: contrato.fechaRecepcionDeposito ? new Date(contrato.fechaRecepcionDeposito) : null,
+            estado: resolveDepositStatus({
+              monto: contrato.depositoGarantiaMonto,
+              fechaRecepcion: contrato.fechaRecepcionDeposito ? new Date(contrato.fechaRecepcionDeposito) : null,
+              montoDevuelto: 0,
+              montoAplicadoDanos: 0,
+              montoAplicadoSaldo: 0,
+            }),
+            saldoRetenido: contrato.fechaRecepcionDeposito ? contrato.depositoGarantiaMonto : 0,
+            reciboRecepcion: contrato.fechaRecepcionDeposito
+              ? `REC-DEP-${created.id.slice(0, 8).toUpperCase()}`
+              : null,
+            movimientos: contrato.fechaRecepcionDeposito
+              ? {
+                  create: [
+                    {
+                      tenantId,
+                      fecha: new Date(contrato.fechaRecepcionDeposito),
+                      tipo: "RECIBIDO",
+                      monto: contrato.depositoGarantiaMonto,
+                      descripcion: "Recepción inicial de depósito de garantía.",
+                    },
+                  ],
+                }
+              : undefined,
+          },
+        });
+      }
+
       await updateApartmentAvailability(tx, tenantId, contrato.apartamentoId, false);
       return created;
     });
@@ -366,6 +475,90 @@ export async function putContrato({ contrato }: { contrato: ContratoUpdate }): P
         },
         include: contratoInclude,
       });
+
+      const depositAmount = contrato.depositoGarantiaMonto ?? 0;
+      const depositReceivedAt = contrato.fechaRecepcionDeposito ? new Date(contrato.fechaRecepcionDeposito) : null;
+
+      const existingDeposit = await tx.depositoGarantia.findUnique({
+        where: { contratoId: contrato.id! },
+      });
+
+      if (existingDeposit) {
+        const nextRetainedBalance = calculateRetainedBalance(
+          depositAmount,
+          toNumber(existingDeposit.montoDevuelto),
+          toNumber(existingDeposit.montoAplicadoDanos),
+          toNumber(existingDeposit.montoAplicadoSaldo),
+        );
+
+        const updatedDeposit = await tx.depositoGarantia.update({
+          where: { contratoId: contrato.id! },
+          data: {
+            monto: depositAmount,
+            fechaRecepcion: depositReceivedAt,
+            saldoRetenido: depositReceivedAt ? nextRetainedBalance : 0,
+            estado: resolveDepositStatus({
+              monto: depositAmount,
+              fechaRecepcion: depositReceivedAt,
+              montoDevuelto: toNumber(existingDeposit.montoDevuelto),
+              montoAplicadoDanos: toNumber(existingDeposit.montoAplicadoDanos),
+              montoAplicadoSaldo: toNumber(existingDeposit.montoAplicadoSaldo),
+            }),
+            reciboRecepcion:
+              depositReceivedAt && !existingDeposit.reciboRecepcion
+                ? `REC-DEP-${contrato.id!.slice(0, 8).toUpperCase()}`
+                : existingDeposit.reciboRecepcion,
+          },
+        });
+
+        if (
+          depositReceivedAt &&
+          !existingDeposit.fechaRecepcion &&
+          depositAmount > 0
+        ) {
+          await tx.movimientoDepositoGarantia.create({
+            data: {
+              tenantId,
+              depositoGarantiaId: updatedDeposit.id,
+              fecha: depositReceivedAt,
+              tipo: "RECIBIDO",
+              monto: depositAmount,
+              descripcion: "Registro inicial de recepción del depósito.",
+            },
+          });
+        }
+      } else if (depositAmount > 0) {
+        await tx.depositoGarantia.create({
+          data: {
+            tenantId,
+            contratoId: contrato.id!,
+            monto: depositAmount,
+            fechaRecepcion: depositReceivedAt,
+            estado: resolveDepositStatus({
+              monto: depositAmount,
+              fechaRecepcion: depositReceivedAt,
+              montoDevuelto: 0,
+              montoAplicadoDanos: 0,
+              montoAplicadoSaldo: 0,
+            }),
+            saldoRetenido: depositReceivedAt ? depositAmount : 0,
+            reciboRecepcion: depositReceivedAt ? `REC-DEP-${contrato.id!.slice(0, 8).toUpperCase()}` : null,
+            movimientos: depositReceivedAt
+              ? {
+                  create: [
+                    {
+                      tenantId,
+                      fecha: depositReceivedAt,
+                      tipo: "RECIBIDO",
+                      monto: depositAmount,
+                      descripcion: "Recepción inicial del depósito incorporada al contrato.",
+                    },
+                  ],
+                }
+              : undefined,
+          },
+        });
+      }
 
       if (!updated.activo || updated.fechaDesocupacion) {
         await updateApartmentAvailability(tx, tenantId, updated.apartamentoId, true);
@@ -424,6 +617,8 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
       fechaInicio: contrato.fechaInicio.toISOString(),
       fechaFin: contrato.fechaFin?.toISOString() ?? null,
       montoMensual: toNumber(contrato.montoMensual),
+      depositoGarantiaMonto: toNumber(contrato.depositoGarantia?.monto),
+      fechaRecepcionDeposito: contrato.depositoGarantia?.fechaRecepcion?.toISOString() ?? null,
       activo: contrato.activo,
       preavisoDias: contrato.preavisoDias,
       estadoRenovacion: contrato.estadoRenovacion as EstadoRenovacionContrato,
@@ -460,6 +655,7 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
       ajustesRenta: contrato.ajustesRenta.map(mapAjusteRenta),
       inventarios: contrato.inventarios.map(mapInventario),
       entrega: mapEntrega(contrato.entrega),
+      depositoGarantia: mapDepositoGarantia(contrato.depositoGarantia),
     };
   } catch (error) {
     console.error("Error al obtener el contrato:", error);
@@ -611,6 +807,9 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
   const tenantId = await getTenantIdFromSession();
   const contrato = await prisma.contratos.findFirst({
     where: { id: input.contratoId, tenantId },
+    include: {
+      depositoGarantia: true,
+    },
   });
 
   if (!contrato) {
@@ -618,6 +817,11 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
   }
 
   await prisma.$transaction(async (tx) => {
+    const deposito = contrato.depositoGarantia;
+    const cargosDanos = Number(input.cargosDanos);
+    const saldoPendiente = Number(input.saldoPendiente);
+    const depositoDevuelto = Number(input.depositoDevuelto);
+
     await tx.contratoEntrega.upsert({
       where: {
         contratoId: input.contratoId,
@@ -641,6 +845,74 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
         observaciones: normalizeOptionalText(input.observaciones),
       },
     });
+
+    if (deposito) {
+      const montoDeposito = toNumber(deposito.monto);
+      const aplicadoDanos = Math.min(cargosDanos, montoDeposito);
+      const disponibleTrasDanos = Math.max(montoDeposito - aplicadoDanos, 0);
+      const aplicadoSaldo = Math.min(saldoPendiente, disponibleTrasDanos);
+      const maximoDevolucion = Math.max(montoDeposito - aplicadoDanos - aplicadoSaldo, 0);
+      const devolucion = Math.min(Math.max(depositoDevuelto, 0), maximoDevolucion);
+      const tipoDevolucion: TipoMovimientoDepositoGarantia =
+        devolucion === montoDeposito ? "DEVOLUCION_TOTAL" : "DEVOLUCION_PARCIAL";
+      const saldoRetenido = calculateRetainedBalance(montoDeposito, devolucion, aplicadoDanos, aplicadoSaldo);
+      const estado = resolveDepositStatus({
+        monto: montoDeposito,
+        fechaRecepcion: deposito.fechaRecepcion,
+        montoDevuelto: devolucion,
+        montoAplicadoDanos: aplicadoDanos,
+        montoAplicadoSaldo: aplicadoSaldo,
+      });
+
+      await tx.depositoGarantia.update({
+        where: { contratoId: input.contratoId },
+        data: {
+          montoAplicadoDanos: aplicadoDanos,
+          montoAplicadoSaldo: aplicadoSaldo,
+          montoDevuelto: devolucion,
+          saldoRetenido,
+          estado,
+          reciboLiquidacion: normalizeOptionalText(input.reciboLiquidacion) ?? `LIQ-DEP-${input.contratoId.slice(0, 8).toUpperCase()}`,
+          observaciones: normalizeOptionalText(input.observacionDeposito) ?? deposito.observaciones,
+          movimientos: {
+            deleteMany: {
+              tipo: {
+                in: ["APLICADO_DANOS", "APLICADO_SALDO_PENDIENTE", "DEVOLUCION_PARCIAL", "DEVOLUCION_TOTAL"],
+              },
+            },
+            create: [
+              ...(aplicadoDanos > 0
+                ? [{
+                    tenantId,
+                    fecha: new Date(input.fechaEntrega),
+                    tipo: "APLICADO_DANOS" as const,
+                    monto: aplicadoDanos,
+                    descripcion: "Aplicado a cargos por daños al cierre del contrato.",
+                  }]
+                : []),
+              ...(aplicadoSaldo > 0
+                ? [{
+                    tenantId,
+                    fecha: new Date(input.fechaEntrega),
+                    tipo: "APLICADO_SALDO_PENDIENTE" as const,
+                    monto: aplicadoSaldo,
+                    descripcion: "Aplicado a saldos pendientes del inquilino.",
+                  }]
+                : []),
+              ...(devolucion > 0
+                ? [{
+                    tenantId,
+                    fecha: new Date(input.fechaEntrega),
+                    tipo: tipoDevolucion,
+                    monto: devolucion,
+                    descripcion: normalizeOptionalText(input.observacionDeposito) ?? "Devolución liquidada del depósito de garantía.",
+                  }]
+                : []),
+            ],
+          },
+        },
+      });
+    }
 
     await tx.contratos.update({
       where: { id: input.contratoId },

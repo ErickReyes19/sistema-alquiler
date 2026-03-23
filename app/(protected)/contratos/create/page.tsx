@@ -22,6 +22,8 @@ export default async function Create() {
     fechaInicio: new Date().toISOString(),
     fechaFin: undefined,
     montoMensual: 0,
+    depositoGarantiaMonto: 0,
+    fechaRecepcionDeposito: undefined,
     preavisoDias: 30,
     activo: true,
     estadoRenovacion: "SIN_GESTION" as const,

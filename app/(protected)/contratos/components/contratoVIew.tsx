@@ -121,6 +121,9 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
     estadoInmueble: contrato.entrega?.estadoInmueble ?? "Bueno",
     cargosDanos: contrato.entrega?.cargosDanos.toString() ?? "0",
     saldoPendiente: contrato.entrega?.saldoPendiente.toString() ?? "0",
+    depositoDevuelto: contrato.depositoGarantia?.montoDevuelto?.toString() ?? "0",
+    reciboLiquidacion: contrato.depositoGarantia?.reciboLiquidacion ?? "",
+    observacionDeposito: contrato.depositoGarantia?.observaciones ?? "",
     motivoCancelacion: contrato.entrega?.motivoCancelacion ?? contrato.motivoCancelacion ?? "",
     observaciones: contrato.entrega?.observaciones ?? contrato.notasCierre ?? "",
   });
@@ -299,6 +302,84 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                 </CardContent>
               </Card>
             </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Wallet className="h-5 w-5" />
+                  Depósito de garantía custodiado
+                </CardTitle>
+                <CardDescription>
+                  Ledger del dinero retenido, sus aplicaciones y la evidencia de recepción o liquidación.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+                  <div className="rounded-md border p-3">
+                    <p className="text-sm text-muted-foreground">Monto retenido</p>
+                    <p className="text-lg font-semibold">{formatLempiras(contrato.depositoGarantia?.monto ?? contrato.depositoGarantiaMonto ?? 0)}</p>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="text-sm text-muted-foreground">Estado</p>
+                    <p className="text-lg font-semibold">{contrato.depositoGarantia?.estado?.replaceAll("_", " ") ?? "PENDIENTE"}</p>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="text-sm text-muted-foreground">Fecha recepción</p>
+                    <p className="text-lg font-semibold">{formatDate(contrato.depositoGarantia?.fechaRecepcion ?? contrato.fechaRecepcionDeposito ?? null)}</p>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="text-sm text-muted-foreground">Saldo retenido</p>
+                    <p className="text-lg font-semibold">{formatLempiras(contrato.depositoGarantia?.saldoRetenido ?? 0)}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                  <div className="rounded-md border p-3 text-sm">
+                    <p className="text-muted-foreground">Aplicado a daños</p>
+                    <p className="font-medium">{formatLempiras(contrato.depositoGarantia?.montoAplicadoDanos ?? 0)}</p>
+                  </div>
+                  <div className="rounded-md border p-3 text-sm">
+                    <p className="text-muted-foreground">Aplicado a saldo pendiente</p>
+                    <p className="font-medium">{formatLempiras(contrato.depositoGarantia?.montoAplicadoSaldo ?? 0)}</p>
+                  </div>
+                  <div className="rounded-md border p-3 text-sm">
+                    <p className="text-muted-foreground">Monto devuelto</p>
+                    <p className="font-medium">{formatLempiras(contrato.depositoGarantia?.montoDevuelto ?? 0)}</p>
+                  </div>
+                </div>
+
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Movimiento</TableHead>
+                        <TableHead>Monto</TableHead>
+                        <TableHead>Descripción</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {contrato.depositoGarantia?.movimientos.length ? (
+                        contrato.depositoGarantia.movimientos.map((movimiento) => (
+                          <TableRow key={movimiento.id}>
+                            <TableCell>{formatDate(movimiento.fecha)}</TableCell>
+                            <TableCell>{movimiento.tipo.replaceAll("_", " ")}</TableCell>
+                            <TableCell>{formatLempiras(movimiento.monto)}</TableCell>
+                            <TableCell>{movimiento.descripcion ?? "Sin detalle"}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center text-muted-foreground">
+                            Aún no hay movimientos registrados para el depósito.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="renovacion" className="space-y-4">
@@ -656,6 +737,34 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                         onChange={(event) => setHandoverForm((current) => ({ ...current, saldoPendiente: event.target.value }))}
                       />
                     </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Depósito devuelto</label>
+                      <Input
+                        type="number"
+                        min={0}
+                        step={0.01}
+                        value={handoverForm.depositoDevuelto}
+                        onChange={(event) => setHandoverForm((current) => ({ ...current, depositoDevuelto: event.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Recibo de liquidación</label>
+                      <Input
+                        value={handoverForm.reciboLiquidacion}
+                        onChange={(event) => setHandoverForm((current) => ({ ...current, reciboLiquidacion: event.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Observación del depósito</label>
+                    <textarea
+                      className="min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      placeholder="Conciliación final: daños, saldos, devolución y soporte legal."
+                      value={handoverForm.observacionDeposito}
+                      onChange={(event) =>
+                        setHandoverForm((current) => ({ ...current, observacionDeposito: event.target.value }))
+                      }
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Motivo de cancelación</label>
@@ -687,6 +796,9 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                             estadoInmueble: handoverForm.estadoInmueble,
                             cargosDanos: Number(handoverForm.cargosDanos),
                             saldoPendiente: Number(handoverForm.saldoPendiente),
+                            depositoDevuelto: Number(handoverForm.depositoDevuelto),
+                            reciboLiquidacion: handoverForm.reciboLiquidacion,
+                            observacionDeposito: handoverForm.observacionDeposito,
                             motivoCancelacion: handoverForm.motivoCancelacion,
                             observaciones: handoverForm.observaciones,
                           }),
@@ -720,6 +832,23 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                   <div className="flex items-center justify-between rounded-md border p-3">
                     <span className="text-muted-foreground">Saldo pendiente</span>
                     <span className="font-medium">{formatLempiras(contrato.entrega?.saldoPendiente ?? 0)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border p-3">
+                    <span className="text-muted-foreground">Depósito custodiado</span>
+                    <span className="font-medium">{formatLempiras(contrato.depositoGarantia?.monto ?? contrato.depositoGarantiaMonto ?? 0)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border p-3">
+                    <span className="text-muted-foreground">Devolución de depósito</span>
+                    <span className="font-medium">{formatLempiras(contrato.depositoGarantia?.montoDevuelto ?? 0)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border p-3">
+                    <span className="text-muted-foreground">Retención pendiente</span>
+                    <span className="font-medium">{formatLempiras(contrato.depositoGarantia?.saldoRetenido ?? 0)}</span>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="mb-1 text-muted-foreground">Recibos legales de depósito</p>
+                    <p>Recepción: {contrato.depositoGarantia?.reciboRecepcion ?? "Sin recibo"}</p>
+                    <p>Liquidación: {contrato.depositoGarantia?.reciboLiquidacion ?? "Sin recibo"}</p>
                   </div>
                   <div className="rounded-md border p-3">
                     <p className="mb-1 text-muted-foreground">Observaciones</p>

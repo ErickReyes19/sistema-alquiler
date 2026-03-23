@@ -15,6 +15,21 @@ export type EstadoOperacionContrato =
 
 export type TipoInventarioContrato = "ENTRADA" | "SALIDA";
 
+export type EstadoDepositoGarantia =
+  | "PENDIENTE"
+  | "RECIBIDO"
+  | "PARCIALMENTE_DEVUELTO"
+  | "APLICADO"
+  | "DEVUELTO";
+
+export type TipoMovimientoDepositoGarantia =
+  | "RECIBIDO"
+  | "APLICADO_DANOS"
+  | "APLICADO_SALDO_PENDIENTE"
+  | "DEVOLUCION_PARCIAL"
+  | "DEVOLUCION_TOTAL"
+  | "AJUSTE";
+
 export type Contrato = {
   id?: string;
   inquilinoId: string;
@@ -22,6 +37,8 @@ export type Contrato = {
   fechaInicio: string;
   fechaFin?: string | null;
   montoMensual: number;
+  depositoGarantiaMonto: number;
+  fechaRecepcionDeposito?: string | null;
   activo: boolean;
   preavisoDias: number;
   estadoRenovacion: EstadoRenovacionContrato;
@@ -89,6 +106,29 @@ export interface ContratoEntrega {
   observaciones?: string;
 }
 
+export interface MovimientoDepositoGarantia {
+  id: string;
+  fecha: string;
+  tipo: TipoMovimientoDepositoGarantia;
+  monto: number;
+  descripcion?: string;
+}
+
+export interface DepositoGarantia {
+  id: string;
+  monto: number;
+  fechaRecepcion: string | null;
+  estado: EstadoDepositoGarantia;
+  montoDevuelto: number;
+  montoAplicadoDanos: number;
+  montoAplicadoSaldo: number;
+  saldoRetenido: number;
+  reciboRecepcion?: string | null;
+  reciboLiquidacion?: string | null;
+  observaciones?: string | null;
+  movimientos: MovimientoDepositoGarantia[];
+}
+
 export interface HistorialOcupacionApartamento {
   contratoId: string;
   inquilino: string;
@@ -108,6 +148,8 @@ export interface ContratoView {
   fechaInicio: string;
   fechaFin: string | null;
   montoMensual: number;
+  depositoGarantiaMonto: number;
+  fechaRecepcionDeposito?: string | null;
   activo: boolean;
   preavisoDias: number;
   estadoRenovacion: EstadoRenovacionContrato;
@@ -143,6 +185,7 @@ export interface ContratoView {
   ajustesRenta: ContratoAjusteRenta[];
   inventarios: ContratoInventario[];
   entrega: ContratoEntrega | null;
+  depositoGarantia: DepositoGarantia | null;
 }
 
 export type RegistrarRenovacionInput = {
@@ -176,6 +219,9 @@ export type RegistrarEntregaInput = {
   estadoInmueble: string;
   cargosDanos: number;
   saldoPendiente: number;
+  depositoDevuelto: number;
+  observacionDeposito?: string;
+  reciboLiquidacion?: string;
   motivoCancelacion?: string;
   observaciones?: string;
 };

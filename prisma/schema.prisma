@@ -27,6 +27,8 @@ model Tenant {
   ajustesRentaContrato  AjusteRentaContrato[]
   inventariosContrato   ContratoInventario[]
   entregasContrato      ContratoEntrega[]
+  depositosGarantia     DepositoGarantia[]
+  movimientosDeposito   MovimientoDepositoGarantia[]
   inquilinos            Inquilino[]
   recibos               Recibos[]
   reciboDetalles        ReciboDetalles[]
@@ -182,6 +184,7 @@ model Contratos {
   ajustesRenta          AjusteRentaContrato[]
   inventarios           ContratoInventario[]
   entrega               ContratoEntrega?
+  depositoGarantia      DepositoGarantia?
 
   @@index([tenantId])
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
@@ -328,6 +331,23 @@ enum TipoInventarioContrato {
   SALIDA
 }
 
+enum EstadoDepositoGarantia {
+  PENDIENTE
+  RECIBIDO
+  PARCIALMENTE_DEVUELTO
+  APLICADO
+  DEVUELTO
+}
+
+enum TipoMovimientoDepositoGarantia {
+  RECIBIDO
+  APLICADO_DANOS
+  APLICADO_SALDO_PENDIENTE
+  DEVOLUCION_PARCIAL
+  DEVOLUCION_TOTAL
+  AJUSTE
+}
+
 model RenovacionContrato {
   id                  String                   @id @default(uuid())
   tenantId            String
@@ -404,6 +424,50 @@ model ContratoEntrega {
 
   @@index([tenantId])
   @@index([fechaEntrega])
+}
+
+model DepositoGarantia {
+  id                     String                 @id @default(uuid())
+  tenantId               String
+  contratoId             String                 @unique
+  monto                  Decimal                @default(0.00)
+  fechaRecepcion         DateTime?
+  estado                 EstadoDepositoGarantia @default(PENDIENTE)
+  montoDevuelto          Decimal                @default(0.00)
+  montoAplicadoDanos     Decimal                @default(0.00)
+  montoAplicadoSaldo     Decimal                @default(0.00)
+  saldoRetenido          Decimal                @default(0.00)
+  reciboRecepcion        String?
+  reciboLiquidacion      String?
+  observaciones          String?
+  createAt               DateTime               @default(now())
+  updateAt               DateTime               @updatedAt
+  tenant                 Tenant                 @relation(fields: [tenantId], references: [id])
+  contrato               Contratos              @relation(fields: [contratoId], references: [id])
+  movimientos            MovimientoDepositoGarantia[]
+
+  @@index([tenantId])
+  @@index([estado])
+  @@index([fechaRecepcion])
+}
+
+model MovimientoDepositoGarantia {
+  id                 String                         @id @default(uuid())
+  tenantId           String
+  depositoGarantiaId String
+  fecha              DateTime                       @default(now())
+  tipo               TipoMovimientoDepositoGarantia
+  monto              Decimal                        @default(0.00)
+  descripcion        String?
+  createAt           DateTime                       @default(now())
+  updateAt           DateTime                       @updatedAt
+  tenant             Tenant                         @relation(fields: [tenantId], references: [id])
+  depositoGarantia   DepositoGarantia               @relation(fields: [depositoGarantiaId], references: [id])
+
+  @@index([tenantId])
+  @@index([depositoGarantiaId])
+  @@index([fecha])
+  @@index([tipo])
 }
 
 model GastoApartamento {

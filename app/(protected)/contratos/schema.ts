@@ -7,6 +7,8 @@ export const ContratoSchema = z.object({
   fechaInicio: z.coerce.date({ required_error: "La fecha de inicio es requerida" }),
   fechaFin: z.coerce.date().optional(),
   montoMensual: z.coerce.number().min(0, "El monto mensual no puede ser negativo"),
+  depositoGarantiaMonto: z.coerce.number().min(0, "El depósito no puede ser negativo").default(0),
+  fechaRecepcionDeposito: z.coerce.date().optional(),
   preavisoDias: z.coerce.number().int().min(0, "El preaviso no puede ser negativo").default(30),
   activo: z.boolean().optional(),
 });

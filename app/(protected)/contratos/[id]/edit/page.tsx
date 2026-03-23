@@ -32,6 +32,8 @@ export default async function Edit({ params }: { params: { id: string } }) {
     fechaInicio: contrato.fechaInicio,
     fechaFin: contrato.fechaFin ?? undefined,
     montoMensual: contrato.montoMensual,
+    depositoGarantiaMonto: contrato.depositoGarantiaMonto,
+    fechaRecepcionDeposito: contrato.fechaRecepcionDeposito ?? undefined,
     preavisoDias: contrato.preavisoDias,
     activo: contrato.activo,
     estadoRenovacion: contrato.estadoRenovacion,
