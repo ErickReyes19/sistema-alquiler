@@ -28,6 +28,19 @@ const initialData = {
     correo: "",
     fechaNacimiento: new Date(),
     activo: true,
+    acompanantes: [],
+    expedienteArrendamiento: {
+      ocupacion: "",
+      empresa: "",
+      historialAlquiler: "",
+      motivoSolicitud: "",
+      estadoDecision: "PENDIENTE" as const,
+      decisionTomadaPor: "",
+      fechaDecision: null,
+      motivoDecision: "",
+      referencias: [],
+      garantes: [],
+    },
 };
 
 

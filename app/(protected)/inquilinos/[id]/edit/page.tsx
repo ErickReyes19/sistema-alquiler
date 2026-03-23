@@ -16,7 +16,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
 
   const permisos = await getSessionPermisos();
 
-  if (!permisos?.includes("editar_roles")) {
+  if (!permisos?.includes("editar_inquilino")) {
     return <NoAcceso />;
   }
 
@@ -24,7 +24,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
   const inquilino = await getInquilinoById(params.id);
   // console.log("🚀 ~ Edit ~ roles:", roles)
   if (!inquilino) {
-    redirect("/roles"); // Redirige si no se encuentra el cliente
+    redirect("/inquilinos"); // Redirige si no se encuentra el cliente
   }
 
 

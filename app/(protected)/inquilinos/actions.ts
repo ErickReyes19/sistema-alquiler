@@ -12,17 +12,68 @@ import {
 } from "@/lib/server-action-utils";
 import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 
-import { Acompanante, Inquilino } from "./type";
+import {
+  Acompanante,
+  ExpedienteArrendamiento,
+  GaranteArrendamiento,
+  Inquilino,
+  ReferenciaArrendamiento,
+} from "./type";
 
 const inquilinoInclude = {
   Acompañante: true,
+  expedienteArrendamiento: {
+    include: {
+      referencias: true,
+      garantes: true,
+    },
+  },
 } as const;
 
-type InquilinoWithAcompanantes = Prisma.InquilinoGetPayload<{
+type InquilinoWithRelations = Prisma.InquilinoGetPayload<{
   include: typeof inquilinoInclude;
 }>;
+type ExpedienteWithRelations = NonNullable<InquilinoWithRelations["expedienteArrendamiento"]>;
 
-const mapInquilinoToDto = (inquilino: InquilinoWithAcompanantes): Inquilino => ({
+const mapReferenciaToDto = (
+  referencia: ExpedienteWithRelations["referencias"][number],
+): ReferenciaArrendamiento => ({
+  id: referencia.id,
+  tipo: referencia.tipo,
+  nombreCompleto: referencia.nombreCompleto,
+  telefono: referencia.telefono,
+  correo: referencia.correo ?? "",
+  relacion: referencia.relacion ?? "",
+  notas: referencia.notas ?? "",
+});
+
+const mapGaranteToDto = (
+  garante: ExpedienteWithRelations["garantes"][number],
+): GaranteArrendamiento => ({
+  id: garante.id,
+  nombreCompleto: garante.nombreCompleto,
+  dni: garante.dni,
+  telefono: garante.telefono,
+  correo: garante.correo ?? "",
+  empresa: garante.empresa ?? "",
+  ingresosMensuales: garante.ingresosMensuales ? Number(garante.ingresosMensuales) : undefined,
+  notas: garante.notas ?? "",
+});
+
+const emptyExpediente = (): ExpedienteArrendamiento => ({
+  ocupacion: "",
+  empresa: "",
+  historialAlquiler: "",
+  motivoSolicitud: "",
+  estadoDecision: "PENDIENTE",
+  decisionTomadaPor: "",
+  fechaDecision: null,
+  motivoDecision: "",
+  referencias: [],
+  garantes: [],
+});
+
+const mapInquilinoToDto = (inquilino: InquilinoWithRelations): Inquilino => ({
   id: inquilino.id,
   nombreCompleto: inquilino.nombreCompleto,
   dni: inquilino.dni,
@@ -36,6 +87,24 @@ const mapInquilinoToDto = (inquilino: InquilinoWithAcompanantes): Inquilino => (
     parentesco: acompanante.Parentesco,
     activo: acompanante.activo,
   })),
+  expedienteArrendamiento: inquilino.expedienteArrendamiento
+    ? {
+        id: inquilino.expedienteArrendamiento.id,
+        ocupacion: inquilino.expedienteArrendamiento.ocupacion ?? "",
+        empresa: inquilino.expedienteArrendamiento.empresa ?? "",
+        ingresosMensuales: inquilino.expedienteArrendamiento.ingresosMensuales
+          ? Number(inquilino.expedienteArrendamiento.ingresosMensuales)
+          : undefined,
+        historialAlquiler: inquilino.expedienteArrendamiento.historialAlquiler ?? "",
+        motivoSolicitud: inquilino.expedienteArrendamiento.motivoSolicitud ?? "",
+        estadoDecision: inquilino.expedienteArrendamiento.estadoDecision,
+        decisionTomadaPor: inquilino.expedienteArrendamiento.decisionTomadaPor ?? "",
+        fechaDecision: inquilino.expedienteArrendamiento.fechaDecision,
+        motivoDecision: inquilino.expedienteArrendamiento.motivoDecision ?? "",
+        referencias: inquilino.expedienteArrendamiento.referencias.map(mapReferenciaToDto),
+        garantes: inquilino.expedienteArrendamiento.garantes.map(mapGaranteToDto),
+      }
+    : emptyExpediente(),
 });
 
 const buildAcompanantesCreateData = (tenantId: string, acompanantes: Acompanante[]) =>
@@ -46,6 +115,57 @@ const buildAcompanantesCreateData = (tenantId: string, acompanantes: Acompanante
     Parentesco: acompanante.parentesco,
     activo: resolveActivo(acompanante.activo),
   }));
+
+const buildReferenciasCreateData = (tenantId: string, referencias: ReferenciaArrendamiento[]) =>
+  referencias.map((referencia) => ({
+    id: referencia.id ?? randomUUID(),
+    tenantId,
+    tipo: referencia.tipo,
+    nombreCompleto: referencia.nombreCompleto,
+    telefono: referencia.telefono,
+    correo: normalizeOptionalText(referencia.correo),
+    relacion: normalizeOptionalText(referencia.relacion),
+    notas: normalizeOptionalText(referencia.notas),
+  }));
+
+const buildGarantesCreateData = (tenantId: string, garantes: GaranteArrendamiento[]) =>
+  garantes.map((garante) => ({
+    id: garante.id ?? randomUUID(),
+    tenantId,
+    nombreCompleto: garante.nombreCompleto,
+    dni: garante.dni,
+    telefono: garante.telefono,
+    correo: normalizeOptionalText(garante.correo),
+    empresa: normalizeOptionalText(garante.empresa),
+    ingresosMensuales:
+      garante.ingresosMensuales === undefined || garante.ingresosMensuales === null
+        ? undefined
+        : new Prisma.Decimal(garante.ingresosMensuales),
+    notas: normalizeOptionalText(garante.notas),
+  }));
+
+const buildExpedienteCreateData = (tenantId: string, expediente: ExpedienteArrendamiento) => ({
+  id: expediente.id ?? randomUUID(),
+  tenantId,
+  ocupacion: normalizeOptionalText(expediente.ocupacion),
+  empresa: normalizeOptionalText(expediente.empresa),
+  ingresosMensuales:
+    expediente.ingresosMensuales === undefined || expediente.ingresosMensuales === null
+      ? undefined
+      : new Prisma.Decimal(expediente.ingresosMensuales),
+  historialAlquiler: normalizeOptionalText(expediente.historialAlquiler),
+  motivoSolicitud: normalizeOptionalText(expediente.motivoSolicitud),
+  estadoDecision: expediente.estadoDecision ?? "PENDIENTE",
+  decisionTomadaPor: normalizeOptionalText(expediente.decisionTomadaPor),
+  fechaDecision: expediente.fechaDecision ? new Date(expediente.fechaDecision) : null,
+  motivoDecision: normalizeOptionalText(expediente.motivoDecision),
+  referencias: {
+    create: buildReferenciasCreateData(tenantId, expediente.referencias ?? []),
+  },
+  garantes: {
+    create: buildGarantesCreateData(tenantId, expediente.garantes ?? []),
+  },
+});
 
 const buildInquilinoData = (
   tenantId: string,
@@ -60,6 +180,9 @@ const buildInquilinoData = (
   fechaNacimiento: new Date(inquilino.fechaNacimiento),
   Acompañante: {
     create: buildAcompanantesCreateData(tenantId, inquilino.acompanantes),
+  },
+  expedienteArrendamiento: {
+    create: buildExpedienteCreateData(tenantId, inquilino.expedienteArrendamiento),
   },
 });
 
@@ -111,7 +234,7 @@ export async function postInquilino({
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
   try {
-    const tenantId = await getTenantIdFromSession()
+    const tenantId = await getTenantIdFromSession();
     const created = await prisma.inquilino.create({
       data: {
         id: inquilino.id ?? randomUUID(),
@@ -133,15 +256,16 @@ export async function putInquilino({
   inquilino: Inquilino & { acompanantes: Acompanante[] };
 }): Promise<Inquilino | null> {
   try {
-    const tenantId = await getTenantIdFromSession()
+    const tenantId = await getTenantIdFromSession();
     const inquilinoId = requireEntityId(inquilino.id, "inquilino");
 
     const existing = await prisma.inquilino.findFirst({
       where: { id: inquilinoId, tenantId },
-    })
+      include: { expedienteArrendamiento: true },
+    });
 
     if (!existing) {
-      throw new Error('Inquilino no encontrado para el tenant actual.')
+      throw new Error("Inquilino no encontrado para el tenant actual.");
     }
 
     const updated = await prisma.$transaction(async (tx) => {
@@ -149,9 +273,69 @@ export async function putInquilino({
         where: { inquilinoId, tenantId },
       });
 
+      if (existing.expedienteArrendamiento) {
+        await tx.referenciaArrendamiento.deleteMany({
+          where: { expedienteArrendamientoId: existing.expedienteArrendamiento.id, tenantId },
+        });
+
+        await tx.garanteArrendamiento.deleteMany({
+          where: { expedienteArrendamientoId: existing.expedienteArrendamiento.id, tenantId },
+        });
+      }
+
       return tx.inquilino.update({
         where: { id: inquilinoId },
-        data: buildInquilinoData(tenantId, inquilino),
+        data: {
+          tenantId,
+          nombreCompleto: inquilino.nombreCompleto,
+          dni: inquilino.dni,
+          activo: resolveActivo(inquilino.activo),
+          numero: inquilino.telefono,
+          correo: normalizeOptionalText(inquilino.correo, "Sin Correo"),
+          fechaNacimiento: new Date(inquilino.fechaNacimiento),
+          Acompañante: {
+            create: buildAcompanantesCreateData(tenantId, inquilino.acompanantes),
+          },
+          expedienteArrendamiento: existing.expedienteArrendamiento
+            ? {
+                update: {
+                  ocupacion: normalizeOptionalText(inquilino.expedienteArrendamiento.ocupacion),
+                  empresa: normalizeOptionalText(inquilino.expedienteArrendamiento.empresa),
+                  ingresosMensuales:
+                    inquilino.expedienteArrendamiento.ingresosMensuales === undefined ||
+                    inquilino.expedienteArrendamiento.ingresosMensuales === null
+                      ? null
+                      : new Prisma.Decimal(inquilino.expedienteArrendamiento.ingresosMensuales),
+                  historialAlquiler: normalizeOptionalText(
+                    inquilino.expedienteArrendamiento.historialAlquiler,
+                  ),
+                  motivoSolicitud: normalizeOptionalText(inquilino.expedienteArrendamiento.motivoSolicitud),
+                  estadoDecision: inquilino.expedienteArrendamiento.estadoDecision ?? "PENDIENTE",
+                  decisionTomadaPor: normalizeOptionalText(
+                    inquilino.expedienteArrendamiento.decisionTomadaPor,
+                  ),
+                  fechaDecision: inquilino.expedienteArrendamiento.fechaDecision
+                    ? new Date(inquilino.expedienteArrendamiento.fechaDecision)
+                    : null,
+                  motivoDecision: normalizeOptionalText(inquilino.expedienteArrendamiento.motivoDecision),
+                  referencias: {
+                    create: buildReferenciasCreateData(
+                      tenantId,
+                      inquilino.expedienteArrendamiento.referencias ?? [],
+                    ),
+                  },
+                  garantes: {
+                    create: buildGarantesCreateData(
+                      tenantId,
+                      inquilino.expedienteArrendamiento.garantes ?? [],
+                    ),
+                  },
+                },
+              }
+            : {
+                create: buildExpedienteCreateData(tenantId, inquilino.expedienteArrendamiento),
+              },
+        },
         include: inquilinoInclude,
       });
     });
