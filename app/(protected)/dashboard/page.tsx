@@ -115,7 +115,7 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
       <CardHeader>
         <CardTitle className="text-lg">Rentabilidad por apartamento</CardTitle>
         <CardDescription>
-          Ranking mensual basado en renta activa menos costos adicionales configurados en servicios.
+          Ranking mensual basado en ingresos del período menos egresos reales registrados por propiedad.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -149,7 +149,7 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
                   <p className="font-medium">{currencyFormatter.format(item.ingresoMensual)}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Gasto estimado</p>
+                  <p className="text-muted-foreground">Gasto real</p>
                   <p className="font-medium">{currencyFormatter.format(item.gastoEstimado)}</p>
                 </div>
                 <div>
@@ -205,6 +205,19 @@ export default async function DashboardPage() {
         <SummaryCard metric={dashboard.resumen.fueraServicio} icon={Wrench} />
       </div>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Cómo leer este dashboard</CardTitle>
+          <CardDescription>Resumen pensado para un dueño, no para un área técnica.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 md:grid-cols-4">
+          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Cobrado del mes</p><p className="mt-1 text-muted-foreground">Lo que ya entró en caja por recibos del período.</p></div>
+          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Aún por cobrar</p><p className="mt-1 text-muted-foreground">Lo que sigue pendiente en contratos activos.</p></div>
+          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Gastos operativos</p><p className="mt-1 text-muted-foreground">Mantenimiento, reparaciones, impuestos y demás egresos reales.</p></div>
+          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Rentabilidad</p><p className="mt-1 text-muted-foreground">Ingreso menos gasto por apartamento para detectar cuáles dejan utilidad y cuáles consumen dinero.</p></div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <Card>
           <CardHeader>
@@ -256,7 +269,7 @@ export default async function DashboardPage() {
             <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
               {dashboard.metadata.gastosEstimados
                 ? "Los gastos del mes se estiman con base en los costos adicionales configurados en servicios por apartamento."
-                : "Los gastos del mes corresponden a registros operativos reales."}
+                : "Los gastos del mes corresponden a registros operativos reales del nuevo módulo de egresos por propiedad."}
             </div>
           </CardContent>
         </Card>

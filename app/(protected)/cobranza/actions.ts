@@ -10,6 +10,7 @@ import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
 import {
   marcarPromesaPagoCumplida,
   registrarPagoParcialRecibo,
+  registrarPagoTotalRecibo,
   registrarPromesaPagoRecibo,
   registrarRecordatorioRecibo,
 } from "../contratos/[id]/recibos/actions";
@@ -220,4 +221,8 @@ export async function registrarRecordatorio(input: {
 
 export async function completarPromesaPago(promesaId: string) {
   return marcarPromesaPagoCumplida(promesaId);
+}
+
+export async function registrarPagoTotal(reciboId: string) {
+  return registrarPagoTotalRecibo(reciboId);
 }

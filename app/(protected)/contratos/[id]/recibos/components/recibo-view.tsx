@@ -1,15 +1,20 @@
 "use client";
 
 import { format } from "date-fns";
+import { useState, useTransition } from "react";
 import { es } from "date-fns/locale";
-import { Printer } from "lucide-react";
+import { CheckCircle2, Printer } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+import { registrarPagoParcialRecibo, registrarPagoTotalRecibo } from "../actions";
 import { ReciboCompleto } from "../type";
 
 interface ReciboDetalleProps {
@@ -31,6 +36,14 @@ const estadoLabel: Record<ReciboCompleto["estado"], string> = {
 };
 
 export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [pagoMonto, setPagoMonto] = useState<string>(recibo.saldoPendiente.toFixed(2));
+  const [pagoFecha, setPagoFecha] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [pagoReferencia, setPagoReferencia] = useState<string>("");
+  const [pagoNota, setPagoNota] = useState<string>("");
+
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat("es-HN", {
       style: "currency",
@@ -39,6 +52,36 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
 
   const handlePrint = () => {
     window.open(`/recibo/${recibo.id}/imprimir/`, "_blank");
+  };
+
+  const registrarPagoTotal = () => {
+    startTransition(async () => {
+      try {
+        await registrarPagoTotalRecibo(recibo.id);
+        toast({ title: "Recibo pagado", description: "Se registró el pago total y el recibo quedó cerrado." });
+        router.refresh();
+      } catch (error) {
+        toast({ title: "Error", description: (error as Error).message, variant: "destructive" });
+      }
+    });
+  };
+
+  const registrarAbono = () => {
+    startTransition(async () => {
+      try {
+        await registrarPagoParcialRecibo({
+          reciboId: recibo.id,
+          monto: Number(pagoMonto),
+          fechaPago: new Date(`${pagoFecha}T00:00:00`).toISOString(),
+          referencia: pagoReferencia,
+          nota: pagoNota,
+        });
+        toast({ title: "Abono registrado", description: "El saldo pendiente del recibo fue actualizado." });
+        router.refresh();
+      } catch (error) {
+        toast({ title: "Error", description: (error as Error).message, variant: "destructive" });
+      }
+    });
   };
 
   return (
@@ -58,6 +101,36 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6 pt-6">
+        <Card className="border-dashed">
+          <CardHeader>
+            <CardTitle className="text-lg">Cobro de este recibo</CardTitle>
+            <CardDescription>Generar el recibo solo lo deja pendiente. El pago se registra aquí o desde el módulo de Cobranza.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="rounded-lg border p-4 space-y-3">
+              <p className="font-medium">Pago total</p>
+              <p className="text-sm text-muted-foreground">Usa este botón cuando el inquilino ya pagó todo el saldo pendiente.</p>
+              <Button className="w-full" onClick={registrarPagoTotal} disabled={isPending || recibo.saldoPendiente <= 0}>
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Marcar como pagado total
+              </Button>
+            </div>
+            <div className="rounded-lg border p-4 space-y-3">
+              <p className="font-medium">Abono parcial</p>
+              <p className="text-sm text-muted-foreground">Si pagó solo una parte, registra el monto recibido y el sistema dejará el recibo como parcial.</p>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input type="number" step="0.01" value={pagoMonto} onChange={(e) => setPagoMonto(e.target.value)} placeholder="Monto abonado" />
+                <Input type="date" value={pagoFecha} onChange={(e) => setPagoFecha(e.target.value)} />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input value={pagoReferencia} onChange={(e) => setPagoReferencia(e.target.value)} placeholder="Referencia" />
+                <Input value={pagoNota} onChange={(e) => setPagoNota(e.target.value)} placeholder="Nota" />
+              </div>
+              <Button className="w-full" variant="outline" onClick={registrarAbono} disabled={isPending}>Registrar abono parcial</Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid gap-4 md:grid-cols-4">
           <div>
             <h3 className="text-sm font-medium text-muted-foreground">Fecha de emisión</h3>

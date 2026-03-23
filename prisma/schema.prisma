@@ -32,6 +32,7 @@ model Tenant {
   permisos              Permiso[]
   rolPermisos           RolPermiso[]
   usuarios              Usuario[]
+  gastosApartamento     GastoApartamento[]
 }
 
 model Rol {
@@ -110,6 +111,7 @@ model Apartamento {
   ApartamentoServicios ApartamentoServicios[]
   activo               Boolean
   Contratos            Contratos[]
+  gastos               GastoApartamento[]
 
   @@unique([tenantId, numero])
   @@index([tenantId])
@@ -292,6 +294,40 @@ enum EstadoRecibo {
 enum CanalRecordatorio {
   WHATSAPP
   EMAIL
+}
+
+
+model GastoApartamento {
+  id              String         @id @default(uuid())
+  tenantId        String
+  apartamentoId   String
+  fecha           DateTime
+  categoria       CategoriaGasto
+  concepto        String
+  descripcion     String?
+  monto           Decimal        @default(0.00)
+  extraordinario  Boolean        @default(false)
+  createAt        DateTime       @default(now())
+  updateAt        DateTime       @updatedAt
+  tenant          Tenant         @relation(fields: [tenantId], references: [id])
+  apartamento     Apartamento    @relation(fields: [apartamentoId], references: [id])
+
+  @@index([tenantId])
+  @@index([apartamentoId])
+  @@index([fecha])
+  @@index([categoria])
+}
+
+enum CategoriaGasto {
+  MANTENIMIENTO
+  REPARACION
+  SERVICIO_DUENO
+  LIMPIEZA
+  MOBILIARIO
+  COMISION
+  IMPUESTO
+  EXTRAORDINARIO
+  OTRO
 }
 
 model Permiso {

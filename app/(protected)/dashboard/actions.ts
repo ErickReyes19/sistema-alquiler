@@ -69,16 +69,9 @@ export async function getDashboardData(): Promise<DashboardData> {
   const end = endOfMonth(now);
   const cutoff = addDays(now, 30);
 
-  const [apartamentos, contratosActivos, recibosMes] = await Promise.all([
+  const [apartamentos, contratosActivos, recibosMes, gastosMes] = await Promise.all([
     prisma.apartamento.findMany({
       where: await buildTenantWhere({ activo: true }),
-      include: {
-        ApartamentoServicios: {
-          include: {
-            servicio: true,
-          },
-        },
-      },
       orderBy: {
         numero: "asc",
       },
@@ -87,11 +80,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       where: await buildTenantWhere({ activo: true }),
       include: {
         inquilino: true,
-        apartamento: {
-          include: {
-            ApartamentoServicios: true,
-          },
-        },
+        apartamento: true,
       },
       orderBy: {
         fechaFin: "asc",
@@ -105,15 +94,43 @@ export async function getDashboardData(): Promise<DashboardData> {
         },
       }),
       include: {
-        contrato: true,
+        contrato: {
+          include: {
+            apartamento: true,
+          },
+        },
+      },
+    }),
+    prisma.gastoApartamento.findMany({
+      where: await buildTenantWhere({
+        fecha: {
+          gte: start,
+          lte: end,
+        },
+      }),
+      include: {
+        apartamento: true,
       },
     }),
   ]);
 
   const recibosPorContrato = new Map<string, number>();
+  const ingresosPorApartamento = new Map<string, number>();
   for (const recibo of recibosMes) {
-    const totalActual = recibosPorContrato.get(recibo.contratoId) ?? 0;
-    recibosPorContrato.set(recibo.contratoId, totalActual + toNumber(recibo.total));
+    const totalRecibo = toNumber(recibo.total);
+    recibosPorContrato.set(recibo.contratoId, (recibosPorContrato.get(recibo.contratoId) ?? 0) + totalRecibo);
+    ingresosPorApartamento.set(
+      recibo.contrato.apartamentoId,
+      (ingresosPorApartamento.get(recibo.contrato.apartamentoId) ?? 0) + totalRecibo
+    );
+  }
+
+  const gastosPorApartamento = new Map<string, number>();
+  for (const gasto of gastosMes) {
+    gastosPorApartamento.set(
+      gasto.apartamentoId,
+      (gastosPorApartamento.get(gasto.apartamentoId) ?? 0) + toNumber(gasto.monto)
+    );
   }
 
   const apartamentosOcupadosIds = new Set(contratosActivos.map((contrato) => contrato.apartamentoId));
@@ -131,25 +148,27 @@ export async function getDashboardData(): Promise<DashboardData> {
       detalle: `Finaliza el ${contrato.fechaFin!.toLocaleDateString("es-HN")}`,
     }));
 
-  const rentabilidadPorApartamento = contratosActivos
-    .map((contrato) => {
-      const gastoEstimado = contrato.apartamento.ApartamentoServicios.reduce(
-        (total, servicio) => total + toNumber(servicio.costoAdicional),
-        0
-      );
-      const ingresoMensual = toNumber(contrato.montoMensual);
+  const contratoPorApartamento = new Map(
+    contratosActivos.map((contrato) => [contrato.apartamentoId, contrato])
+  );
+
+  const rentabilidadPorApartamento = apartamentos
+    .map((apartamento) => {
+      const contrato = contratoPorApartamento.get(apartamento.id);
+      const ingresoMensual = ingresosPorApartamento.get(apartamento.id) ?? 0;
+      const gastoEstimado = gastosPorApartamento.get(apartamento.id) ?? 0;
       const rentabilidad = ingresoMensual - gastoEstimado;
-      const margen = ingresoMensual > 0 ? (rentabilidad / ingresoMensual) * 100 : 0;
+      const margen = ingresoMensual > 0 ? (rentabilidad / ingresoMensual) * 100 : gastoEstimado > 0 ? -100 : 0;
 
       return {
-        apartamentoId: contrato.apartamento.id,
-        apartamento: contrato.apartamento.numero,
-        inquilino: contrato.inquilino.nombreCompleto,
+        apartamentoId: apartamento.id,
+        apartamento: apartamento.numero,
+        inquilino: contrato?.inquilino.nombreCompleto ?? "Sin contrato activo",
         ingresoMensual,
         gastoEstimado,
         rentabilidad,
         margen,
-        disponible: contrato.apartamento.disponible,
+        disponible: apartamento.disponible,
       };
     })
     .sort((a, b) => b.rentabilidad - a.rentabilidad);
@@ -176,7 +195,7 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   const montoCobradoMes = recibosMes.reduce((total, recibo) => total + toNumber(recibo.total), 0);
   const montoPendienteMes = inquilinosConAtraso.reduce((total, contrato) => total + (contrato.monto ?? 0), 0);
-  const gastosMes = rentabilidadPorApartamento.reduce((total, item) => total + item.gastoEstimado, 0);
+  const totalGastosMes = gastosMes.reduce((total, gasto) => total + toNumber(gasto.monto), 0);
 
   return {
     resumen: {
@@ -201,19 +220,19 @@ export async function getDashboardData(): Promise<DashboardData> {
         subtitle: "Con saldo pendiente este mes",
       },
       montoCobradoMes: {
-        title: "Monto cobrado este mes",
+        title: "Cobrado del mes",
         value: montoCobradoMes,
-        subtitle: "Pagos registrados en el mes corriente",
+        subtitle: "Dinero cobrado en recibos del mes actual",
       },
       montoPendienteMes: {
-        title: "Monto pendiente por cobrar",
+        title: "Aún por cobrar este mes",
         value: montoPendienteMes,
-        subtitle: "Saldo pendiente sobre renta mensual activa",
+        subtitle: "Lo que todavía falta cobrar en contratos activos",
       },
       gastosMes: {
-        title: "Gastos del mes",
-        value: gastosMes,
-        subtitle: "Estimado según costos adicionales configurados",
+        title: "Gastos operativos del mes",
+        value: totalGastosMes,
+        subtitle: "Egresos reales cargados por propiedad en este mes",
       },
       fueraServicio: {
         title: "Apartamentos fuera de servicio",
@@ -240,7 +259,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     metadata: {
       fechaCorte: now.toISOString(),
       mesActual: now.toLocaleDateString("es-HN", { month: "long", year: "numeric" }),
-      gastosEstimados: true,
+      gastosEstimados: false,
     },
   };
 }
