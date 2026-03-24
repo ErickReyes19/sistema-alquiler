@@ -1,3 +1,5 @@
+export const PLATFORM_TENANT_SLUG = "platform-root"
+
 export const ROOT_PERMISSION_NAMES = [
   'ver_tenants',
   'crear_tenant',
@@ -42,7 +44,3 @@ export const TENANT_PERMISSION_NAMES = [
   'crear_mantenimiento',
   'editar_mantenimiento',
 ] as const
-
-export const SYSTEM_HIDDEN_PERMISSION_NAMES = new Set<string>([
-  ...ROOT_PERMISSION_NAMES,
-])

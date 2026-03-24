@@ -35,22 +35,22 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
     new Intl.NumberFormat("es-HN", { style: "currency", currency: "HNL" }).format(amt)
 
   return (
-    <div className="mx-auto max-w-4xl bg-white p-8 text-slate-900">
-      <header className="mb-8 rounded-xl border border-slate-200 bg-slate-50 p-6">
+    <div className="mx-auto max-w-4xl bg-white px-6 py-5 text-slate-900">
+      <header className="mb-5 rounded-xl bg-slate-50/80 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Documento legal</p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight">Contrato de arrendamiento</h1>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight">Contrato de arrendamiento</h1>
             <p className="mt-1 text-sm text-slate-600">Código de contrato: #{contrato.id}</p>
           </div>
-          <div className="rounded-lg border px-4 py-2 text-sm font-semibold">
+          <div className="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold tracking-wide">
             {contrato.activo ? "ACTIVO" : "INACTIVO"}
           </div>
         </div>
       </header>
 
-      <section className="mb-8 grid grid-cols-2 gap-8">
-        <div className="rounded-lg border p-4">
+      <section className="mb-5 grid grid-cols-2 gap-4">
+        <div className="rounded-lg bg-slate-50/70 px-3 py-2.5">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Parte arrendataria</h2>
           <p className="mb-1 text-sm">
             <span className="font-semibold">Nombre:</span> {contrato.inquilino}
@@ -59,7 +59,7 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
             <span className="font-semibold">Identidad:</span> {contrato.inquiliniIdentidad}
           </p>
         </div>
-        <div className="rounded-lg border p-4">
+        <div className="rounded-lg bg-slate-50/70 px-3 py-2.5">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Inmueble arrendado</h2>
           <p className="mb-1 text-sm">
             <span className="font-semibold">Apartamento:</span> {contrato.apartamento.numero}
@@ -72,60 +72,60 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
         </div>
       </section>
 
-      <section className="mb-8 rounded-lg border p-4">
+      <section className="mb-5 rounded-lg bg-slate-50/60 px-4 py-3">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Términos económicos y vigencia</h2>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="rounded-md border border-slate-200 p-3">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-md bg-white px-3 py-2">
             <p className="text-xs uppercase tracking-wide text-slate-500">Fecha de inicio</p>
             <p className="mt-1 text-lg font-semibold">{formatDate(contrato.fechaInicio)}</p>
           </div>
-          <div className="rounded-md border border-slate-200 p-3">
+          <div className="rounded-md bg-white px-3 py-2">
             <p className="text-xs uppercase tracking-wide text-slate-500">Fecha de fin</p>
             <p className="mt-1 text-lg font-semibold">{formatDate(contrato.fechaFin)}</p>
           </div>
-          <div className="rounded-md border border-slate-200 p-3">
+          <div className="rounded-md bg-white px-3 py-2">
             <p className="text-xs uppercase tracking-wide text-slate-500">Renta mensual</p>
             <p className="mt-1 text-lg font-bold">{formatCurrency(contrato.montoMensual)}</p>
           </div>
         </div>
       </section>
 
-      <section className="mb-8">
+      <section className="mb-5">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Habitaciones incluidas</h2>
-        <table className="w-full border-collapse overflow-hidden rounded-lg border">
+        <table className="w-full border-separate border-spacing-0 overflow-hidden rounded-lg">
           <thead>
-            <tr className="bg-slate-100">
-              <th className="border p-2 text-left text-sm">Tipo de habitación</th>
-              <th className="border p-2 text-center text-sm">Cantidad</th>
+            <tr className="bg-slate-100/70">
+              <th className="px-2 py-2 text-left text-sm">Tipo de habitación</th>
+              <th className="px-2 py-2 text-center text-sm">Cantidad</th>
             </tr>
           </thead>
           <tbody>
             {contrato.apartamento.habitaciones.map((h, index) => (
-              <tr key={index}>
-                <td className="border p-2 text-sm">{h.tipoHabitacionNombre}</td>
-                <td className="border p-2 text-center text-sm">{h.cantidad}</td>
+              <tr key={index} className="even:bg-slate-50/40">
+                <td className="px-2 py-1.5 text-sm">{h.tipoHabitacionNombre}</td>
+                <td className="px-2 py-2 text-center text-sm">{h.cantidad}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      <section className="mb-10">
+      <section className="mb-6">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Servicios del apartamento</h2>
-        <table className="w-full border-collapse overflow-hidden rounded-lg border">
+        <table className="w-full border-separate border-spacing-0 overflow-hidden rounded-lg">
           <thead>
-            <tr className="bg-slate-100">
-              <th className="border p-2 text-left text-sm">Servicio</th>
-              <th className="border p-2 text-center text-sm">Incluido</th>
-              <th className="border p-2 text-right text-sm">Costo adicional</th>
+            <tr className="bg-slate-100/70">
+              <th className="px-2 py-2 text-left text-sm">Servicio</th>
+              <th className="px-2 py-2 text-center text-sm">Incluido</th>
+              <th className="px-2 py-2 text-right text-sm">Costo adicional</th>
             </tr>
           </thead>
           <tbody>
             {contrato.apartamento.servicios.map((s, index) => (
-              <tr key={index}>
-                <td className="border p-2 text-sm">{s.servicioNombre}</td>
-                <td className="border p-2 text-center text-sm">{s.incluido ? "Sí" : "No"}</td>
-                <td className="border p-2 text-right text-sm">
+              <tr key={index} className="even:bg-slate-50/40">
+                <td className="px-2 py-1.5 text-sm">{s.servicioNombre}</td>
+                <td className="px-2 py-2 text-center text-sm">{s.incluido ? "Sí" : "No"}</td>
+                <td className="px-2 py-2 text-right text-sm">
                   {s.costoAdicional > 0 ? formatCurrency(s.costoAdicional) : "Sin costo"}
                 </td>
               </tr>
@@ -147,7 +147,7 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
             </div>
           </div>
         </div>
-        <div className="mt-8 border-t pt-4 text-center text-sm text-slate-600">
+        <div className="mt-6 border-t border-slate-200 pt-3 text-center text-xs text-slate-600">
           Documento generado el: {fechayhora}
         </div>
       </section>

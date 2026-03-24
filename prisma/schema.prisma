@@ -40,7 +40,6 @@ model Tenant {
   pagosRecibo           PagoRecibo[]
   promesasPago          PromesaPago[]
   recordatoriosCobranza RecordatorioCobranza[]
-  permisos              Permiso[]
   rolPermisos           RolPermiso[]
   usuarios              Usuario[]
   gastosApartamento     GastoApartamento[]
@@ -658,18 +657,13 @@ model MantenimientoIncidencia {
 
 model Permiso {
   id               String       @id @default(uuid())
-  tenantId         String
-  nombre           String
+  nombre           String       @unique
   descripcion      String
   createAt         DateTime     @default(now())
   updateAt         DateTime     @updatedAt
   activo           Boolean
   esPermisoSistema Boolean      @default(false)
-  tenant           Tenant       @relation(fields: [tenantId], references: [id])
   roles            RolPermiso[]
-
-  @@unique([tenantId, nombre])
-  @@index([tenantId])
 }
 
 model RolPermiso {

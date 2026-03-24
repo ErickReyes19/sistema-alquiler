@@ -22,7 +22,6 @@ const mapPermisoToDto = (permiso: {
 async function findActivePermisos(): Promise<PermisoDTO[]> {
   const session = await requireTenantSession();
   const where: Prisma.PermisoWhereInput = {
-    tenantId: session.tenantId,
     activo: true,
   };
 
