@@ -4,7 +4,6 @@ import NoAcceso from "@/components/noAccess";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import {
   AlertTriangle,
   ArrowDownRight,
@@ -54,7 +53,7 @@ function SummaryCard({
   icon: React.ComponentType<{ className?: string }>;
 }) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
         <div className="space-y-1">
           <CardDescription>{metric.title}</CardDescription>
@@ -180,6 +179,15 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
   );
 }
 
+function SectionHeader({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="space-y-1">
+      <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </div>
+  );
+}
+
 export default async function DashboardPage() {
   const session = await getSession();
   const permisos = await getSessionPermisos();
@@ -195,130 +203,145 @@ export default async function DashboardPage() {
   const dashboard = await getDashboardData();
 
   return (
-    <div className="container mx-auto space-y-6 py-4">
+    <div className="container mx-auto space-y-8 py-4">
       <HeaderComponent
         Icon={LayoutDashboard}
         screenName="Dashboard gerencial"
-        description="Vista ejecutiva para entender ocupación, cobranza, alertas y rentabilidad del negocio en un solo lugar."
+        description="Vista ejecutiva para entender ocupación, cobranza, alertas y rentabilidad en bloques claros de decisión."
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard metric={dashboard.resumen.apartamentosOcupados} icon={Building} />
-        <SummaryCard metric={dashboard.resumen.apartamentosVacios} icon={Building} />
-        <SummaryCard metric={dashboard.resumen.contratosPorIniciar} icon={CalendarClock} />
-        <SummaryCard metric={dashboard.resumen.contratosPorVencer} icon={CalendarClock} />
-        <SummaryCard metric={dashboard.resumen.inquilinosConAtraso} icon={AlertTriangle} />
-        <SummaryCard metric={dashboard.resumen.contratosAlDiaMes} icon={Receipt} />
-        <SummaryCard metric={dashboard.resumen.montoCobradoMes} icon={Receipt} />
-        <SummaryCard metric={dashboard.resumen.montoPendienteMes} icon={Wallet} />
-        <SummaryCard metric={dashboard.resumen.gastosMes} icon={Coins} />
-        <SummaryCard metric={dashboard.resumen.fueraServicio} icon={Wrench} />
-      </div>
-
-      <Card>
+      <Card className="border-primary/20 bg-primary/5">
         <CardHeader>
-          <CardTitle className="text-lg">Cómo leer este dashboard</CardTitle>
-          <CardDescription>Resumen pensado para un dueño, no para un área técnica.</CardDescription>
+          <CardTitle className="text-lg">Resumen rápido del mes</CardTitle>
+          <CardDescription>
+            Corte de {dashboard.metadata.mesActual}. Primero revisá riesgos, luego caja y finalmente rendimiento por unidad.
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-4">
-          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Cobrado del mes</p><p className="mt-1 text-muted-foreground">Lo que ya entró en caja por recibos del período.</p></div>
-          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Aún por cobrar</p><p className="mt-1 text-muted-foreground">Lo que sigue pendiente en contratos activos.</p></div>
-          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Gastos operativos</p><p className="mt-1 text-muted-foreground">Mantenimiento, reparaciones, impuestos y demás egresos reales.</p></div>
-          <div className="rounded-lg border p-4 text-sm"><p className="font-medium">Rentabilidad</p><p className="mt-1 text-muted-foreground">Ingreso menos gasto por apartamento para detectar cuáles dejan utilidad y cuáles consumen dinero.</p></div>
+        <CardContent className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-lg border bg-background p-4">
+            <p className="text-sm text-muted-foreground">Pendiente por cobrar</p>
+            <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.montoPendienteMes.value)}</p>
+          </div>
+          <div className="rounded-lg border bg-background p-4">
+            <p className="text-sm text-muted-foreground">Cobrado en el mes</p>
+            <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.montoCobradoMes.value)}</p>
+          </div>
+          <div className="rounded-lg border bg-background p-4">
+            <p className="text-sm text-muted-foreground">Gastos operativos</p>
+            <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.gastosMes.value)}</p>
+          </div>
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Ocupación general</CardTitle>
-            <CardDescription>
-              {dashboard.ocupacion.ocupados} de {dashboard.ocupacion.total} apartamentos activos tienen contrato vigente.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
-                <span>Porcentaje de ocupación</span>
-                <span>{dashboard.ocupacion.porcentaje.toFixed(1)}%</span>
-              </div>
-              <Progress value={dashboard.ocupacion.porcentaje} />
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="text-xl font-semibold">{dashboard.ocupacion.total}</p>
-              </div>
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Ocupados</p>
-                <p className="text-xl font-semibold">{dashboard.ocupacion.ocupados}</p>
-              </div>
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Vacíos</p>
-                <p className="text-xl font-semibold">{dashboard.ocupacion.vacios}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Lectura financiera del mes</CardTitle>
-            <CardDescription>Corte correspondiente a {dashboard.metadata.mesActual}.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg border p-4">
-              <p className="text-sm text-muted-foreground">Cobrado</p>
-              <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.montoCobradoMes.value)}</p>
-            </div>
-            <div className="rounded-lg border p-4">
-              <p className="text-sm text-muted-foreground">Pendiente</p>
-              <p className="text-2xl font-semibold">{currencyFormatter.format(dashboard.resumen.montoPendienteMes.value)}</p>
-            </div>
-            <Separator />
-            <p className="text-sm text-muted-foreground">
-              {dashboard.metadata.gastosEstimados
-                ? "Los gastos del mes se estiman con base en los costos adicionales configurados en servicios por apartamento."
-                : "Los gastos del mes corresponden a registros operativos reales del módulo de egresos por propiedad."}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <RentabilidadTable items={dashboard.rentabilidadPorApartamento} />
-
-      <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-5">
-        <AlertList
-          title="Estado de pago del mes"
-          description="Te muestra si el pago del mes actual ya está completo o sigue pendiente."
-          items={dashboard.alertas.estadoPagoMesActual}
-          emptyMessage="No hay contratos vigentes para revisar el pago del mes actual."
+      <section className="space-y-4">
+        <SectionHeader
+          title="1) Salud operativa"
+          description="Esta sección responde: ¿qué tan estable está la operación de apartamentos hoy?"
         />
-        <AlertList
-          title="Contratos por iniciar"
-          description="Reservas confirmadas que todavía no deben generar cobro ni morosidad."
-          items={dashboard.alertas.contratosPorIniciar}
-          emptyMessage="No hay contratos pendientes de iniciar."
+
+        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Ocupación general</CardTitle>
+              <CardDescription>
+                {dashboard.ocupacion.ocupados} de {dashboard.ocupacion.total} apartamentos activos tienen contrato vigente.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
+                  <span>Porcentaje de ocupación</span>
+                  <span>{dashboard.ocupacion.porcentaje.toFixed(1)}%</span>
+                </div>
+                <Progress value={dashboard.ocupacion.porcentaje} />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg border p-4">
+                  <p className="text-sm text-muted-foreground">Total</p>
+                  <p className="text-xl font-semibold">{dashboard.ocupacion.total}</p>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <p className="text-sm text-muted-foreground">Ocupados</p>
+                  <p className="text-xl font-semibold">{dashboard.ocupacion.ocupados}</p>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <p className="text-sm text-muted-foreground">Vacíos</p>
+                  <p className="text-xl font-semibold">{dashboard.ocupacion.vacios}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <SummaryCard metric={dashboard.resumen.apartamentosOcupados} icon={Building} />
+            <SummaryCard metric={dashboard.resumen.apartamentosVacios} icon={Building} />
+            <SummaryCard metric={dashboard.resumen.fueraServicio} icon={Wrench} />
+            <SummaryCard metric={dashboard.resumen.contratosPorVencer} icon={CalendarClock} />
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <SectionHeader
+          title="2) Cobranza y caja"
+          description="Indicadores para controlar entrada de dinero y focos de mora del período actual."
         />
+
+        <div className="grid gap-4 xl:grid-cols-4">
+          <SummaryCard metric={dashboard.resumen.montoCobradoMes} icon={Receipt} />
+          <SummaryCard metric={dashboard.resumen.montoPendienteMes} icon={Wallet} />
+          <SummaryCard metric={dashboard.resumen.inquilinosConAtraso} icon={AlertTriangle} />
+          <SummaryCard metric={dashboard.resumen.contratosAlDiaMes} icon={Receipt} />
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          <AlertList
+            title="Estado de pago del mes"
+            description="Confirma quién completó el pago del mes y quién sigue pendiente."
+            items={dashboard.alertas.estadoPagoMesActual}
+            emptyMessage="No hay contratos vigentes para revisar el pago del mes actual."
+          />
+          <AlertList
+            title="Atrasos de cobranza"
+            description="Inquilinos con saldo pendiente dentro del mes actual."
+            items={dashboard.alertas.inquilinosConAtraso}
+            emptyMessage="No hay atrasos de cobranza en contratos activos."
+          />
+          <AlertList
+            title="Contratos por iniciar"
+            description="Reservas confirmadas que todavía no deben generar cobro ni morosidad."
+            items={dashboard.alertas.contratosPorIniciar}
+            emptyMessage="No hay contratos pendientes de iniciar."
+          />
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <SectionHeader
+          title="3) Rentabilidad y seguimiento"
+          description="Compará ingreso vs gasto por apartamento y detectá unidades que requieren ajustes."
+        />
+
+        <div className="grid gap-4 xl:grid-cols-3">
+          <SummaryCard metric={dashboard.resumen.gastosMes} icon={Coins} />
+          <SummaryCard metric={dashboard.resumen.contratosPorIniciar} icon={CalendarClock} />
+          <AlertList
+            title="Apartamentos fuera de servicio"
+            description="Unidades bloqueadas por mantenimiento o incidencias abiertas."
+            items={dashboard.alertas.apartamentosFueraServicio}
+            emptyMessage="No hay apartamentos fuera de servicio por mantenimiento o incidencias activas."
+          />
+        </div>
+
+        <RentabilidadTable items={dashboard.rentabilidadPorApartamento} />
+
         <AlertList
           title="Contratos por vencer"
-          description="Casos que conviene renegociar con anticipación."
+          description="Casos que conviene renegociar con anticipación para evitar vacancia."
           items={dashboard.alertas.contratosPorVencer}
           emptyMessage="No hay contratos por vencer en los próximos 30 días."
         />
-        <AlertList
-          title="Atrasos de cobranza"
-          description="Inquilinos con saldo pendiente dentro del mes actual."
-          items={dashboard.alertas.inquilinosConAtraso}
-          emptyMessage="No hay atrasos de cobranza en contratos activos."
-        />
-        <AlertList
-          title="Apartamentos fuera de servicio"
-          description="Solo se muestran unidades bloqueadas por mantenimiento o incidencias abiertas."
-          items={dashboard.alertas.apartamentosFueraServicio}
-          emptyMessage="No hay apartamentos fuera de servicio por mantenimiento o incidencias activas."
-        />
-      </div>
+      </section>
     </div>
   );
 }
