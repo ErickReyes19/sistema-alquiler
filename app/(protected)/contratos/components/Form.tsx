@@ -91,6 +91,8 @@ export function Formulario({
         activo: true,
       };
 
+  const maxCalendarDate = new Date(new Date().getFullYear() + 10, 11, 31);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(ContratoSchema),
     defaultValues,
@@ -220,7 +222,9 @@ export function Formulario({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date < new Date("1900-01-01")}
+                      startMonth={new Date("1900-01-01")}
+                      endMonth={maxCalendarDate}
+                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
                     />
                   </PopoverContent>
                 </Popover>
@@ -250,7 +254,9 @@ export function Formulario({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date < new Date("1900-01-01")}
+                      startMonth={new Date("1900-01-01")}
+                      endMonth={maxCalendarDate}
+                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
                     />
                   </PopoverContent>
                 </Popover>
@@ -330,7 +336,9 @@ export function Formulario({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date < new Date("1900-01-01")}
+                      startMonth={new Date("1900-01-01")}
+                      endMonth={maxCalendarDate}
+                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
                     />
                   </PopoverContent>
                 </Popover>
