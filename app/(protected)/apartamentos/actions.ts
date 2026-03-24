@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { buildTenantWhere, getTenantIdFromSession } from '@/lib/tenant-session'
+import { normalizeUploadedAssets } from '@/lib/uploaded-asset'
 
 import {
   Apartamento,
@@ -46,7 +47,7 @@ const mapApartamentoServicio = (servicio: {
   id: string
   apartamentoId: string
   servicioId: string
-  clave: string | null
+  clave?: string | null
   incluido: boolean
   costoAdicional: { toString(): string } | number
 }): ApartamentoServicio => ({
@@ -58,18 +59,14 @@ const mapApartamentoServicio = (servicio: {
   costoAdicional: Number(servicio.costoAdicional),
 })
 
-const mapApartamentoCompleto = (apartamento: {
-  id: string
-  numero: string
-  direccion: string | null
-  disponible: boolean
-  activo: boolean
-  apartamento: Array<Parameters<typeof mapHabitacion>[0]>
-  ApartamentoServicios: Array<Parameters<typeof mapApartamentoServicio>[0]>
-}): Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] } => ({
+const mapApartamentoCompleto = (apartamento: any): Apartamento & {
+  habitaciones: Habitacion[]
+  servicios: ApartamentoServicio[]
+} => ({
   id: apartamento.id,
   numero: apartamento.numero,
   direccion: apartamento.direccion ?? undefined,
+  imagenes: normalizeUploadedAssets(apartamento.imagenes),
   disponible: apartamento.disponible,
   activo: apartamento.activo,
   habitaciones: apartamento.apartamento.map(mapHabitacion),
@@ -79,6 +76,7 @@ const mapApartamentoCompleto = (apartamento: {
 const buildApartamentoData = (apartamento: Apartamento) => ({
   numero: apartamento.numero,
   direccion: apartamento.direccion ?? undefined,
+  imagenes: apartamento.imagenes?.length ? apartamento.imagenes : undefined,
   disponible: apartamento.disponible ?? true,
   activo: apartamento.activo ?? true,
 })
@@ -283,6 +281,9 @@ export async function getApartamentoCompletoConId(
       id: apartamento.id,
       numero: apartamento.numero,
       direccion: apartamento.direccion ?? undefined,
+      imagenes: normalizeUploadedAssets(
+        (apartamento as { imagenes?: unknown }).imagenes,
+      ),
       disponible: apartamento.disponible,
       activo: apartamento.activo,
       habitaciones: apartamento.apartamento.map((habitacion) => ({
@@ -296,7 +297,7 @@ export async function getApartamentoCompletoConId(
         id: servicio.id,
         servicioId: servicio.servicioId,
         servicioNombre: servicio.servicio.nombre,
-        clave: servicio.clave,
+        clave: (servicio as { clave?: string | null }).clave ?? null,
         incluido: servicio.incluido,
         costoAdicional: Number(servicio.costoAdicional),
       })),

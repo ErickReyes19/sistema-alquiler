@@ -1,6 +1,17 @@
 // schema.ts
 import * as z from 'zod';
 
+const UploadedAssetSchema = z.object({
+  url: z.string().url(),
+  publicId: z.string().min(1),
+  bytes: z.number().optional(),
+  format: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+  resourceType: z.string().optional(),
+  originalFilename: z.string().optional(),
+});
+
 //
 // 1) Habitaciones
 //
@@ -41,6 +52,7 @@ export const ApartamentoSchema = z.object({
   id: z.string().uuid().optional(),
   numero: z.string().min(1, { message: "El número de apartamento es requerido" }),
   direccion: z.string().optional(),
+  imagenes: z.array(UploadedAssetSchema).optional(),
   disponible: z.boolean().optional(),
   activo: z.boolean().optional(),     
   habitaciones: z

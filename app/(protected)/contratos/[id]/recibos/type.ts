@@ -1,3 +1,5 @@
+import { UploadedAsset } from '@/lib/uploaded-asset';
+
 export type EstadoRecibo = "PENDIENTE" | "PAGADO" | "VENCIDO" | "PARCIALMENTE_PAGADO";
 
 export type PagoParcial = {
@@ -35,6 +37,7 @@ export type Recibo = {
   saldoPendiente: number;
   estado: EstadoRecibo;
   observacionesCobranza?: string | null;
+  evidencias?: UploadedAsset[];
 };
 
 export type ReciboCreate = Omit<Recibo, "id" | "saldoPendiente" | "estado" | "fechaPago" | "fechaVencimiento"> & {
@@ -65,6 +68,7 @@ export interface ReciboView {
   saldoPendiente: number;
   estado: EstadoRecibo;
   observacionesCobranza?: string | null;
+  evidencias?: UploadedAsset[];
   montoPagado: number;
   detalles: {
     reciboId: string;

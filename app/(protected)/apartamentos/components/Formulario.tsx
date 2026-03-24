@@ -30,6 +30,7 @@ import { Servicio } from '../../servicios/type';
 import { TipoHabitacion } from '../../tipo-habitacion/type';
 import { postApartamentoCompleto, putApartamentoCompleto } from '../actions';
 import { ApartamentoSchema } from '../schema';
+import type { UploadedAsset } from '@/lib/uploaded-asset';
 
 type ApartamentoFormValues = z.infer<typeof ApartamentoSchema>;
 
@@ -43,6 +44,7 @@ interface Props {
 const defaultValues: ApartamentoFormValues = {
   numero: '',
   direccion: '',
+  imagenes: [],
   disponible: true,
   activo: true,
   habitaciones: [],
@@ -59,6 +61,7 @@ const normalizeInitialData = (
   activo: initialData?.activo ?? true,
   habitaciones: initialData?.habitaciones ?? [],
   servicios: initialData?.servicios ?? [],
+  imagenes: initialData?.imagenes ?? [],
 });
 
 export default function ApartamentoForm({
@@ -76,6 +79,29 @@ export default function ApartamentoForm({
   });
 
   const { control, handleSubmit, reset } = form;
+  const imagenes = form.watch('imagenes') ?? [];
+
+  const uploadImages = async (files: File[]) => {
+    const body = new FormData();
+    files.forEach((file) => body.append('files', file));
+    body.append('purpose', 'apartamentos');
+
+    const response = await fetch('/api/uploads/cloudinary', {
+      method: 'POST',
+      body,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.error ?? 'No se pudieron subir las imágenes.');
+    }
+
+    const assets = (data.assets ?? []) as UploadedAsset[];
+    form.setValue('imagenes', [...imagenes, ...assets], {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
 
   const { fields: habFields, append: appendHab, remove: removeHab } = useFieldArray({
     control,
@@ -157,6 +183,63 @@ export default function ApartamentoForm({
                 </FormItem>
               )}
             />
+            <FormItem className="md:col-span-2">
+              <FormLabel>Imágenes del apartamento</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={async (event) => {
+                    const selected = Array.from(event.target.files ?? []);
+                    if (!selected.length) return;
+                    try {
+                      await uploadImages(selected);
+                    } catch (error) {
+                      toast({
+                        title: 'Error subiendo imágenes',
+                        description:
+                          error instanceof Error
+                            ? error.message
+                            : 'No se pudieron subir las imágenes.',
+                        variant: 'destructive',
+                      });
+                    } finally {
+                      event.target.value = '';
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            {imagenes.length > 0 && (
+              <div className="md:col-span-2 grid grid-cols-2 gap-4 md:grid-cols-4">
+                {imagenes.map((imagen, index) => (
+                  <div key={`${imagen.publicId}-${index}`} className="space-y-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imagen.url}
+                      alt={`Apartamento ${index + 1}`}
+                      className="h-24 w-full rounded-md object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() =>
+                        form.setValue(
+                          'imagenes',
+                          imagenes.filter((_, imageIndex) => imageIndex !== index),
+                          { shouldDirty: true, shouldValidate: true },
+                        )
+                      }
+                    >
+                      Quitar
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
             <FormField
               control={control}
               name="disponible"
