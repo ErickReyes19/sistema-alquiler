@@ -33,7 +33,7 @@ export function FormularioServicio({
 
   const form = useForm<z.infer<typeof ServiciosSchema>>({
     resolver: zodResolver(ServiciosSchema),
-    defaultValues: initialData || { nombre: "", clave: "", activo: false },
+    defaultValues: initialData || { nombre: "", activo: false },
   });
 
   async function onSubmit(data: z.infer<typeof ServiciosSchema>) {
@@ -107,24 +107,6 @@ export function FormularioServicio({
               <FormLabel>Nombre del servicio</FormLabel>
               <FormControl>
                 <Input placeholder="Ingresa el nombre del servicio" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="clave"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Clave (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ej. usuario/contraseña o PIN del servicio"
-                  value={field.value ?? ""}
-                  onChange={(event) => field.onChange(event.target.value)}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

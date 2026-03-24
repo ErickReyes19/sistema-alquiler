@@ -20,6 +20,7 @@ export type ApartamentoServicio = {
   id?: string;
   apartamentoId?: string;
   servicioId: string;
+  clave?: string | null;
   incluido?: boolean;
   costoAdicional?: number;
 };
@@ -41,6 +42,7 @@ export type ApartamentoView = {
     id: string;
     servicioId: string;
     servicioNombre: string;
+    clave?: string | null;
     incluido: boolean;
     costoAdicional: number;
   }[];

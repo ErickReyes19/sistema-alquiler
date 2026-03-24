@@ -9,10 +9,8 @@ import { resetTenantPassword } from "../actions"
 
 export function ResetTenantPasswordButton({
   tenantId,
-  tenantNombre,
 }: {
   tenantId: string
-  tenantNombre: string
 }) {
   const { toast } = useToast()
   const [isPending, startTransition] = useTransition()
@@ -28,8 +26,18 @@ export function ResetTenantPasswordButton({
           try {
             const result = await resetTenantPassword(tenantId)
             toast({
-              title: `Contraseña restablecida en ${tenantNombre}`,
-              description: `Usuario: ${result.username} | Temporal: ${result.passwordTemporal}`,
+              title: "Contraseña restablecida",
+              description: (
+                <div className="space-y-1 text-sm">
+                  <p>Credenciales temporales (copiar):</p>
+                  <p>
+                    Usuario: <span className="font-mono">{result.username}</span>
+                  </p>
+                  <p>
+                    Clave: <span className="font-mono">{result.passwordTemporal}</span>
+                  </p>
+                </div>
+              ),
             })
           } catch (error) {
             toast({
