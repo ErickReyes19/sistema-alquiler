@@ -208,6 +208,7 @@ export default async function DashboardPage() {
         <SummaryCard metric={dashboard.resumen.contratosPorIniciar} icon={CalendarClock} />
         <SummaryCard metric={dashboard.resumen.contratosPorVencer} icon={CalendarClock} />
         <SummaryCard metric={dashboard.resumen.inquilinosConAtraso} icon={AlertTriangle} />
+        <SummaryCard metric={dashboard.resumen.contratosAlDiaMes} icon={Receipt} />
         <SummaryCard metric={dashboard.resumen.montoCobradoMes} icon={Receipt} />
         <SummaryCard metric={dashboard.resumen.montoPendienteMes} icon={Wallet} />
         <SummaryCard metric={dashboard.resumen.gastosMes} icon={Coins} />
@@ -286,7 +287,13 @@ export default async function DashboardPage() {
 
       <RentabilidadTable items={dashboard.rentabilidadPorApartamento} />
 
-      <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-5">
+        <AlertList
+          title="Estado de pago del mes"
+          description="Te muestra si el pago del mes actual ya está completo o sigue pendiente."
+          items={dashboard.alertas.estadoPagoMesActual}
+          emptyMessage="No hay contratos vigentes para revisar el pago del mes actual."
+        />
         <AlertList
           title="Contratos por iniciar"
           description="Reservas confirmadas que todavía no deben generar cobro ni morosidad."

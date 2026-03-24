@@ -42,6 +42,7 @@ export type DashboardData = {
     contratosPorIniciar: DashboardMetricCard;
     contratosPorVencer: DashboardMetricCard;
     inquilinosConAtraso: DashboardMetricCard;
+    contratosAlDiaMes: DashboardMetricCard;
     montoCobradoMes: DashboardMetricCard;
     montoPendienteMes: DashboardMetricCard;
     gastosMes: DashboardMetricCard;
@@ -58,6 +59,7 @@ export type DashboardData = {
     contratosPorIniciar: DashboardAlertItem[];
     contratosPorVencer: DashboardAlertItem[];
     inquilinosConAtraso: DashboardAlertItem[];
+    estadoPagoMesActual: DashboardAlertItem[];
     apartamentosFueraServicio: DashboardAlertItem[];
   };
   metadata: {
@@ -97,6 +99,7 @@ export async function getDashboardData(): Promise<DashboardData> {
         },
       }),
       include: {
+        pagosParciales: true,
         contrato: {
           include: {
             apartamento: true,
@@ -137,14 +140,14 @@ export async function getDashboardData(): Promise<DashboardData> {
   const contratosVigentes = contratosActivos.filter((contrato) => startOfDay(contrato.fechaInicio) <= today);
   const contratosPorIniciarRaw = contratosActivos.filter((contrato) => startOfDay(contrato.fechaInicio) > today);
 
-  const recibosPorContrato = new Map<string, number>();
+  const pagosPorContrato = new Map<string, number>();
   const ingresosPorApartamento = new Map<string, number>();
   for (const recibo of recibosMes) {
-    const totalRecibo = toNumber(recibo.total);
-    recibosPorContrato.set(recibo.contratoId, (recibosPorContrato.get(recibo.contratoId) ?? 0) + totalRecibo);
+    const totalPagadoRecibo = recibo.pagosParciales.reduce((sum, pago) => sum + toNumber(pago.monto), 0);
+    pagosPorContrato.set(recibo.contratoId, (pagosPorContrato.get(recibo.contratoId) ?? 0) + totalPagadoRecibo);
     ingresosPorApartamento.set(
       recibo.contrato.apartamentoId,
-      (ingresosPorApartamento.get(recibo.contrato.apartamentoId) ?? 0) + totalRecibo,
+      (ingresosPorApartamento.get(recibo.contrato.apartamentoId) ?? 0) + totalPagadoRecibo,
     );
   }
 
@@ -218,11 +221,11 @@ export async function getDashboardData(): Promise<DashboardData> {
     })
     .sort((a, b) => b.rentabilidad - a.rentabilidad);
 
-  const inquilinosConAtraso = contratosVigentes
+  const estadoPagoMesActual = contratosVigentes
     .map((contrato) => {
-      const cobradoContrato = recibosPorContrato.get(contrato.id) ?? 0;
+      const pagado = pagosPorContrato.get(contrato.id) ?? 0;
       const esperado = toNumber(contrato.montoMensual);
-      const pendiente = Math.max(esperado - cobradoContrato, 0);
+      const pendiente = Math.max(esperado - pagado, 0);
 
       return {
         id: contrato.id,
@@ -231,14 +234,33 @@ export async function getDashboardData(): Promise<DashboardData> {
         monto: pendiente,
         detalle:
           pendiente > 0
-            ? `Cobrado ${cobradoContrato.toLocaleString("es-HN", { style: "currency", currency: "HNL" })} de ${esperado.toLocaleString("es-HN", { style: "currency", currency: "HNL" })}`
-            : "Sin saldo pendiente",
+            ? `Pendiente ${pendiente.toLocaleString("es-HN", { style: "currency", currency: "HNL" })} del mes actual`
+            : "Pago del mes actual al día",
+      };
+    })
+    .sort((a, b) => (b.monto ?? 0) - (a.monto ?? 0));
+
+  const inquilinosConAtraso = contratosVigentes
+    .map((contrato) => {
+      const pagado = pagosPorContrato.get(contrato.id) ?? 0;
+      const esperado = toNumber(contrato.montoMensual);
+      const pendiente = Math.max(esperado - pagado, 0);
+
+      return {
+        id: contrato.id,
+        apartamento: contrato.apartamento.numero,
+        inquilino: contrato.inquilino.nombreCompleto,
+        monto: pendiente,
+        detalle: `Pagado ${pagado.toLocaleString("es-HN", { style: "currency", currency: "HNL" })} de ${esperado.toLocaleString("es-HN", { style: "currency", currency: "HNL" })}`,
       };
     })
     .filter((contrato) => (contrato.monto ?? 0) > 0)
     .sort((a, b) => (b.monto ?? 0) - (a.monto ?? 0));
 
-  const montoCobradoMes = recibosMes.reduce((total, recibo) => total + toNumber(recibo.total), 0);
+  const montoCobradoMes = recibosMes.reduce(
+    (total, recibo) => total + recibo.pagosParciales.reduce((sum, pago) => sum + toNumber(pago.monto), 0),
+    0,
+  );
   const montoPendienteMes = inquilinosConAtraso.reduce((total, contrato) => total + (contrato.monto ?? 0), 0);
   const totalGastosMes = gastosMes.reduce((total, gasto) => total + toNumber(gasto.monto), 0);
 
@@ -269,10 +291,15 @@ export async function getDashboardData(): Promise<DashboardData> {
         value: inquilinosConAtraso.length,
         subtitle: "Con saldo pendiente este mes",
       },
+      contratosAlDiaMes: {
+        title: "Contratos al día (mes)",
+        value: estadoPagoMesActual.filter((contrato) => (contrato.monto ?? 0) <= 0).length,
+        subtitle: "Pagos del mes actual ya cubiertos",
+      },
       montoCobradoMes: {
         title: "Cobrado del mes",
         value: montoCobradoMes,
-        subtitle: "Dinero cobrado en recibos del mes actual",
+        subtitle: "Pagos realmente registrados en el mes actual",
       },
       montoPendienteMes: {
         title: "Aún por cobrar este mes",
@@ -301,6 +328,7 @@ export async function getDashboardData(): Promise<DashboardData> {
       contratosPorIniciar,
       contratosPorVencer,
       inquilinosConAtraso,
+      estadoPagoMesActual,
       apartamentosFueraServicio: apartamentosFueraServicio.map((apartamento) => {
         const mantenimiento = mantenimientoPorApartamento.get(apartamento.id);
 
