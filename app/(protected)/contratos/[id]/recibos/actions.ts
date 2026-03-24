@@ -237,7 +237,7 @@ export async function postReciboConDetalles({
             monto: d.monto,
           })),
         },
-      },
+      } as any,
       include: {
         detalles: true,
         pagosParciales: true,
@@ -295,7 +295,7 @@ export async function putReciboConDetalles({
           estado: financials.estado,
           observacionesCobranza: recibo.observacionesCobranza?.trim() || null,
           evidencias: recibo.evidencias?.length ? recibo.evidencias : undefined,
-        },
+        } as any,
       }),
       prisma.reciboDetalles.deleteMany({
         where: {

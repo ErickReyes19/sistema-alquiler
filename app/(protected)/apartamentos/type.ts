@@ -32,6 +32,7 @@ export type ApartamentoView = {
   id: string;
   numero: string;
   direccion?: string;
+  imagenes?: UploadedAsset[];
   disponible: boolean;
   activo: boolean;
   habitaciones: {
