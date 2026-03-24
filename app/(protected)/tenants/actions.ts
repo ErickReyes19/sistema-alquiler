@@ -2,7 +2,10 @@
 
 import { randomUUID } from "crypto"
 
+import bcrypt from "bcryptjs"
+
 import { Prisma, TipoUsuario } from "@/lib/generated/prisma"
+import { generateTemporaryPassword } from "@/lib/default-user-password"
 import { prisma } from "@/lib/prisma"
 import { SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
 import { requireTenantSession } from "@/lib/tenant-session"
@@ -106,5 +109,43 @@ export async function createTenant(input: { nombre: string; slug: string }) {
     }
 
     throw error
+  }
+}
+
+export async function resetTenantPassword(tenantId: string) {
+  await requireRootSession()
+
+  const normalizedTenantId = tenantId.trim()
+  if (!normalizedTenantId) {
+    throw new Error("Tenant inválido.")
+  }
+
+  const tenantAdmin = await prisma.usuario.findFirst({
+    where: {
+      tenantId: normalizedTenantId,
+      tipoUsuario: TipoUsuario.TENANT_ADMIN,
+      activo: true,
+    },
+    orderBy: { createAt: "asc" },
+  })
+
+  if (!tenantAdmin) {
+    throw new Error("No hay usuarios activos para restablecer en este tenant.")
+  }
+
+  const passwordTemporal = generateTemporaryPassword()
+  const hashedPassword = await bcrypt.hash(passwordTemporal, 10)
+
+  await prisma.usuario.update({
+    where: { id: tenantAdmin.id },
+    data: {
+      password: hashedPassword,
+      DebeCambiar: true,
+    },
+  })
+
+  return {
+    username: tenantAdmin.nombre,
+    passwordTemporal,
   }
 }
