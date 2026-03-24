@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { ReciboSchema } from "../schema";
 import type { Recibo, ReciboDetalle } from "../type";
 import { postReciboConDetalles, putReciboConDetalles } from "../actions";
+import type { UploadedAsset } from "@/lib/uploaded-asset";
 
 interface FormularioReciboProps {
   isUpdate: boolean;
@@ -55,12 +56,16 @@ export default function FormularioRecibo({
       saldoPendiente: initialData?.saldoPendiente ?? 0,
       estado: initialData?.estado ?? "PENDIENTE",
       observacionesCobranza: initialData?.observacionesCobranza ?? "",
+      evidencias: initialData?.evidencias ?? [],
       detalles: initialData?.detalles ?? [],
     },
     mode: "onChange",
   });
 
   const { control, handleSubmit, setValue } = form;
+  const evidencias = form.watch("evidencias") ?? [];
+  const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
+  const [localEvidencePreviews, setLocalEvidencePreviews] = useState<string[]>([]);
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "detalles",
@@ -94,6 +99,28 @@ export default function FormularioRecibo({
     setValue("saldoPendiente", saldoPendiente, { shouldValidate: true, shouldDirty: true });
   }, [cargoMora, detalles, setValue]);
 
+  const uploadEvidencias = async (files: File[]) => {
+    const body = new FormData();
+    files.forEach((file) => body.append("files", file));
+    body.append("purpose", "recibos");
+
+    const response = await fetch("/api/uploads/cloudinary", {
+      method: "POST",
+      body,
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error ?? "No se pudieron subir las evidencias.");
+    }
+
+    const assets = (data.assets ?? []) as UploadedAsset[];
+    setValue("evidencias", [...evidencias, ...assets], {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
   const onSubmit = async (data: z.infer<typeof ReciboSchema>) => {
     try {
       const reciboPayload = {
@@ -106,6 +133,7 @@ export default function FormularioRecibo({
         saldoPendiente: data.saldoPendiente,
         estado: data.estado,
         observacionesCobranza: data.observacionesCobranza,
+        evidencias: data.evidencias ?? [],
       };
 
       const detallesPayload = data.detalles.map((d) => ({
@@ -224,6 +252,106 @@ export default function FormularioRecibo({
             </FormItem>
           )}
         />
+        <FormItem>
+          <FormLabel>Evidencias de transacción</FormLabel>
+          <FormControl>
+            <label
+              htmlFor="recibo-evidencias"
+              className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center transition hover:bg-muted/40"
+            >
+              <span className="text-sm font-medium">
+                {isUploadingEvidence
+                  ? "Subiendo evidencias..."
+                  : "Haz clic para cargar evidencias"}
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">
+                Transferencias, pago de energía u otros comprobantes
+              </span>
+              <Input
+                id="recibo-evidencias"
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={async (event) => {
+                  const selected = Array.from(event.target.files ?? []);
+                  if (!selected.length) return;
+                  const previewUrls = selected.map((file) => URL.createObjectURL(file));
+                  setLocalEvidencePreviews((prev) => [...prev, ...previewUrls]);
+                  setIsUploadingEvidence(true);
+                  try {
+                    await uploadEvidencias(selected);
+                  } catch (error) {
+                    toast({
+                      title: "Error subiendo evidencias",
+                      description:
+                        error instanceof Error
+                          ? error.message
+                          : "No fue posible subir las evidencias.",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    previewUrls.forEach((url) => URL.revokeObjectURL(url));
+                    setLocalEvidencePreviews((prev) =>
+                      prev.filter((url) => !previewUrls.includes(url)),
+                    );
+                    setIsUploadingEvidence(false);
+                    event.target.value = "";
+                  }
+                }}
+              />
+            </label>
+          </FormControl>
+        </FormItem>
+
+        {localEvidencePreviews.length > 0 && (
+          <div>
+            <p className="mb-2 text-sm text-muted-foreground">Vista previa local</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {localEvidencePreviews.map((preview, index) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={`preview-evidencia-${preview}-${index}`}
+                  src={preview}
+                  alt={`Previsualización de evidencia ${index + 1}`}
+                  className="h-24 w-full animate-pulse rounded-md object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {evidencias.length > 0 && (
+          <div>
+            <p className="mb-2 text-sm text-muted-foreground">Evidencias guardadas</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {evidencias.map((evidencia, index) => (
+              <div key={`${evidencia.publicId}-${index}`} className="space-y-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={evidencia.url}
+                  alt={`Evidencia ${index + 1}`}
+                  className="h-24 w-full rounded-md object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() =>
+                    setValue(
+                      "evidencias",
+                      evidencias.filter((_, evidenceIndex) => evidenceIndex !== index),
+                      { shouldDirty: true, shouldValidate: true },
+                    )
+                  }
+                >
+                  Quitar
+                </Button>
+              </div>
+            ))}
+            </div>
+          </div>
+        )}
 
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Conceptos del recibo</h3>

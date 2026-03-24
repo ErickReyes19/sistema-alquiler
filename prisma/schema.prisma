@@ -114,6 +114,7 @@ model Apartamento {
   tenantId             String
   numero               String
   direccion            String?
+  imagenes             Json?
   createAt             DateTime                  @default(now())
   updateAt             DateTime                  @updatedAt
   disponible           Boolean                   @default(true)
@@ -327,6 +328,7 @@ model Recibos {
   cargoMora             Decimal                @default(0.00)
   saldoPendiente        Decimal                @default(0.00)
   observacionesCobranza String?
+  evidencias            Json?
   createAt              DateTime               @default(now())
   updateAt              DateTime               @updatedAt
   tenant                Tenant                 @relation(fields: [tenantId], references: [id])

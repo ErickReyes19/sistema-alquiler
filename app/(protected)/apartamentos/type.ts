@@ -1,3 +1,5 @@
+import { UploadedAsset } from '@/lib/uploaded-asset';
+
 export type Habitacion = {
   id?: string;
   apartamentoId?: string;
@@ -10,6 +12,7 @@ export type Apartamento = {
   id?: string;
   numero: string;
   direccion?: string;
+  imagenes?: UploadedAsset[];
   disponible?: boolean;
   activo?: boolean;
   habitaciones?: Habitacion[];
@@ -29,6 +32,7 @@ export type ApartamentoView = {
   id: string;
   numero: string;
   direccion?: string;
+  imagenes?: UploadedAsset[];
   disponible: boolean;
   activo: boolean;
   habitaciones: {
