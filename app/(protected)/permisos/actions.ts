@@ -2,7 +2,6 @@
 
 import { Prisma, TipoUsuario } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
-import { getAllowedPermissionNamesByUserType } from "@/lib/platform-permissions";
 import { requireTenantSession } from "@/lib/tenant-session";
 
 import { PermisosRol } from "../roles/type";
@@ -24,9 +23,6 @@ async function findActivePermisos(): Promise<PermisoDTO[]> {
   const session = await requireTenantSession();
   const where: Prisma.PermisoWhereInput = {
     activo: true,
-    nombre: {
-      in: [...getAllowedPermissionNamesByUserType(session.tipoUsuario)],
-    },
   };
 
   if (session.tipoUsuario !== TipoUsuario.ROOT) {

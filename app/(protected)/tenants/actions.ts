@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs"
 import { Prisma, TipoUsuario } from "@/lib/generated/prisma"
 import { generateTemporaryPassword } from "@/lib/default-user-password"
 import { prisma } from "@/lib/prisma"
-import { PLATFORM_TENANT_SLUG, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
+import { PLATFORM_TENANT_SLUG } from "@/lib/platform-permissions"
 import { requireTenantSession } from "@/lib/tenant-session"
 
 export type TenantListItem = {
@@ -58,16 +58,16 @@ export async function createTenant(input: { nombre: string; slug: string }) {
     return await prisma.$transaction(async (tx) => {
       const tenantId = randomUUID()
       const roleId = randomUUID()
-      const globalPermissions = await tx.permiso.findMany({
+
+      const globalTenantPermissions = await tx.permiso.findMany({
         where: {
-          tenant: { slug: PLATFORM_TENANT_SLUG },
-          nombre: { in: [...TENANT_PERMISSION_NAMES] },
           activo: true,
+          esPermisoSistema: false,
         },
       })
 
-      if (globalPermissions.length !== TENANT_PERMISSION_NAMES.length) {
-        throw new Error('Faltan permisos globales. Ejecuta la semilla de la plataforma.')
+      if (globalTenantPermissions.length === 0) {
+        throw new Error('No hay permisos globales para tenants. Ejecuta la semilla de la plataforma.')
       }
 
       const createdTenant = await tx.tenant.create({
@@ -78,7 +78,6 @@ export async function createTenant(input: { nombre: string; slug: string }) {
           activo: true,
         },
       })
-
 
       await tx.rol.create({
         data: {
@@ -91,12 +90,13 @@ export async function createTenant(input: { nombre: string; slug: string }) {
       })
 
       await tx.rolPermiso.createMany({
-        data: globalPermissions.map((permiso) => ({
+        data: globalTenantPermissions.map((permiso) => ({
           id: randomUUID(),
           tenantId,
           rolId: roleId,
           permisoId: permiso.id,
         })),
+        skipDuplicates: true,
       })
 
       return createdTenant
