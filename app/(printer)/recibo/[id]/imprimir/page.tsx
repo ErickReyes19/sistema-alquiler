@@ -1,6 +1,4 @@
-import { getContratoByIdView } from "@/app/(protected)/contratos/actions";
 import { Inbox } from "lucide-react";
-import { getSession } from "@/auth";
 import { getReciboCompletoById } from "@/app/(protected)/contratos/[id]/recibos/actions";
 import { ReciboImpresion } from "./reciboPrint";
 

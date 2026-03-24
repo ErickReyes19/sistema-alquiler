@@ -16,7 +16,13 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
   useEffect(() => {
     const now = new Date()
     setFechayhora(`${formatearFecha(now.toISOString())} ${now.toLocaleTimeString()}`)
-    const onAfter = () => window.close()
+
+    const onAfter = () => {
+      if (window.history.length > 1) {
+        window.history.back()
+      }
+    }
+
     window.addEventListener("afterprint", onAfter)
     setTimeout(() => window.print(), 100)
     return () => window.removeEventListener("afterprint", onAfter)
@@ -29,145 +35,149 @@ export default function ContratoPrint({ contrato }: ContratoPrintProps) {
     new Intl.NumberFormat("es-HN", { style: "currency", currency: "HNL" }).format(amt)
 
   return (
-    <div className="max-w-4xl mx-auto bg-white text-black p-8">
-      {/* Encabezado */}
-      <div className="text-center mb-8 pb-4 ">
-        <h1 className="text-2xl font-bold mb-2">CONTRATO DE ARRENDAMIENTO</h1>
-        <p className="text-lg">
-          Estado: <span className="font-semibold">{contrato.activo ? "ACTIVO" : "INACTIVO"}</span>
-        </p>
-      </div>
+    <div className="mx-auto max-w-4xl bg-white p-8 text-slate-900">
+      <header className="mb-8 rounded-xl border border-slate-200 bg-slate-50 p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Documento legal</p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight">Contrato de arrendamiento</h1>
+            <p className="mt-1 text-sm text-slate-600">Código de contrato: #{contrato.id}</p>
+          </div>
+          <div className="rounded-lg border px-4 py-2 text-sm font-semibold">
+            {contrato.activo ? "ACTIVO" : "INACTIVO"}
+          </div>
+        </div>
+      </header>
 
-      {/* Información de las partes */}
-      <div className="grid grid-cols-2 gap-8 mb-8">
-        <div>
-          <h2 className="text-lg font-bold mb-4  pb-2">INQUILINO</h2>
-          <p className="mb-2">
+      <section className="mb-8 grid grid-cols-2 gap-8">
+        <div className="rounded-lg border p-4">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Parte arrendataria</h2>
+          <p className="mb-1 text-sm">
             <span className="font-semibold">Nombre:</span> {contrato.inquilino}
           </p>
-          <p>
+          <p className="text-sm">
             <span className="font-semibold">Identidad:</span> {contrato.inquiliniIdentidad}
           </p>
         </div>
-        <div>
-          <h2 className="text-lg font-bold mb-4  pb-2">INMUEBLE</h2>
-          <p className="mb-2">
+        <div className="rounded-lg border p-4">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Inmueble arrendado</h2>
+          <p className="mb-1 text-sm">
             <span className="font-semibold">Apartamento:</span> {contrato.apartamento.numero}
           </p>
           {contrato.apartamento.direccion && (
-            <p>
+            <p className="text-sm">
               <span className="font-semibold">Dirección:</span> {contrato.apartamento.direccion}
             </p>
           )}
         </div>
-      </div>
+      </section>
 
-      {/* Términos del contrato */}
-      <div className="mb-8">
-        <h2 className="text-lg font-bold mb-4  pb-2">TÉRMINOS DEL CONTRATO</h2>
+      <section className="mb-8 rounded-lg border p-4">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Términos económicos y vigencia</h2>
         <div className="grid grid-cols-3 gap-6">
-          <div>
-            <p className="font-semibold">Fecha de Inicio:</p>
-            <p className="text-lg">{formatDate(contrato.fechaInicio)}</p>
+          <div className="rounded-md border border-slate-200 p-3">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Fecha de inicio</p>
+            <p className="mt-1 text-lg font-semibold">{formatDate(contrato.fechaInicio)}</p>
           </div>
-          <div>
-            <p className="font-semibold">Fecha de Fin:</p>
-            <p className="text-lg">{formatDate(contrato.fechaFin)}</p>
+          <div className="rounded-md border border-slate-200 p-3">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Fecha de fin</p>
+            <p className="mt-1 text-lg font-semibold">{formatDate(contrato.fechaFin)}</p>
           </div>
-          <div>
-            <p className="font-semibold">Renta Mensual:</p>
-            <p className="text-lg font-bold">{formatCurrency(contrato.montoMensual)}</p>
+          <div className="rounded-md border border-slate-200 p-3">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Renta mensual</p>
+            <p className="mt-1 text-lg font-bold">{formatCurrency(contrato.montoMensual)}</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Habitaciones */}
-      <div className="mb-8">
-        <h2 className="text-lg font-bold mb-4  pb-2">HABITACIONES</h2>
-        <table className="w-full border-collapse border">
+      <section className="mb-8">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Habitaciones incluidas</h2>
+        <table className="w-full border-collapse overflow-hidden rounded-lg border">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-1 text-left">Tipo de Habitación</th>
-              <th className="border p-1 text-center">Cantidad</th>
+            <tr className="bg-slate-100">
+              <th className="border p-2 text-left text-sm">Tipo de habitación</th>
+              <th className="border p-2 text-center text-sm">Cantidad</th>
             </tr>
           </thead>
           <tbody>
             {contrato.apartamento.habitaciones.map((h, index) => (
               <tr key={index}>
-                <td className="border p-1">{h.tipoHabitacionNombre}</td>
-                <td className="border p-1 text-center">{h.cantidad}</td>
+                <td className="border p-2 text-sm">{h.tipoHabitacionNombre}</td>
+                <td className="border p-2 text-center text-sm">{h.cantidad}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
 
-      {/* Servicios */}
-      <div className="mb-12">
-        <h2 className="text-lg font-bold mb-4  pb-2">SERVICIOS</h2>
-        <table className="w-full border-collapse border">
+      <section className="mb-10">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Servicios del apartamento</h2>
+        <table className="w-full border-collapse overflow-hidden rounded-lg border">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-1 text-left">Servicio</th>
-              <th className="border p-1 text-center">Incluido</th>
-              <th className="border p-1 text-right">Costo Adicional</th>
+            <tr className="bg-slate-100">
+              <th className="border p-2 text-left text-sm">Servicio</th>
+              <th className="border p-2 text-center text-sm">Incluido</th>
+              <th className="border p-2 text-right text-sm">Costo adicional</th>
             </tr>
           </thead>
           <tbody>
             {contrato.apartamento.servicios.map((s, index) => (
               <tr key={index}>
-                <td className="border p-1">{s.servicioNombre}</td>
-                <td className="border p-1 text-center">{s.incluido ? "Sí" : "No"}</td>
-                <td className="border p-1 text-right">
+                <td className="border p-2 text-sm">{s.servicioNombre}</td>
+                <td className="border p-2 text-center text-sm">{s.incluido ? "Sí" : "No"}</td>
+                <td className="border p-2 text-right text-sm">
                   {s.costoAdicional > 0 ? formatCurrency(s.costoAdicional) : "Sin costo"}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
 
-      {/* Firmas */}
-      <div className="mt-16">
+      <section className="mt-16">
         <div className="grid grid-cols-2 gap-16">
           <div className="text-center">
-            <div className="border-t-2 lack pt-3 mx-auto w-48">
-              <p className="font-semibold">Firma del Arrendador</p>
+            <div className="mx-auto w-52 border-t-2 pt-3">
+              <p className="font-semibold">Firma del arrendador</p>
             </div>
           </div>
           <div className="text-center">
-            <div className="border-t-2 lack pt-3 mx-auto w-48">
-              <p className="font-semibold">Firma del Inquilino</p>
+            <div className="mx-auto w-52 border-t-2 pt-3">
+              <p className="font-semibold">Firma del inquilino</p>
             </div>
           </div>
         </div>
-        <div className="text-center mt-8 pt-4 border-t text-sm text-gray-600">Documento generado el: {fechayhora}</div>
-      </div>
+        <div className="mt-8 border-t pt-4 text-center text-sm text-slate-600">
+          Documento generado el: {fechayhora}
+        </div>
+      </section>
 
       <style jsx>{`
         @media print {
-          html, body {
+          html,
+          body {
             margin: 0;
             padding: 0;
             font-size: 12pt;
           }
-          
+
           @page {
-            margin: 2cm;
+            margin: 16mm;
             size: A4;
           }
-          
+
           .max-w-4xl {
             max-width: none;
           }
-          
-          .bg-gray-100 {
-            background-color: #f5f5f5 !important;
+
+          .bg-slate-100,
+          .bg-slate-50 {
+            background-color: #f1f5f9 !important;
             -webkit-print-color-adjust: exact;
           }
-          
-          .text-gray-600 {
-            color: #666 !important;
+
+          .text-slate-600 {
+            color: #475569 !important;
           }
         }
       `}</style>

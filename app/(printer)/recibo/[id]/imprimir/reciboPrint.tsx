@@ -3,7 +3,6 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ReciboCompleto } from "@/app/(protected)/contratos/[id]/recibos/type";
 import { useEffect } from "react";
 
@@ -13,7 +12,12 @@ interface ReciboImpresionProps {
 
 export function ReciboImpresion({ recibo }: ReciboImpresionProps) {
   useEffect(() => {
-    const onAfter = () => window.close();
+    const onAfter = () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      }
+    };
+
     window.addEventListener("afterprint", onAfter);
     setTimeout(() => window.print(), 100);
     return () => window.removeEventListener("afterprint", onAfter);
@@ -26,86 +30,109 @@ export function ReciboImpresion({ recibo }: ReciboImpresionProps) {
     }).format(amount);
   };
 
-  const calcularSubtotales = () => {
-    const totalDetalles = recibo.detalles.reduce((sum, detalle) => sum + detalle.monto, 0);
-
-    return {
-      total: totalDetalles,
-    };
-  };
-
-  const subtotales = calcularSubtotales();
+  const totalExigible = recibo.total + recibo.cargoMora;
 
   return (
-    <div className="  mx-auto bg-white p-8 ">
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold">RECIBO DE PAGO</h1>
-        <p className="text-muted-foreground">#{recibo.id}</p>
-      </div>
+    <div className="mx-auto w-full max-w-4xl bg-white p-8 text-slate-900">
+      <header className="mb-8 rounded-xl border border-slate-200 bg-slate-50 p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Comprobante oficial</p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight">Recibo de pago</h1>
+            <p className="mt-1 text-sm text-slate-600">Número de recibo: #{recibo.id}</p>
+          </div>
+          <div className="rounded-lg border border-emerald-200 bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
+            {recibo.estado.replaceAll("_", " ")}
+          </div>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <h3 className="text-sm font-medium text-muted-foreground">Fecha de Pago</h3>
-          <p className="text-base">
+      <div className="mb-6 grid grid-cols-2 gap-4">
+        <div className="rounded-lg border p-4">
+          <h3 className="text-sm font-medium text-slate-500">Fecha de pago</h3>
+          <p className="mt-1 text-base font-semibold">
             {format(new Date(recibo.fechaPago), "dd 'de' MMMM 'de' yyyy", { locale: es })}
           </p>
         </div>
-        <div>
-          <h3 className="text-sm font-medium text-muted-foreground">Estado</h3>
-          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-green-50 text-green-700 border-green-200 mt-1">
-            Pagado
-          </div>
+        <div className="rounded-lg border p-4">
+          <h3 className="text-sm font-medium text-slate-500">Fecha de vencimiento</h3>
+          <p className="mt-1 text-base font-semibold">
+            {format(new Date(recibo.fechaVencimiento), "dd 'de' MMMM 'de' yyyy", { locale: es })}
+          </p>
         </div>
       </div>
 
-      <Separator className="my-4" />
-
-      <div className="grid grid-cols-2 gap-6 mb-4">
-        <div>
-          <h3 className="font-medium mb-2">Información del Inquilino</h3>
-          <div className="space-y-1">
+      <div className="mb-6 grid grid-cols-2 gap-6">
+        <section className="rounded-lg border p-4">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Inquilino</h3>
+          <div className="space-y-1.5">
             <p className="text-sm">{recibo.contrato.inquilino.nombre}</p>
-            <p className="text-sm text-muted-foreground">ID: {recibo.contrato.inquilino.identidad}</p>
-            <p className="text-sm text-muted-foreground">Tel: {recibo.contrato.inquilino.numero}</p>
+            <p className="text-sm text-slate-600">Identidad: {recibo.contrato.inquilino.identidad}</p>
+            <p className="text-sm text-slate-600">Teléfono: {recibo.contrato.inquilino.numero}</p>
+            {recibo.contrato.inquilino.correo && (
+              <p className="text-sm text-slate-600">Correo: {recibo.contrato.inquilino.correo}</p>
+            )}
           </div>
-        </div>
-        <div>
-          <h3 className="font-medium mb-2">Información del Apartamento</h3>
-          <div className="space-y-1">
+        </section>
+        <section className="rounded-lg border p-4">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Inmueble</h3>
+          <div className="space-y-1.5">
             <p className="text-sm">Apartamento #{recibo.contrato.apartamento.numero}</p>
-            <p className="text-sm text-muted-foreground">{recibo.contrato.apartamento.direccion}</p>
+            <p className="text-sm text-slate-600">{recibo.contrato.apartamento.direccion}</p>
           </div>
-        </div>
+        </section>
       </div>
 
-      <div className="border border-dashed p-4 rounded-md mb-4">
-        <h3 className="font-medium mb-4">Resumen de Totales</h3>
-        <div className="space-y-2">
+      <section className="mb-6 rounded-lg border border-slate-200">
+        <div className="border-b bg-slate-50 px-4 py-3">
+          <h3 className="font-semibold">Detalle de conceptos</h3>
+        </div>
+        <div className="space-y-2 p-4">
           {recibo.detalles
             .sort((a, b) => b.monto - a.monto)
             .map((detalle) => (
               <div
                 key={detalle.id}
-                className="flex justify-between items-center pl-4 text-xs text-muted-foreground"
+                className="flex items-center justify-between rounded-md border border-slate-100 px-3 py-2 text-sm"
               >
                 <span>{detalle.descripcion}</span>
-                <span>{formatCurrency(detalle.monto)}</span>
+                <span className="font-medium">{formatCurrency(detalle.monto)}</span>
               </div>
             ))}
+        </div>
+      </section>
 
+      <section className="mb-8 rounded-lg border p-4">
+        <h3 className="mb-3 font-semibold">Resumen financiero</h3>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-between text-slate-600">
+            <span>Total facturado</span>
+            <span>{formatCurrency(recibo.total)}</span>
+          </div>
+          <div className="flex items-center justify-between text-slate-600">
+            <span>Recargo por mora</span>
+            <span>{formatCurrency(recibo.cargoMora)}</span>
+          </div>
+          <div className="flex items-center justify-between text-slate-600">
+            <span>Pagado acumulado</span>
+            <span>{formatCurrency(recibo.montoPagado)}</span>
+          </div>
           <Separator className="my-2" />
-
-          <div className="flex justify-between items-center font-medium">
-            <span>Total</span>
-            <span>{formatCurrency(subtotales.total)}</span>
+          <div className="flex items-center justify-between text-base font-semibold">
+            <span>Total exigible</span>
+            <span>{formatCurrency(totalExigible)}</span>
+          </div>
+          <div className="flex items-center justify-between text-base font-bold text-slate-900">
+            <span>Saldo pendiente</span>
+            <span>{formatCurrency(recibo.saldoPendiente)}</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-8 text-center text-sm text-muted-foreground">
-        <p>Este recibo es un comprobante oficial de pago. Gracias por su puntualidad.</p>
-        <p>Fecha de impresión: {format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}</p>
-      </div>
+      <footer className="border-t pt-5 text-center text-sm text-slate-600">
+        <p>Este recibo certifica el estado de cuenta del arrendamiento correspondiente.</p>
+        <p>Generado el {format(new Date(), "dd 'de' MMMM 'de' yyyy 'a las' HH:mm", { locale: es })}</p>
+      </footer>
 
       <style jsx global>{`
         @media print {
@@ -115,7 +142,8 @@ export function ReciboImpresion({ recibo }: ReciboImpresionProps) {
           }
 
           @page {
-            size: auto;
+            size: A4;
+            margin: 16mm;
           }
         }
       `}</style>
