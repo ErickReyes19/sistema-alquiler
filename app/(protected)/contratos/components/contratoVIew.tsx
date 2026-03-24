@@ -214,6 +214,7 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
             <CardContent>
               <p className="text-sm text-muted-foreground">Fin: {formatDate(contrato.fechaFin)}</p>
               <p className="text-sm text-muted-foreground">Preaviso: {contrato.preavisoDias} día(s)</p>
+              <p className="text-sm text-muted-foreground">Día de pago: {contrato.diaPagoMensual} de cada mes</p>
             </CardContent>
           </Card>
           <Card>
@@ -302,6 +303,26 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                 </CardContent>
               </Card>
             </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Reglas del contrato</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {contrato.reglas.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No hay reglas asociadas.</p>
+                ) : (
+                  <ul className="space-y-2 text-sm">
+                    {contrato.reglas.map((regla) => (
+                      <li key={regla.id} className="rounded-md border p-2">
+                        <p className="font-medium">{regla.nombre}</p>
+                        {regla.descripcion && <p className="text-muted-foreground">{regla.descripcion}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>

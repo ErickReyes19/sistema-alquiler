@@ -32,6 +32,7 @@ const contratoInclude = {
   apartamento: true,
   entrega: true,
   depositoGarantia: true,
+  reglas: true,
 } as const;
 
 const contratoViewInclude = {
@@ -73,6 +74,11 @@ const contratoViewInclude = {
           fecha: "asc",
         },
       },
+    },
+  },
+  reglas: {
+    include: {
+      regla: true,
     },
   },
 } as const;
@@ -289,6 +295,8 @@ function mapContrato(data: ContratoWithRelations): Contrato {
     fechaInicio: data.fechaInicio.toISOString(),
     fechaFin: data.fechaFin?.toISOString() ?? null,
     montoMensual: toNumber(data.montoMensual),
+    diaPagoMensual: data.diaPagoMensual,
+    reglaIds: data.reglas.map((regla) => regla.reglaId),
     depositoGarantiaMonto: toNumber(data.depositoGarantia?.monto),
     fechaRecepcionDeposito: data.depositoGarantia?.fechaRecepcion?.toISOString() ?? null,
     activo: data.activo,
@@ -387,9 +395,18 @@ export async function postContrato({ contrato }: { contrato: ContratoCreate }): 
           fechaInicio: new Date(contrato.fechaInicio),
           fechaFin: contrato.fechaFin ? new Date(contrato.fechaFin) : null,
           montoMensual: contrato.montoMensual,
+          diaPagoMensual: contrato.diaPagoMensual ?? 1,
           preavisoDias: contrato.preavisoDias ?? DEFAULT_PREAVISO_DIAS,
           activo: contrato.activo ?? true,
           estadoRenovacion: contrato.fechaFin ? "ALERTA_GENERADA" : "SIN_GESTION",
+          reglas: contrato.reglaIds?.length
+            ? {
+                create: contrato.reglaIds.map((reglaId) => ({
+                  tenantId,
+                  reglaId,
+                })),
+              }
+            : undefined,
         },
         include: contratoInclude,
       });
@@ -467,11 +484,19 @@ export async function putContrato({ contrato }: { contrato: ContratoUpdate }): P
           fechaInicio: new Date(contrato.fechaInicio),
           fechaFin: contrato.fechaFin ? new Date(contrato.fechaFin) : null,
           montoMensual: contrato.montoMensual,
+          diaPagoMensual: contrato.diaPagoMensual ?? 1,
           preavisoDias: contrato.preavisoDias ?? DEFAULT_PREAVISO_DIAS,
           activo: contrato.activo,
           estadoRenovacion: contrato.estadoRenovacion ?? existing.estadoRenovacion,
           motivoCancelacion: normalizeOptionalText(contrato.motivoCancelacion),
           fechaDesocupacion: contrato.fechaDesocupacion ? new Date(contrato.fechaDesocupacion) : null,
+          reglas: {
+            deleteMany: { tenantId, contratoId: contrato.id },
+            create: (contrato.reglaIds ?? []).map((reglaId) => ({
+              tenantId,
+              reglaId,
+            })),
+          },
         },
         include: contratoInclude,
       });
@@ -617,6 +642,8 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
       fechaInicio: contrato.fechaInicio.toISOString(),
       fechaFin: contrato.fechaFin?.toISOString() ?? null,
       montoMensual: toNumber(contrato.montoMensual),
+      diaPagoMensual: contrato.diaPagoMensual ?? 1,
+      reglaIds: contrato.reglas.map((regla) => regla.reglaId),
       depositoGarantiaMonto: toNumber(contrato.depositoGarantia?.monto),
       fechaRecepcionDeposito: contrato.depositoGarantia?.fechaRecepcion?.toISOString() ?? null,
       activo: contrato.activo,
@@ -651,6 +678,12 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
         })),
         historialOcupacion,
       },
+      reglas: contrato.reglas.map((reglaContrato) => ({
+        id: reglaContrato.id,
+        reglaId: reglaContrato.reglaId,
+        nombre: reglaContrato.regla.nombre,
+        descripcion: reglaContrato.regla.descripcion,
+      })),
       renovaciones: contrato.renovaciones.map(mapRenovacion),
       ajustesRenta: contrato.ajustesRenta.map(mapAjusteRenta),
       inventarios: contrato.inventarios.map(mapInventario),

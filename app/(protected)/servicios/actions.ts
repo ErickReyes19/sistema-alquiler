@@ -13,10 +13,12 @@ import { Servicio } from './type'
 const mapServicioToDto = (servicio: {
   id: string
   nombre: string
+  clave: string | null
   activo: boolean
 }): Servicio => ({
   id: servicio.id,
   nombre: servicio.nombre,
+  clave: servicio.clave,
   activo: servicio.activo,
 })
 
@@ -31,6 +33,7 @@ async function findServicios(where?: { activo?: boolean }): Promise<Servicio[]> 
 
 const buildServicioData = (servicio: Servicio) => ({
   nombre: servicio.nombre,
+  clave: servicio.clave?.trim() || null,
   activo: resolveActivo(servicio.activo),
 })
 

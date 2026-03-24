@@ -5,6 +5,7 @@ import { FilePlus } from "lucide-react";
 
 import { getApartamentosCompleto } from "../../apartamentos/actions";
 import { getInquilinosActivosSinContrato } from "../../inquilinos/actions";
+import { getReglasActivas } from "../../reglas/actions";
 import { Formulario } from "../components/Form";
 
 export default async function Create() {
@@ -15,6 +16,7 @@ export default async function Create() {
 
   const inquilinosActivos = await getInquilinosActivosSinContrato();
   const apartamentosActivos = await getApartamentosCompleto();
+  const reglas = await getReglasActivas();
 
   const initialData = {
     inquilinoId: "",
@@ -22,6 +24,8 @@ export default async function Create() {
     fechaInicio: new Date().toISOString(),
     fechaFin: undefined,
     montoMensual: 0,
+    diaPagoMensual: 1,
+    reglaIds: [],
     depositoGarantiaMonto: 0,
     fechaRecepcionDeposito: undefined,
     preavisoDias: 30,
@@ -42,6 +46,7 @@ export default async function Create() {
         initialData={initialData}
         inquilinos={inquilinosActivos}
         apartamentos={apartamentosActivos}
+        reglas={reglas}
       />
     </div>
   );

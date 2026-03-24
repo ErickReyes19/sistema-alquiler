@@ -18,6 +18,40 @@ import {
 
 const toNumber = (value: { toString(): string } | number | null | undefined) => Number(value ?? 0);
 
+function buildDueDateFromContractDay(referenceDate: Date, diaPagoMensual: number): Date {
+  const safeDay = Math.min(Math.max(diaPagoMensual, 1), 31);
+  const year = referenceDate.getFullYear();
+  const month = referenceDate.getMonth();
+  const thisMonthLastDay = new Date(year, month + 1, 0).getDate();
+  const thisMonthDueDate = new Date(year, month, Math.min(safeDay, thisMonthLastDay));
+
+  if (referenceDate <= thisMonthDueDate) {
+    return thisMonthDueDate;
+  }
+
+  const nextMonthLastDay = new Date(year, month + 2, 0).getDate();
+  return new Date(year, month + 1, Math.min(safeDay, nextMonthLastDay));
+}
+
+async function resolveReciboDates(tenantId: string, contratoId: string, explicitFechaPago?: string, explicitFechaVencimiento?: string) {
+  const fechaPago = explicitFechaPago ? new Date(explicitFechaPago) : new Date();
+
+  if (explicitFechaVencimiento) {
+    return { fechaPago, fechaVencimiento: new Date(explicitFechaVencimiento) };
+  }
+
+  const contrato = await prisma.contratos.findFirst({
+    where: { id: contratoId, tenantId },
+    select: { diaPagoMensual: true },
+  });
+
+  const diaPagoMensual = contrato?.diaPagoMensual ?? 1;
+  return {
+    fechaPago,
+    fechaVencimiento: buildDueDateFromContractDay(fechaPago, diaPagoMensual),
+  };
+}
+
 function mapRecibo(data: any): Recibo {
   const montoPagado = data.pagosParciales?.reduce((sum: number, pago: any) => sum + toNumber(pago.monto), 0) ?? 0;
   const financials = calcularEstadoRecibo({
@@ -167,20 +201,26 @@ export async function postReciboConDetalles({
 }): Promise<ReciboView | null> {
   try {
     const tenantId = await getTenantIdFromSession();
+    const { fechaPago, fechaVencimiento } = await resolveReciboDates(
+      tenantId,
+      recibo.contratoId,
+      recibo.fechaPago,
+      recibo.fechaVencimiento
+    );
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
     const financials = calcularEstadoRecibo({
       total,
       cargoMora: recibo.cargoMora,
       montoPagado: 0,
-      fechaVencimiento: new Date(recibo.fechaVencimiento),
+      fechaVencimiento,
     });
 
     const created = await prisma.recibos.create({
       data: {
         tenantId,
         contratoId: recibo.contratoId,
-        fechaPago: new Date(recibo.fechaPago),
-        fechaVencimiento: new Date(recibo.fechaVencimiento),
+        fechaPago,
+        fechaVencimiento,
         total,
         cargoMora: recibo.cargoMora,
         saldoPendiente: financials.saldoPendiente,
@@ -219,6 +259,12 @@ export async function putReciboConDetalles({
 }): Promise<ReciboView | null> {
   try {
     const tenantId = await getTenantIdFromSession();
+    const { fechaPago, fechaVencimiento } = await resolveReciboDates(
+      tenantId,
+      recibo.contratoId,
+      recibo.fechaPago,
+      recibo.fechaVencimiento
+    );
     const total = detalles.reduce((sum, d) => sum + d.monto, 0);
     const idsEntrantes = detalles.filter((d) => !!d.id).map((d) => d.id!) as string[];
 
@@ -230,15 +276,15 @@ export async function putReciboConDetalles({
       total,
       cargoMora: recibo.cargoMora,
       montoPagado,
-      fechaVencimiento: new Date(recibo.fechaVencimiento),
+      fechaVencimiento,
     });
 
     await prisma.$transaction([
       prisma.recibos.updateMany({
         where: { id: recibo.id, tenantId },
         data: {
-          fechaPago: new Date(recibo.fechaPago),
-          fechaVencimiento: new Date(recibo.fechaVencimiento),
+          fechaPago,
+          fechaVencimiento,
           total,
           cargoMora: recibo.cargoMora,
           saldoPendiente: financials.saldoPendiente,

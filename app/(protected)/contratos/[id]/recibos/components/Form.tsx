@@ -4,13 +4,11 @@ import { useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -21,8 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ReciboSchema } from "../schema";
@@ -46,7 +42,7 @@ export default function FormularioRecibo({
   const fechaEmision = initialData?.fechaPago ? new Date(initialData.fechaPago) : new Date();
   const fechaVencimiento = initialData?.fechaVencimiento
     ? new Date(initialData.fechaVencimiento)
-    : addDays(new Date(), 5);
+    : new Date();
 
   const form = useForm<z.infer<typeof ReciboSchema>>({
     resolver: zodResolver(ReciboSchema),
@@ -144,79 +140,15 @@ export default function FormularioRecibo({
 
   const totalPreview = form.watch("total") || 0;
   const saldoPreview = form.watch("saldoPendiente") || 0;
-  const maxCalendarDate = new Date(new Date().getFullYear() + 10, 11, 31);
-
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-md border p-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormField
-            control={control}
-            name="fechaPago"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de emisión</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn("w-full text-left", !field.value && "text-muted-foreground")}
-                      >
-                        {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha"}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      startMonth={new Date("1900-01-01")}
-                      endMonth={maxCalendarDate}
-                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="fechaVencimiento"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de vencimiento</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn("w-full text-left", !field.value && "text-muted-foreground")}
-                      >
-                        {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha"}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      startMonth={new Date("1900-01-01")}
-                      endMonth={maxCalendarDate}
-                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+          <p>La fecha de emisión y vencimiento se calculan automáticamente según el contrato.</p>
+          <p>
+            Emisión estimada: {format(form.watch("fechaPago"), "PPP", { locale: es })} · Vencimiento estimado:{" "}
+            {format(form.watch("fechaVencimiento"), "PPP", { locale: es })}
+          </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">

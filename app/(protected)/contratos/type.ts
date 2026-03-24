@@ -37,6 +37,8 @@ export type Contrato = {
   fechaInicio: string;
   fechaFin?: string | null;
   montoMensual: number;
+  diaPagoMensual: number;
+  reglaIds: string[];
   depositoGarantiaMonto: number;
   fechaRecepcionDeposito?: string | null;
   activo: boolean;
@@ -148,6 +150,8 @@ export interface ContratoView {
   fechaInicio: string;
   fechaFin: string | null;
   montoMensual: number;
+  diaPagoMensual: number;
+  reglaIds: string[];
   depositoGarantiaMonto: number;
   fechaRecepcionDeposito?: string | null;
   activo: boolean;
@@ -181,6 +185,12 @@ export interface ContratoView {
     }[];
     historialOcupacion: HistorialOcupacionApartamento[];
   };
+  reglas: {
+    id: string;
+    reglaId: string;
+    nombre: string;
+    descripcion?: string | null;
+  }[];
   renovaciones: ContratoRenovacion[];
   ajustesRenta: ContratoAjusteRenta[];
   inventarios: ContratoInventario[];

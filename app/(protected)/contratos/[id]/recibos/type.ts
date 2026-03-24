@@ -37,7 +37,10 @@ export type Recibo = {
   observacionesCobranza?: string | null;
 };
 
-export type ReciboCreate = Omit<Recibo, "id" | "saldoPendiente" | "estado">;
+export type ReciboCreate = Omit<Recibo, "id" | "saldoPendiente" | "estado" | "fechaPago" | "fechaVencimiento"> & {
+  fechaPago?: string;
+  fechaVencimiento?: string;
+};
 
 export type ReciboUpdate = Recibo;
 
