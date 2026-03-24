@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
 
 import { PrismaClient, TipoUsuario } from "../lib/generated/prisma";
-import { ROOT_PERMISSION_NAMES } from "../lib/platform-permissions";
+import { ROOT_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "../lib/platform-permissions";
 
 const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
@@ -30,6 +30,17 @@ async function main() {
 
   await prisma.permiso.createMany({
     data: ROOT_PERMISSION_NAMES.map((nombre) => ({
+      id: randomUUID(),
+      tenantId: platformTenant.id,
+      nombre,
+      descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
+      activo: true,
+      esPermisoSistema: true,
+    })),
+    skipDuplicates: true,
+  });
+  await prisma.permiso.createMany({
+    data: TENANT_PERMISSION_NAMES.map((nombre) => ({
       id: randomUUID(),
       tenantId: platformTenant.id,
       nombre,
