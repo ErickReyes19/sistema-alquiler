@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const UploadedAssetSchema = z.object({
+  url: z.string().url(),
+  publicId: z.string().min(1),
+  bytes: z.number().optional(),
+  format: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+  resourceType: z.string().optional(),
+  originalFilename: z.string().optional(),
+});
+
 export const ReciboDetalleSchema = z.object({
   id: z.string().uuid().optional(),
   reciboId: z.string(),
@@ -25,6 +36,7 @@ export const ReciboSchema = z.object({
   saldoPendiente: z.coerce.number().min(0),
   estado: z.enum(["PENDIENTE", "PAGADO", "VENCIDO", "PARCIALMENTE_PAGADO"]),
   observacionesCobranza: z.string().max(500, { message: "Máximo 500 caracteres" }).optional().nullable(),
+  evidencias: z.array(UploadedAssetSchema).optional(),
   detalles: z
     .array(ReciboDetalleSchema)
     .min(1, { message: "Debe haber al menos un concepto en el recibo" }),

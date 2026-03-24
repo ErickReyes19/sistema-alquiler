@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { calcularEstadoRecibo } from "@/lib/cobranza";
 import { buildTenantWhere, getTenantIdFromSession } from "@/lib/tenant-session";
+import { normalizeUploadedAssets } from "@/lib/uploaded-asset";
 import {
   DetallesParaNuevoRecibo,
   Recibo,
@@ -71,6 +72,7 @@ function mapRecibo(data: any): Recibo {
     saldoPendiente: financials.saldoPendiente,
     estado: financials.estado,
     observacionesCobranza: data.observacionesCobranza,
+    evidencias: normalizeUploadedAssets(data.evidencias),
   };
 }
 
@@ -93,6 +95,7 @@ function mapReciboView(data: any): ReciboView {
     saldoPendiente: financials.saldoPendiente,
     estado: financials.estado,
     observacionesCobranza: data.observacionesCobranza,
+    evidencias: normalizeUploadedAssets(data.evidencias),
     montoPagado,
     detalles: (data.detalles ?? []).map((d: any) => ({
       id: d.id,
@@ -226,6 +229,7 @@ export async function postReciboConDetalles({
         saldoPendiente: financials.saldoPendiente,
         estado: financials.estado,
         observacionesCobranza: recibo.observacionesCobranza?.trim() || null,
+        evidencias: recibo.evidencias?.length ? recibo.evidencias : undefined,
         detalles: {
           create: detalles.map((d) => ({
             tenantId,
@@ -290,6 +294,7 @@ export async function putReciboConDetalles({
           saldoPendiente: financials.saldoPendiente,
           estado: financials.estado,
           observacionesCobranza: recibo.observacionesCobranza?.trim() || null,
+          evidencias: recibo.evidencias?.length ? recibo.evidencias : undefined,
         },
       }),
       prisma.reciboDetalles.deleteMany({

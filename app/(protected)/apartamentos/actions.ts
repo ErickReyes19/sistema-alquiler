@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { buildTenantWhere, getTenantIdFromSession } from '@/lib/tenant-session'
+import { normalizeUploadedAssets } from '@/lib/uploaded-asset'
 
 import {
   Apartamento,
@@ -62,6 +63,7 @@ const mapApartamentoCompleto = (apartamento: {
   id: string
   numero: string
   direccion: string | null
+  imagenes: unknown
   disponible: boolean
   activo: boolean
   apartamento: Array<Parameters<typeof mapHabitacion>[0]>
@@ -70,6 +72,7 @@ const mapApartamentoCompleto = (apartamento: {
   id: apartamento.id,
   numero: apartamento.numero,
   direccion: apartamento.direccion ?? undefined,
+  imagenes: normalizeUploadedAssets(apartamento.imagenes),
   disponible: apartamento.disponible,
   activo: apartamento.activo,
   habitaciones: apartamento.apartamento.map(mapHabitacion),
@@ -79,6 +82,7 @@ const mapApartamentoCompleto = (apartamento: {
 const buildApartamentoData = (apartamento: Apartamento) => ({
   numero: apartamento.numero,
   direccion: apartamento.direccion ?? undefined,
+  imagenes: apartamento.imagenes?.length ? apartamento.imagenes : undefined,
   disponible: apartamento.disponible ?? true,
   activo: apartamento.activo ?? true,
 })
@@ -283,6 +287,7 @@ export async function getApartamentoCompletoConId(
       id: apartamento.id,
       numero: apartamento.numero,
       direccion: apartamento.direccion ?? undefined,
+      imagenes: normalizeUploadedAssets(apartamento.imagenes),
       disponible: apartamento.disponible,
       activo: apartamento.activo,
       habitaciones: apartamento.apartamento.map((habitacion) => ({

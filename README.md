@@ -1,4 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Configuración de entorno
+
+1. Copia `.env.example` a `.env`.
+2. Configura `DATABASE_URL`.
+3. Configura las credenciales de Cloudinary:
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+   - (Opcional) `CLOUDINARY_FOLDER_PREFIX`, `CLOUDINARY_MAX_FILE_SIZE_MB`, `CLOUDINARY_MAX_FILES_PER_REQUEST`
+
+## Migraciones
+
+Ejecuta la migración para crear los campos JSON donde se guardan URLs/metadatos de imágenes:
+
+```bash
+npx prisma migrate dev
+```
+
+## Desarrollo
 
 ## Getting Started
 

@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { ReciboSchema } from "../schema";
 import type { Recibo, ReciboDetalle } from "../type";
 import { postReciboConDetalles, putReciboConDetalles } from "../actions";
+import type { UploadedAsset } from "@/lib/uploaded-asset";
 
 interface FormularioReciboProps {
   isUpdate: boolean;
@@ -55,12 +56,14 @@ export default function FormularioRecibo({
       saldoPendiente: initialData?.saldoPendiente ?? 0,
       estado: initialData?.estado ?? "PENDIENTE",
       observacionesCobranza: initialData?.observacionesCobranza ?? "",
+      evidencias: initialData?.evidencias ?? [],
       detalles: initialData?.detalles ?? [],
     },
     mode: "onChange",
   });
 
   const { control, handleSubmit, setValue } = form;
+  const evidencias = form.watch("evidencias") ?? [];
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "detalles",
@@ -94,6 +97,28 @@ export default function FormularioRecibo({
     setValue("saldoPendiente", saldoPendiente, { shouldValidate: true, shouldDirty: true });
   }, [cargoMora, detalles, setValue]);
 
+  const uploadEvidencias = async (files: File[]) => {
+    const body = new FormData();
+    files.forEach((file) => body.append("files", file));
+    body.append("purpose", "recibos");
+
+    const response = await fetch("/api/uploads/cloudinary", {
+      method: "POST",
+      body,
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error ?? "No se pudieron subir las evidencias.");
+    }
+
+    const assets = (data.assets ?? []) as UploadedAsset[];
+    setValue("evidencias", [...evidencias, ...assets], {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
   const onSubmit = async (data: z.infer<typeof ReciboSchema>) => {
     try {
       const reciboPayload = {
@@ -106,6 +131,7 @@ export default function FormularioRecibo({
         saldoPendiente: data.saldoPendiente,
         estado: data.estado,
         observacionesCobranza: data.observacionesCobranza,
+        evidencias: data.evidencias ?? [],
       };
 
       const detallesPayload = data.detalles.map((d) => ({
@@ -224,6 +250,63 @@ export default function FormularioRecibo({
             </FormItem>
           )}
         />
+        <FormItem>
+          <FormLabel>Evidencias de transacción</FormLabel>
+          <FormControl>
+            <Input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={async (event) => {
+                const selected = Array.from(event.target.files ?? []);
+                if (!selected.length) return;
+                try {
+                  await uploadEvidencias(selected);
+                } catch (error) {
+                  toast({
+                    title: "Error subiendo evidencias",
+                    description:
+                      error instanceof Error
+                        ? error.message
+                        : "No fue posible subir las evidencias.",
+                    variant: "destructive",
+                  });
+                } finally {
+                  event.target.value = "";
+                }
+              }}
+            />
+          </FormControl>
+        </FormItem>
+
+        {evidencias.length > 0 && (
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {evidencias.map((evidencia, index) => (
+              <div key={`${evidencia.publicId}-${index}`} className="space-y-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={evidencia.url}
+                  alt={`Evidencia ${index + 1}`}
+                  className="h-24 w-full rounded-md object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() =>
+                    setValue(
+                      "evidencias",
+                      evidencias.filter((_, evidenceIndex) => evidenceIndex !== index),
+                      { shouldDirty: true, shouldValidate: true },
+                    )
+                  }
+                >
+                  Quitar
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Conceptos del recibo</h3>
