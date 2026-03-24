@@ -104,8 +104,14 @@ export interface ContratoEntrega {
   estadoInmueble: string;
   cargosDanos: number;
   saldoPendiente: number;
+  deduccionesDeposito: DeduccionDepositoItem[];
   motivoCancelacion?: string;
   observaciones?: string;
+}
+
+export interface DeduccionDepositoItem {
+  concepto: string;
+  monto: number;
 }
 
 export interface MovimientoDepositoGarantia {
@@ -229,6 +235,7 @@ export type RegistrarEntregaInput = {
   estadoInmueble: string;
   cargosDanos: number;
   saldoPendiente: number;
+  deduccionesDeposito?: DeduccionDepositoItem[];
   depositoDevuelto: number;
   observacionDeposito?: string;
   reciboLiquidacion?: string;

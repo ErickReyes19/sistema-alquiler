@@ -11,8 +11,10 @@ import {
   DoorOpen,
   History,
   Loader2,
+  Plus,
   PencilLine,
   RefreshCcw,
+  Trash2,
   Wallet,
   XCircle,
 } from "lucide-react";
@@ -34,7 +36,7 @@ import {
   registrarInventarioContrato,
   registrarRenovacionContrato,
 } from "../actions";
-import { ContratoView, EstadoRenovacionContrato, TipoInventarioContrato } from "../type";
+import { ContratoView, DeduccionDepositoItem, EstadoRenovacionContrato, TipoInventarioContrato } from "../type";
 
 interface ContratoViewProps {
   contrato: ContratoView;
@@ -69,6 +71,11 @@ function formatDate(dateString: string | null) {
 function formatInputDate(dateString: string | null | undefined) {
   if (!dateString) return "";
   return new Date(dateString).toISOString().slice(0, 10);
+}
+
+function toSafeNumber(value: string | number) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
@@ -127,6 +134,38 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
     motivoCancelacion: contrato.entrega?.motivoCancelacion ?? contrato.motivoCancelacion ?? "",
     observaciones: contrato.entrega?.observaciones ?? contrato.notasCierre ?? "",
   });
+
+  const [deduccionesDeposito, setDeduccionesDeposito] = useState<Array<{ concepto: string; monto: string }>>(
+    contrato.entrega?.deduccionesDeposito?.length
+      ? contrato.entrega.deduccionesDeposito.map((item) => ({
+          concepto: item.concepto,
+          monto: item.monto.toString(),
+        }))
+      : [{ concepto: "", monto: "0" }],
+  );
+
+  const deduccionesNormalizadas = useMemo<DeduccionDepositoItem[]>(
+    () =>
+      deduccionesDeposito
+        .map((item) => ({
+          concepto: item.concepto.trim(),
+          monto: toSafeNumber(item.monto),
+        }))
+        .filter((item) => item.concepto && item.monto > 0),
+    [deduccionesDeposito],
+  );
+
+  const totalDeducciones = useMemo(
+    () => deduccionesNormalizadas.reduce((accumulator, item) => accumulator + item.monto, 0),
+    [deduccionesNormalizadas],
+  );
+
+  const depositoCustodiado = contrato.depositoGarantia?.monto ?? contrato.depositoGarantiaMonto ?? 0;
+  const saldoPendiente = toSafeNumber(handoverForm.saldoPendiente);
+  const maximoAplicableDeducciones = Math.min(totalDeducciones, depositoCustodiado);
+  const restanteTrasDeducciones = Math.max(depositoCustodiado - maximoAplicableDeducciones, 0);
+  const maximoAplicableSaldo = Math.min(saldoPendiente, restanteTrasDeducciones);
+  const devolucionSugerida = Math.max(restanteTrasDeducciones - maximoAplicableSaldo, 0);
 
   const runAction = (action: () => Promise<void>, successMessage: string) => {
     startTransition(async () => {
@@ -739,16 +778,6 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Cargos por daños</label>
-                      <Input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        value={handoverForm.cargosDanos}
-                        onChange={(event) => setHandoverForm((current) => ({ ...current, cargosDanos: event.target.value }))}
-                      />
-                    </div>
-                    <div className="space-y-2">
                       <label className="text-sm font-medium">Saldo pendiente</label>
                       <Input
                         type="number"
@@ -767,6 +796,9 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                         value={handoverForm.depositoDevuelto}
                         onChange={(event) => setHandoverForm((current) => ({ ...current, depositoDevuelto: event.target.value }))}
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Sugerido según deducciones y saldo pendiente: {formatLempiras(devolucionSugerida)}
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Recibo de liquidación</label>
@@ -774,6 +806,73 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                         value={handoverForm.reciboLiquidacion}
                         onChange={(event) => setHandoverForm((current) => ({ ...current, reciboLiquidacion: event.target.value }))}
                       />
+                    </div>
+                  </div>
+                  <div className="space-y-3 rounded-md border p-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Deducciones del depósito</label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setDeduccionesDeposito((current) => [...current, { concepto: "", monto: "0" }])}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Agregar ítem
+                      </Button>
+                    </div>
+                    {deduccionesDeposito.map((item, index) => (
+                      <div key={`deduccion-${index}`} className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px_auto]">
+                        <Input
+                          placeholder="Ej: Pintura de paredes"
+                          value={item.concepto}
+                          onChange={(event) =>
+                            setDeduccionesDeposito((current) =>
+                              current.map((currentItem, currentIndex) =>
+                                currentIndex === index ? { ...currentItem, concepto: event.target.value } : currentItem,
+                              ),
+                            )
+                          }
+                        />
+                        <Input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          value={item.monto}
+                          onChange={(event) =>
+                            setDeduccionesDeposito((current) =>
+                              current.map((currentItem, currentIndex) =>
+                                currentIndex === index ? { ...currentItem, monto: event.target.value } : currentItem,
+                              ),
+                            )
+                          }
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={deduccionesDeposito.length <= 1}
+                          onClick={() =>
+                            setDeduccionesDeposito((current) => current.filter((_, currentIndex) => currentIndex !== index))
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-3">
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Total deducciones</p>
+                        <p className="font-semibold">{formatLempiras(totalDeducciones)}</p>
+                      </div>
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Aplicable al depósito</p>
+                        <p className="font-semibold">{formatLempiras(maximoAplicableDeducciones)}</p>
+                      </div>
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Depósito restante</p>
+                        <p className="font-semibold">{formatLempiras(restanteTrasDeducciones)}</p>
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -815,8 +914,9 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                             contratoId: contrato.id,
                             fechaEntrega: handoverForm.fechaEntrega,
                             estadoInmueble: handoverForm.estadoInmueble,
-                            cargosDanos: Number(handoverForm.cargosDanos),
+                            cargosDanos: totalDeducciones,
                             saldoPendiente: Number(handoverForm.saldoPendiente),
+                            deduccionesDeposito: deduccionesNormalizadas,
                             depositoDevuelto: Number(handoverForm.depositoDevuelto),
                             reciboLiquidacion: handoverForm.reciboLiquidacion,
                             observacionDeposito: handoverForm.observacionDeposito,
@@ -849,6 +949,21 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                   <div className="flex items-center justify-between rounded-md border p-3">
                     <span className="text-muted-foreground">Cargos por daños</span>
                     <span className="font-medium">{formatLempiras(contrato.entrega?.cargosDanos ?? 0)}</span>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="mb-2 text-muted-foreground">Desglose de deducciones</p>
+                    {contrato.entrega?.deduccionesDeposito?.length ? (
+                      <div className="space-y-1">
+                        {contrato.entrega.deduccionesDeposito.map((item, index) => (
+                          <div key={`${item.concepto}-${index}`} className="flex items-center justify-between text-sm">
+                            <span>{item.concepto}</span>
+                            <span className="font-medium">{formatLempiras(item.monto)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm">Sin deducciones detalladas.</p>
+                    )}
                   </div>
                   <div className="flex items-center justify-between rounded-md border p-3">
                     <span className="text-muted-foreground">Saldo pendiente</span>
