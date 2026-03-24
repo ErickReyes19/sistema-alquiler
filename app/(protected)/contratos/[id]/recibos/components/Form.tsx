@@ -5,9 +5,12 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { addDays, format } from "date-fns";
+import { es } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -18,6 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import { ReciboSchema } from "../schema";
@@ -28,10 +33,6 @@ interface FormularioReciboProps {
   isUpdate: boolean;
   initialData?: Partial<Recibo> & { detalles: ReciboDetalle[]; montoMensual?: number };
   contratoId: string;
-}
-
-function formatDateForInput(date: Date) {
-  return format(date, "yyyy-MM-dd");
 }
 
 export default function FormularioRecibo({
@@ -143,6 +144,7 @@ export default function FormularioRecibo({
 
   const totalPreview = form.watch("total") || 0;
   const saldoPreview = form.watch("saldoPendiente") || 0;
+  const maxCalendarDate = new Date(new Date().getFullYear() + 10, 11, 31);
 
   return (
     <Form {...form}>
@@ -154,13 +156,29 @@ export default function FormularioRecibo({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fecha de emisión</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    value={field.value ? formatDateForInput(field.value) : ""}
-                    onChange={(e) => field.onChange(new Date(`${e.target.value}T00:00:00`))}
-                  />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn("w-full text-left", !field.value && "text-muted-foreground")}
+                      >
+                        {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha"}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      startMonth={new Date("1900-01-01")}
+                      endMonth={maxCalendarDate}
+                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
@@ -172,13 +190,29 @@ export default function FormularioRecibo({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fecha de vencimiento</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    value={field.value ? formatDateForInput(field.value) : ""}
-                    onChange={(e) => field.onChange(new Date(`${e.target.value}T00:00:00`))}
-                  />
-                </FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn("w-full text-left", !field.value && "text-muted-foreground")}
+                      >
+                        {field.value ? format(field.value, "PPP", { locale: es }) : "Selecciona fecha"}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      startMonth={new Date("1900-01-01")}
+                      endMonth={maxCalendarDate}
+                      disabled={(date) => date < new Date("1900-01-01") || date > maxCalendarDate}
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
