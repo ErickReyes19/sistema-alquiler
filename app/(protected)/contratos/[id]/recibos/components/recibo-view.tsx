@@ -51,7 +51,7 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
     }).format(amount);
 
   const handlePrint = () => {
-    window.open(`/recibo/${recibo.id}/imprimir/`, "_blank");
+    window.location.href = `/recibo/${recibo.id}/imprimir/`;
   };
 
   const registrarPagoTotal = () => {

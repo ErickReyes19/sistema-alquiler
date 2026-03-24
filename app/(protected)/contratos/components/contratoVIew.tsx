@@ -146,7 +146,7 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
   };
 
   const handlePrint = () => {
-    window.open(`/contrato/${contrato.id}/imprimir`, "_blank");
+    window.location.href = `/contrato/${contrato.id}/imprimir`;
   };
 
   return (
