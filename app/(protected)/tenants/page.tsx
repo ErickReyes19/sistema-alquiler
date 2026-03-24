@@ -45,7 +45,7 @@ export default async function TenantsPage() {
                 <td className="p-3">{tenant.activo ? 'Activo' : 'Inactivo'}</td>
                 <td className="p-3">{tenant.usuarios}</td>
                 <td className="p-3">
-                  <ResetTenantPasswordButton tenantId={tenant.id} tenantNombre={tenant.nombre} />
+                  <ResetTenantPasswordButton tenantId={tenant.id} />
                 </td>
               </tr>
             ))}

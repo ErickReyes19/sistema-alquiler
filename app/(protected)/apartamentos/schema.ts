@@ -25,6 +25,7 @@ export const ApartamentoServicioSchema = z.object({
   id: z.string().uuid().optional(),
   apartamentoId: z.string().optional(), // ← DEFAULT
   servicioId: z.string().uuid({ message: "El ID de servicio es requerido" }),
+  clave: z.string().max(100, "Máximo 100 caracteres").optional().nullable(),
   incluido: z.boolean().optional(),    // ← DEFAULT
   costoAdicional: z
     .number({ invalid_type_error: "El costo adicional debe ser un número" })

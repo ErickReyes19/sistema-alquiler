@@ -46,12 +46,14 @@ const mapApartamentoServicio = (servicio: {
   id: string
   apartamentoId: string
   servicioId: string
+  clave: string | null
   incluido: boolean
   costoAdicional: { toString(): string } | number
 }): ApartamentoServicio => ({
   id: servicio.id,
   apartamentoId: servicio.apartamentoId,
   servicioId: servicio.servicioId,
+  clave: servicio.clave,
   incluido: servicio.incluido,
   costoAdicional: Number(servicio.costoAdicional),
 })
@@ -93,6 +95,7 @@ const buildServiciosCreateData = (tenantId: string, servicios: ApartamentoServic
   servicios.map((servicio) => ({
     tenantId,
     servicioId: servicio.servicioId,
+    clave: servicio.clave?.trim() || null,
     incluido: servicio.incluido ?? true,
     costoAdicional: servicio.costoAdicional ?? 0,
   }))
@@ -119,6 +122,7 @@ const buildServiciosCreateManyData = (
     tenantId: tenantId,
     apartamentoId,
     servicioId: servicio.servicioId,
+    clave: servicio.clave?.trim() || null,
     incluido: servicio.incluido ?? true,
     costoAdicional: servicio.costoAdicional ?? 0,
   }))
@@ -292,6 +296,7 @@ export async function getApartamentoCompletoConId(
         id: servicio.id,
         servicioId: servicio.servicioId,
         servicioNombre: servicio.servicio.nombre,
+        clave: servicio.clave,
         incluido: servicio.incluido,
         costoAdicional: Number(servicio.costoAdicional),
       })),

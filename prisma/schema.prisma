@@ -133,7 +133,6 @@ model Servicios {
   id                   String                 @id @default(uuid())
   tenantId             String
   nombre               String
-  clave                String?
   createAt             DateTime               @default(now())
   updateAt             DateTime               @updatedAt
   activo               Boolean
@@ -149,6 +148,7 @@ model ApartamentoServicios {
   tenantId       String
   apartamentoId  String
   servicioId     String
+  clave          String?
   incluido       Boolean     @default(true)
   costoAdicional Decimal     @default(0.00)
   tenant         Tenant      @relation(fields: [tenantId], references: [id])

@@ -286,6 +286,23 @@ export default function ApartamentoForm({
                 />
                 <FormField
                   control={control}
+                  name={`servicios.${idx}.clave`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Clave del servicio</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Clave para este apartamento"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
                   name={`servicios.${idx}.incluido`}
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-2">
@@ -330,7 +347,7 @@ export default function ApartamentoForm({
             <Button
               type="button"
               onClick={() =>
-                appendServ({ servicioId: '', incluido: false, costoAdicional: 0 })
+                appendServ({ servicioId: '', clave: '', incluido: false, costoAdicional: 0 })
               }
             >
               Añadir Servicio
