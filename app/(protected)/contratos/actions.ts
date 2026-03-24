@@ -114,6 +114,24 @@ function normalizeInventoryItems(items: string[]) {
   return items.map((item) => item.trim()).filter(Boolean);
 }
 
+function normalizeSettlementItems(items?: { concepto: string; monto: number; tipo: "SUMA" | "RESTA" }[]) {
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
+  return items
+    .map((item) => ({
+      concepto: item.concepto.trim(),
+      monto: Number(item.monto),
+      tipo: item.tipo === "SUMA" ? "SUMA" : "RESTA",
+    }))
+    .filter((item) => item.concepto.length > 0 && Number.isFinite(item.monto) && item.monto > 0)
+    .map((item) => ({
+      ...item,
+      monto: Number(item.monto.toFixed(2)),
+    }));
+}
+
 function resolveDepositStatus(data: {
   monto: number;
   fechaRecepcion: Date | null;
@@ -236,10 +254,22 @@ function mapInventario(inventario: ContratoViewRecord["inventarios"][number]): C
   };
 }
 
-function mapEntrega(entrega: ContratoViewRecord["entrega"]): ContratoEntrega | null {
+function mapEntrega(
+  entrega: ContratoViewRecord["entrega"],
+  deposito: ContratoViewRecord["depositoGarantia"],
+): ContratoEntrega | null {
   if (!entrega) {
     return null;
   }
+
+  const ajustesLiquidacion =
+    deposito?.movimientos
+      .filter((movimiento) => movimiento.tipo === "APLICADO_DANOS" || movimiento.tipo === "AJUSTE")
+      .map((movimiento) => ({
+        concepto: (movimiento.descripcion?.replace(/^SUMA:\s*/, "").trim()) || "Ajuste de liquidación",
+        monto: toNumber(movimiento.monto),
+        tipo: movimiento.tipo === "AJUSTE" ? ("SUMA" as const) : ("RESTA" as const),
+      })) ?? [];
 
   return {
     id: entrega.id,
@@ -247,6 +277,7 @@ function mapEntrega(entrega: ContratoViewRecord["entrega"]): ContratoEntrega | n
     estadoInmueble: entrega.estadoInmueble,
     cargosDanos: toNumber(entrega.cargosDanos),
     saldoPendiente: toNumber(entrega.saldoPendiente),
+    ajustesLiquidacion,
     motivoCancelacion: entrega.motivoCancelacion ?? undefined,
     observaciones: entrega.observaciones ?? undefined,
   };
@@ -687,7 +718,7 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
       renovaciones: contrato.renovaciones.map(mapRenovacion),
       ajustesRenta: contrato.ajustesRenta.map(mapAjusteRenta),
       inventarios: contrato.inventarios.map(mapInventario),
-      entrega: mapEntrega(contrato.entrega),
+      entrega: mapEntrega(contrato.entrega, contrato.depositoGarantia),
       depositoGarantia: mapDepositoGarantia(contrato.depositoGarantia),
     };
   } catch (error) {
@@ -851,7 +882,16 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
 
   await prisma.$transaction(async (tx) => {
     const deposito = contrato.depositoGarantia;
-    const cargosDanos = Number(input.cargosDanos);
+    const ajustesLiquidacion = normalizeSettlementItems(input.ajustesLiquidacion);
+    const totalRestas = ajustesLiquidacion
+      .filter((item) => item.tipo === "RESTA")
+      .reduce((accumulator, item) => accumulator + item.monto, 0);
+    const totalSumas = ajustesLiquidacion
+      .filter((item) => item.tipo === "SUMA")
+      .reduce((accumulator, item) => accumulator + item.monto, 0);
+    const cargosDanos = ajustesLiquidacion.length
+      ? totalRestas
+      : Number(input.cargosDanos);
     const saldoPendiente = Number(input.saldoPendiente);
     const depositoDevuelto = Number(input.depositoDevuelto);
 
@@ -862,7 +902,7 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
       update: {
         fechaEntrega: new Date(input.fechaEntrega),
         estadoInmueble: input.estadoInmueble,
-        cargosDanos: input.cargosDanos,
+        cargosDanos,
         saldoPendiente: input.saldoPendiente,
         motivoCancelacion: normalizeOptionalText(input.motivoCancelacion),
         observaciones: normalizeOptionalText(input.observaciones),
@@ -872,7 +912,7 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
         contratoId: input.contratoId,
         fechaEntrega: new Date(input.fechaEntrega),
         estadoInmueble: input.estadoInmueble,
-        cargosDanos: input.cargosDanos,
+        cargosDanos,
         saldoPendiente: input.saldoPendiente,
         motivoCancelacion: normalizeOptionalText(input.motivoCancelacion),
         observaciones: normalizeOptionalText(input.observaciones),
@@ -897,6 +937,47 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
         montoAplicadoSaldo: aplicadoSaldo,
       });
 
+      let saldoDisponibleDeducciones = aplicadoDanos;
+      const movimientosDanos = ajustesLiquidacion.length
+        ? ajustesLiquidacion
+            .filter((item) => item.tipo === "RESTA")
+            .map((deduccion) => {
+              const montoAplicadoItem = Math.min(deduccion.monto, saldoDisponibleDeducciones);
+              saldoDisponibleDeducciones = Number(Math.max(saldoDisponibleDeducciones - montoAplicadoItem, 0).toFixed(2));
+
+              if (montoAplicadoItem <= 0) {
+                return null;
+              }
+
+              return {
+                tenantId,
+                fecha: new Date(input.fechaEntrega),
+                tipo: "APLICADO_DANOS" as const,
+                monto: montoAplicadoItem,
+                descripcion: deduccion.concepto,
+              };
+            })
+            .filter((item): item is NonNullable<typeof item> => item !== null)
+        : (aplicadoDanos > 0
+          ? [{
+              tenantId,
+              fecha: new Date(input.fechaEntrega),
+              tipo: "APLICADO_DANOS" as const,
+              monto: aplicadoDanos,
+              descripcion: "Aplicado a cargos por daños al cierre del contrato.",
+            }]
+          : []);
+
+      const movimientosSumas = ajustesLiquidacion
+        .filter((item) => item.tipo === "SUMA")
+        .map((item) => ({
+          tenantId,
+          fecha: new Date(input.fechaEntrega),
+          tipo: "AJUSTE" as const,
+          monto: item.monto,
+          descripcion: `SUMA: ${item.concepto}`,
+        }));
+
       await tx.depositoGarantia.update({
         where: { contratoId: input.contratoId },
         data: {
@@ -910,19 +991,12 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
           movimientos: {
             deleteMany: {
               tipo: {
-                in: ["APLICADO_DANOS", "APLICADO_SALDO_PENDIENTE", "DEVOLUCION_PARCIAL", "DEVOLUCION_TOTAL"],
+                in: ["APLICADO_DANOS", "APLICADO_SALDO_PENDIENTE", "DEVOLUCION_PARCIAL", "DEVOLUCION_TOTAL", "AJUSTE"],
               },
             },
             create: [
-              ...(aplicadoDanos > 0
-                ? [{
-                    tenantId,
-                    fecha: new Date(input.fechaEntrega),
-                    tipo: "APLICADO_DANOS" as const,
-                    monto: aplicadoDanos,
-                    descripcion: "Aplicado a cargos por daños al cierre del contrato.",
-                  }]
-                : []),
+              ...movimientosDanos,
+              ...movimientosSumas,
               ...(aplicadoSaldo > 0
                 ? [{
                     tenantId,
@@ -938,7 +1012,11 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
                     fecha: new Date(input.fechaEntrega),
                     tipo: tipoDevolucion,
                     monto: devolucion,
-                    descripcion: normalizeOptionalText(input.observacionDeposito) ?? "Devolución liquidada del depósito de garantía.",
+                    descripcion:
+                      normalizeOptionalText(input.observacionDeposito) ??
+                      (totalSumas > 0
+                        ? `Devolución liquidada del depósito de garantía. Sumas adicionales consideradas: ${totalSumas.toFixed(2)}.`
+                        : "Devolución liquidada del depósito de garantía."),
                   }]
                 : []),
             ],

@@ -104,8 +104,17 @@ export interface ContratoEntrega {
   estadoInmueble: string;
   cargosDanos: number;
   saldoPendiente: number;
+  ajustesLiquidacion: AjusteLiquidacionItem[];
   motivoCancelacion?: string;
   observaciones?: string;
+}
+
+export type TipoAjusteLiquidacion = "SUMA" | "RESTA";
+
+export interface AjusteLiquidacionItem {
+  concepto: string;
+  monto: number;
+  tipo: TipoAjusteLiquidacion;
 }
 
 export interface MovimientoDepositoGarantia {
@@ -229,6 +238,7 @@ export type RegistrarEntregaInput = {
   estadoInmueble: string;
   cargosDanos: number;
   saldoPendiente: number;
+  ajustesLiquidacion?: AjusteLiquidacionItem[];
   depositoDevuelto: number;
   observacionDeposito?: string;
   reciboLiquidacion?: string;

@@ -11,8 +11,10 @@ import {
   DoorOpen,
   History,
   Loader2,
+  Plus,
   PencilLine,
   RefreshCcw,
+  Trash2,
   Wallet,
   XCircle,
 } from "lucide-react";
@@ -34,7 +36,7 @@ import {
   registrarInventarioContrato,
   registrarRenovacionContrato,
 } from "../actions";
-import { ContratoView, EstadoRenovacionContrato, TipoInventarioContrato } from "../type";
+import { AjusteLiquidacionItem, ContratoView, EstadoRenovacionContrato, TipoInventarioContrato, TipoAjusteLiquidacion } from "../type";
 
 interface ContratoViewProps {
   contrato: ContratoView;
@@ -69,6 +71,11 @@ function formatDate(dateString: string | null) {
 function formatInputDate(dateString: string | null | undefined) {
   if (!dateString) return "";
   return new Date(dateString).toISOString().slice(0, 10);
+}
+
+function toSafeNumber(value: string | number) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
@@ -119,7 +126,6 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
   const [handoverForm, setHandoverForm] = useState({
     fechaEntrega: formatInputDate(contrato.entrega?.fechaEntrega ?? contrato.fechaFin ?? new Date().toISOString()),
     estadoInmueble: contrato.entrega?.estadoInmueble ?? "Bueno",
-    cargosDanos: contrato.entrega?.cargosDanos.toString() ?? "0",
     saldoPendiente: contrato.entrega?.saldoPendiente.toString() ?? "0",
     depositoDevuelto: contrato.depositoGarantia?.montoDevuelto?.toString() ?? "0",
     reciboLiquidacion: contrato.depositoGarantia?.reciboLiquidacion ?? "",
@@ -127,6 +133,40 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
     motivoCancelacion: contrato.entrega?.motivoCancelacion ?? contrato.motivoCancelacion ?? "",
     observaciones: contrato.entrega?.observaciones ?? contrato.notasCierre ?? "",
   });
+
+  const [ajustesLiquidacion, setAjustesLiquidacion] = useState<Array<{ concepto: string; monto: string; tipo: TipoAjusteLiquidacion }>>(
+    contrato.entrega?.ajustesLiquidacion?.length
+      ? contrato.entrega.ajustesLiquidacion.map((item) => ({
+          concepto: item.concepto,
+          monto: item.monto.toString(),
+          tipo: item.tipo,
+        }))
+      : [{ concepto: "", monto: "0", tipo: "RESTA" }],
+  );
+
+  const ajustesNormalizados = useMemo<AjusteLiquidacionItem[]>(
+    () =>
+      ajustesLiquidacion
+        .map((item) => ({
+          concepto: item.concepto.trim(),
+          monto: toSafeNumber(item.monto),
+          tipo: item.tipo,
+        }))
+        .filter((item) => item.concepto && item.monto > 0),
+    [ajustesLiquidacion],
+  );
+
+  const totalRestas = useMemo(() => ajustesNormalizados.filter((item) => item.tipo === "RESTA").reduce((accumulator, item) => accumulator + item.monto, 0), [ajustesNormalizados]);
+  const totalSumas = useMemo(() => ajustesNormalizados.filter((item) => item.tipo === "SUMA").reduce((accumulator, item) => accumulator + item.monto, 0), [ajustesNormalizados]);
+  const netoAjustes = totalSumas - totalRestas;
+
+  const depositoCustodiado = contrato.depositoGarantia?.monto ?? contrato.depositoGarantiaMonto ?? 0;
+  const saldoPendiente = toSafeNumber(handoverForm.saldoPendiente);
+  const maximoAplicableRestas = Math.min(totalRestas, depositoCustodiado);
+  const restanteTrasRestas = Math.max(depositoCustodiado - maximoAplicableRestas, 0);
+  const maximoAplicableSaldo = Math.min(saldoPendiente, restanteTrasRestas);
+  const devolucionSugeridaDeposito = Math.max(restanteTrasRestas - maximoAplicableSaldo, 0);
+  const totalSugeridoPagarInquilino = devolucionSugeridaDeposito + totalSumas;
 
   const runAction = (action: () => Promise<void>, successMessage: string) => {
     startTransition(async () => {
@@ -739,16 +779,6 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Cargos por daños</label>
-                      <Input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        value={handoverForm.cargosDanos}
-                        onChange={(event) => setHandoverForm((current) => ({ ...current, cargosDanos: event.target.value }))}
-                      />
-                    </div>
-                    <div className="space-y-2">
                       <label className="text-sm font-medium">Saldo pendiente</label>
                       <Input
                         type="number"
@@ -767,6 +797,12 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                         value={handoverForm.depositoDevuelto}
                         onChange={(event) => setHandoverForm((current) => ({ ...current, depositoDevuelto: event.target.value }))}
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Devolución sugerida de depósito: {formatLempiras(devolucionSugeridaDeposito)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Total sugerido a pagar al inquilino: {formatLempiras(totalSugeridoPagarInquilino)}
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Recibo de liquidación</label>
@@ -774,6 +810,89 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                         value={handoverForm.reciboLiquidacion}
                         onChange={(event) => setHandoverForm((current) => ({ ...current, reciboLiquidacion: event.target.value }))}
                       />
+                    </div>
+                  </div>
+                  <div className="space-y-3 rounded-md border p-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium">Ítems de liquidación (suma / resta)</label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setAjustesLiquidacion((current) => [...current, { concepto: "", monto: "0", tipo: "RESTA" }])}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Agregar ítem
+                      </Button>
+                    </div>
+                    {ajustesLiquidacion.map((item, index) => (
+                      <div key={`deduccion-${index}`} className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px_auto]">
+                        <Input
+                          placeholder="Ej: Pintura (resta) / Reintegro por días no usados (suma)"
+                          value={item.concepto}
+                          onChange={(event) =>
+                            setAjustesLiquidacion((current) =>
+                              current.map((currentItem, currentIndex) =>
+                                currentIndex === index ? { ...currentItem, concepto: event.target.value } : currentItem,
+                              ),
+                            )
+                          }
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <select
+                            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                            value={item.tipo}
+                            onChange={(event) =>
+                              setAjustesLiquidacion((current) =>
+                                current.map((currentItem, currentIndex) =>
+                                  currentIndex === index ? { ...currentItem, tipo: event.target.value as TipoAjusteLiquidacion } : currentItem,
+                                ),
+                              )
+                            }
+                          >
+                            <option value="RESTA">Resta</option>
+                            <option value="SUMA">Suma</option>
+                          </select>
+                          <Input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            value={item.monto}
+                            onChange={(event) =>
+                              setAjustesLiquidacion((current) =>
+                                current.map((currentItem, currentIndex) =>
+                                  currentIndex === index ? { ...currentItem, monto: event.target.value } : currentItem,
+                                ),
+                              )
+                            }
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          disabled={ajustesLiquidacion.length <= 1}
+                          onClick={() =>
+                            setAjustesLiquidacion((current) => current.filter((_, currentIndex) => currentIndex !== index))
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-3">
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Total restas</p>
+                        <p className="font-semibold">{formatLempiras(totalRestas)}</p>
+                      </div>
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Total sumas</p>
+                        <p className="font-semibold">{formatLempiras(totalSumas)}</p>
+                      </div>
+                      <div className="rounded-md bg-muted/50 p-2">
+                        <p className="text-muted-foreground">Neto ajustes (suma - resta)</p>
+                        <p className="font-semibold">{formatLempiras(netoAjustes)}</p>
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -815,8 +934,9 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                             contratoId: contrato.id,
                             fechaEntrega: handoverForm.fechaEntrega,
                             estadoInmueble: handoverForm.estadoInmueble,
-                            cargosDanos: Number(handoverForm.cargosDanos),
+                            cargosDanos: totalRestas,
                             saldoPendiente: Number(handoverForm.saldoPendiente),
+                            ajustesLiquidacion: ajustesNormalizados,
                             depositoDevuelto: Number(handoverForm.depositoDevuelto),
                             reciboLiquidacion: handoverForm.reciboLiquidacion,
                             observacionDeposito: handoverForm.observacionDeposito,
@@ -849,6 +969,21 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
                   <div className="flex items-center justify-between rounded-md border p-3">
                     <span className="text-muted-foreground">Cargos por daños</span>
                     <span className="font-medium">{formatLempiras(contrato.entrega?.cargosDanos ?? 0)}</span>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <p className="mb-2 text-muted-foreground">Desglose de liquidación</p>
+                    {contrato.entrega?.ajustesLiquidacion?.length ? (
+                      <div className="space-y-1">
+                        {contrato.entrega.ajustesLiquidacion.map((item, index) => (
+                          <div key={`${item.concepto}-${index}`} className="flex items-center justify-between text-sm">
+                            <span>{item.tipo === "SUMA" ? "Suma" : "Resta"} · {item.concepto}</span>
+                            <span className="font-medium">{formatLempiras(item.monto)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm">Sin ítems detallados.</p>
+                    )}
                   </div>
                   <div className="flex items-center justify-between rounded-md border p-3">
                     <span className="text-muted-foreground">Saldo pendiente</span>
