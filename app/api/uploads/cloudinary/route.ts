@@ -6,6 +6,8 @@ import {
 } from '@/lib/cloudinary';
 import { getTenantIdFromSession } from '@/lib/tenant-session';
 
+export const runtime = 'nodejs';
+
 export async function POST(request: Request) {
   try {
     await getTenantIdFromSession();
@@ -65,9 +67,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ assets });
   } catch (error) {
     console.error('Error subiendo imágenes a Cloudinary:', error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'No se pudieron subir las imágenes. Inténtalo de nuevo.';
+    const status = message.toLowerCase().includes('sesión') ? 401 : 500;
     return NextResponse.json(
-      { error: 'No se pudieron subir las imágenes. Inténtalo de nuevo.' },
-      { status: 500 },
+      { error: message },
+      { status },
     );
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -64,6 +64,8 @@ export default function FormularioRecibo({
 
   const { control, handleSubmit, setValue } = form;
   const evidencias = form.watch("evidencias") ?? [];
+  const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
+  const [localEvidencePreviews, setLocalEvidencePreviews] = useState<string[]>([]);
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "detalles",
@@ -253,34 +255,76 @@ export default function FormularioRecibo({
         <FormItem>
           <FormLabel>Evidencias de transacción</FormLabel>
           <FormControl>
-            <Input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={async (event) => {
-                const selected = Array.from(event.target.files ?? []);
-                if (!selected.length) return;
-                try {
-                  await uploadEvidencias(selected);
-                } catch (error) {
-                  toast({
-                    title: "Error subiendo evidencias",
-                    description:
-                      error instanceof Error
-                        ? error.message
-                        : "No fue posible subir las evidencias.",
-                    variant: "destructive",
-                  });
-                } finally {
-                  event.target.value = "";
-                }
-              }}
-            />
+            <label
+              htmlFor="recibo-evidencias"
+              className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center transition hover:bg-muted/40"
+            >
+              <span className="text-sm font-medium">
+                {isUploadingEvidence
+                  ? "Subiendo evidencias..."
+                  : "Haz clic para cargar evidencias"}
+              </span>
+              <span className="mt-1 text-xs text-muted-foreground">
+                Transferencias, pago de energía u otros comprobantes
+              </span>
+              <Input
+                id="recibo-evidencias"
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={async (event) => {
+                  const selected = Array.from(event.target.files ?? []);
+                  if (!selected.length) return;
+                  const previewUrls = selected.map((file) => URL.createObjectURL(file));
+                  setLocalEvidencePreviews((prev) => [...prev, ...previewUrls]);
+                  setIsUploadingEvidence(true);
+                  try {
+                    await uploadEvidencias(selected);
+                  } catch (error) {
+                    toast({
+                      title: "Error subiendo evidencias",
+                      description:
+                        error instanceof Error
+                          ? error.message
+                          : "No fue posible subir las evidencias.",
+                      variant: "destructive",
+                    });
+                  } finally {
+                    previewUrls.forEach((url) => URL.revokeObjectURL(url));
+                    setLocalEvidencePreviews((prev) =>
+                      prev.filter((url) => !previewUrls.includes(url)),
+                    );
+                    setIsUploadingEvidence(false);
+                    event.target.value = "";
+                  }
+                }}
+              />
+            </label>
           </FormControl>
         </FormItem>
 
+        {localEvidencePreviews.length > 0 && (
+          <div>
+            <p className="mb-2 text-sm text-muted-foreground">Vista previa local</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {localEvidencePreviews.map((preview, index) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={`preview-evidencia-${preview}-${index}`}
+                  src={preview}
+                  alt={`Previsualización de evidencia ${index + 1}`}
+                  className="h-24 w-full animate-pulse rounded-md object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {evidencias.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div>
+            <p className="mb-2 text-sm text-muted-foreground">Evidencias guardadas</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             {evidencias.map((evidencia, index) => (
               <div key={`${evidencia.publicId}-${index}`} className="space-y-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -305,6 +349,7 @@ export default function FormularioRecibo({
                 </Button>
               </div>
             ))}
+            </div>
           </div>
         )}
 
