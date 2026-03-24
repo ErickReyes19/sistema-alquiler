@@ -21,6 +21,8 @@ model Tenant {
   tiposHabitacion       TiposHabitacion[]
   apartamentos          Apartamento[]
   servicios             Servicios[]
+  reglas                Regla[]
+  contratoReglas        ContratoRegla[]
   apartamentoServicios  ApartamentoServicios[]
   contratos             Contratos[]
   renovacionesContrato  RenovacionContrato[]
@@ -132,6 +134,7 @@ model Servicios {
   id                   String                 @id @default(uuid())
   tenantId             String
   nombre               String
+  clave                String?
   createAt             DateTime               @default(now())
   updateAt             DateTime               @updatedAt
   activo               Boolean
@@ -171,6 +174,7 @@ model Contratos {
   createAt              DateTime                  @default(now())
   updateAt              DateTime                  @updatedAt
   montoMensual          Decimal                   @default(0.00)
+  diaPagoMensual        Int                       @default(1)
   activo                Boolean                   @default(true)
   preavisoDias          Int                       @default(30)
   estadoRenovacion      EstadoRenovacionContrato  @default(SIN_GESTION)
@@ -188,12 +192,45 @@ model Contratos {
   inventarios           ContratoInventario[]
   entrega               ContratoEntrega?
   depositoGarantia      DepositoGarantia?
+  reglas                ContratoRegla[]
 
   @@index([tenantId])
   @@index([inquilinoId], map: "Contratos_inquilinoId_fkey")
   @@index([apartamentoId], map: "Contratos_apartamentoId_fkey")
   @@index([fechaFin])
   @@index([estadoRenovacion])
+}
+
+model Regla {
+  id          String          @id @default(uuid())
+  tenantId    String
+  nombre      String
+  descripcion String?
+  createAt    DateTime        @default(now())
+  updateAt    DateTime        @updatedAt
+  activo      Boolean         @default(true)
+  tenant      Tenant          @relation(fields: [tenantId], references: [id])
+  contratos   ContratoRegla[]
+
+  @@unique([tenantId, nombre])
+  @@index([tenantId])
+}
+
+model ContratoRegla {
+  id         String    @id @default(uuid())
+  tenantId   String
+  contratoId String
+  reglaId    String
+  createAt   DateTime  @default(now())
+  updateAt   DateTime  @updatedAt
+  tenant     Tenant    @relation(fields: [tenantId], references: [id])
+  contrato   Contratos @relation(fields: [contratoId], references: [id])
+  regla      Regla     @relation(fields: [reglaId], references: [id])
+
+  @@unique([tenantId, contratoId, reglaId])
+  @@index([tenantId])
+  @@index([contratoId])
+  @@index([reglaId])
 }
 
 model Inquilino {

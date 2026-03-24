@@ -6,6 +6,7 @@ import HeaderComponent from "@/components/HeaderComponent";
 import NoAcceso from "@/components/noAccess";
 import { getApartamentosCompleto } from "@/app/(protected)/apartamentos/actions";
 import { getInquilinosActivosSinContrato } from "@/app/(protected)/inquilinos/actions";
+import { getReglasActivas } from "@/app/(protected)/reglas/actions";
 
 import { getContratoById } from "../../actions";
 import { Formulario } from "../../components/Form";
@@ -24,6 +25,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
 
   const inquilinosActivos = await getInquilinosActivosSinContrato();
   const apartamentosActivos = await getApartamentosCompleto();
+  const reglas = await getReglasActivas();
 
   const initialData = {
     id: contrato.id,
@@ -32,6 +34,8 @@ export default async function Edit({ params }: { params: { id: string } }) {
     fechaInicio: contrato.fechaInicio,
     fechaFin: contrato.fechaFin ?? undefined,
     montoMensual: contrato.montoMensual,
+    diaPagoMensual: contrato.diaPagoMensual,
+    reglaIds: contrato.reglaIds,
     depositoGarantiaMonto: contrato.depositoGarantiaMonto,
     fechaRecepcionDeposito: contrato.fechaRecepcionDeposito ?? undefined,
     preavisoDias: contrato.preavisoDias,
@@ -54,6 +58,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
         initialData={initialData}
         inquilinos={inquilinosActivos}
         apartamentos={apartamentosActivos}
+        reglas={reglas}
       />
     </div>
   );

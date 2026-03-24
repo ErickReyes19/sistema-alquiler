@@ -88,6 +88,12 @@ const items = [
     permiso: "ver_servicios",
   },
   {
+    title: "Reglas",
+    url: "/reglas",
+    icon: ListOrderedIcon,
+    permiso: "ver_reglas",
+  },
+  {
     title: "Contratos",
     url: "/contratos",
     icon: ListOrderedIcon,

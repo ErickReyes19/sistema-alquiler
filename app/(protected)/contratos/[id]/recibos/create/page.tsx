@@ -4,7 +4,6 @@ import { getDetallesParaNuevoRecibo } from "../actions";
 import { ReciboCreate } from "../type";
 import HeaderComponent from "@/components/HeaderComponent";
 import { PlusCircle } from "lucide-react";
-import { addDays } from "date-fns";
 import FormularioRecibo from "../components/Form";
 
 interface CreateReciboPageProps {
@@ -34,8 +33,6 @@ export default async function CreateReciboPage({ params }: CreateReciboPageProps
   const initialData: ReciboCreate & { detalles: { descripcion: string; monto: number }[] } = {
     contratoId: detalles.contratoId,
     total: parseFloat(detalles.montoMensual),
-    fechaPago: new Date().toISOString(),
-    fechaVencimiento: addDays(new Date(), 5).toISOString(),
     cargoMora: 0,
     observacionesCobranza: "",
     detalles: [

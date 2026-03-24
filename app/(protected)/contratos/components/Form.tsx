@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
@@ -33,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 import { Apartamento } from "../../apartamentos/type";
 import { Inquilino } from "../../inquilinos/type";
+import { Regla } from "../../reglas/type";
 import { postContrato, putContrato } from "../actions";
 import { ContratoSchema } from "../schema";
 import type { ContratoCreate, ContratoUpdate, EstadoRenovacionContrato } from "../type";
@@ -44,6 +46,7 @@ export function Formulario({
   initialData,
   inquilinos,
   apartamentos,
+  reglas,
 }: {
   isUpdate: boolean;
   initialData?: {
@@ -53,6 +56,8 @@ export function Formulario({
     fechaInicio: string;
     fechaFin?: string | null;
     montoMensual: number;
+    diaPagoMensual: number;
+    reglaIds: string[];
     depositoGarantiaMonto: number;
     fechaRecepcionDeposito?: string | null;
     preavisoDias?: number;
@@ -63,6 +68,7 @@ export function Formulario({
   };
   inquilinos: Inquilino[];
   apartamentos: Apartamento[];
+  reglas: Regla[];
 }) {
   const { toast } = useToast();
   const router = useRouter();
@@ -74,6 +80,8 @@ export function Formulario({
         fechaInicio: new Date(initialData.fechaInicio),
         fechaFin: initialData.fechaFin ? new Date(initialData.fechaFin) : undefined,
         montoMensual: initialData.montoMensual,
+        diaPagoMensual: initialData.diaPagoMensual,
+        reglaIds: initialData.reglaIds,
         depositoGarantiaMonto: initialData.depositoGarantiaMonto,
         fechaRecepcionDeposito: initialData.fechaRecepcionDeposito ? new Date(initialData.fechaRecepcionDeposito) : undefined,
         preavisoDias: initialData.preavisoDias ?? 30,
@@ -85,6 +93,8 @@ export function Formulario({
         fechaInicio: new Date(),
         fechaFin: undefined,
         montoMensual: 0,
+        diaPagoMensual: 1,
+        reglaIds: [],
         depositoGarantiaMonto: 0,
         fechaRecepcionDeposito: undefined,
         preavisoDias: 30,
@@ -108,6 +118,8 @@ export function Formulario({
           fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
           montoMensual: values.montoMensual ?? 0,
+          diaPagoMensual: values.diaPagoMensual ?? 1,
+          reglaIds: values.reglaIds ?? [],
           depositoGarantiaMonto: values.depositoGarantiaMonto ?? 0,
           fechaRecepcionDeposito: values.fechaRecepcionDeposito ? values.fechaRecepcionDeposito.toISOString() : null,
           preavisoDias: values.preavisoDias ?? 30,
@@ -124,6 +136,8 @@ export function Formulario({
           fechaInicio: values.fechaInicio.toISOString(),
           fechaFin: values.fechaFin ? values.fechaFin.toISOString() : undefined,
           montoMensual: values.montoMensual ?? 0,
+          diaPagoMensual: values.diaPagoMensual ?? 1,
+          reglaIds: values.reglaIds ?? [],
           depositoGarantiaMonto: values.depositoGarantiaMonto ?? 0,
           fechaRecepcionDeposito: values.fechaRecepcionDeposito ? values.fechaRecepcionDeposito.toISOString() : null,
           preavisoDias: values.preavisoDias ?? 30,
@@ -292,6 +306,29 @@ export function Formulario({
 
           <FormField
             control={form.control}
+            name="diaPagoMensual"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Día de pago mensual</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={31}
+                    value={field.value?.toString() || "1"}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Este día se usará para calcular automáticamente el vencimiento de los recibos.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="depositoGarantiaMonto"
             render={({ field }) => (
               <FormItem>
@@ -313,6 +350,38 @@ export function Formulario({
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="reglaIds"
+          render={({ field }) => (
+            <FormItem className="space-y-3 rounded-md border p-4">
+              <FormLabel>Reglas del contrato</FormLabel>
+              <div className="grid gap-2 md:grid-cols-2">
+                {reglas.map((regla) => {
+                  const checked = field.value?.includes(regla.id || "");
+                  return (
+                    <label key={regla.id} className="flex items-start gap-2 rounded-md border p-2 text-sm">
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(value) => {
+                          const reglaId = regla.id || "";
+                          if (value) {
+                            field.onChange([...(field.value || []), reglaId]);
+                          } else {
+                            field.onChange((field.value || []).filter((id) => id !== reglaId));
+                          }
+                        }}
+                      />
+                      <span>{regla.nombre}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormField
