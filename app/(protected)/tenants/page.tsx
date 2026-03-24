@@ -5,6 +5,7 @@ import { Building2 } from "lucide-react"
 import { getSessionPermisos } from "@/auth"
 import { getPlatformTenants } from "./actions"
 import { TenantForm } from "./components/form"
+import { ResetTenantPasswordButton } from "./components/reset-password-button"
 
 export default async function TenantsPage() {
   const permisos = await getSessionPermisos()
@@ -33,6 +34,7 @@ export default async function TenantsPage() {
               <th className="p-3 text-left">Slug</th>
               <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-left">Usuarios</th>
+              <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -42,11 +44,14 @@ export default async function TenantsPage() {
                 <td className="p-3">{tenant.slug}</td>
                 <td className="p-3">{tenant.activo ? 'Activo' : 'Inactivo'}</td>
                 <td className="p-3">{tenant.usuarios}</td>
+                <td className="p-3">
+                  <ResetTenantPasswordButton tenantId={tenant.id} tenantNombre={tenant.nombre} />
+                </td>
               </tr>
             ))}
             {tenants.length === 0 && (
               <tr>
-                <td className="p-3 text-muted-foreground" colSpan={4}>No hay tenants creados todavía.</td>
+                <td className="p-3 text-muted-foreground" colSpan={5}>No hay tenants creados todavía.</td>
               </tr>
             )}
           </tbody>
