@@ -31,7 +31,6 @@ async function main() {
   await prisma.permiso.createMany({
     data: ROOT_PERMISSION_NAMES.map((nombre) => ({
       id: randomUUID(),
-      tenantId: platformTenant.id,
       nombre,
       descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
       activo: true,
@@ -42,7 +41,6 @@ async function main() {
   await prisma.permiso.createMany({
     data: TENANT_PERMISSION_NAMES.map((nombre) => ({
       id: randomUUID(),
-      tenantId: platformTenant.id,
       nombre,
       descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
       activo: true,
@@ -54,7 +52,7 @@ async function main() {
   const permisosRoot = await Promise.all(
     ROOT_PERMISSION_NAMES.map((nombre) =>
       prisma.permiso.update({
-        where: { tenantId_nombre: { tenantId: platformTenant.id, nombre } },
+        where: { nombre },
         data: {
           descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
           activo: true,
@@ -67,7 +65,6 @@ async function main() {
 
   await prisma.permiso.updateMany({
     where: {
-      tenantId: platformTenant.id,
       nombre: { in: [...TENANT_PERMISSION_NAMES] },
     },
     data: {
