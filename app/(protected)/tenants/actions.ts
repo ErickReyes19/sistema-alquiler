@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs"
 import { Prisma, TipoUsuario } from "@/lib/generated/prisma"
 import { generateTemporaryPassword } from "@/lib/default-user-password"
 import { prisma } from "@/lib/prisma"
-import { SYSTEM_HIDDEN_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
+import { PLATFORM_TENANT_SLUG, TENANT_PERMISSION_NAMES } from "@/lib/platform-permissions"
 import { requireTenantSession } from "@/lib/tenant-session"
 
 export type TenantListItem = {
@@ -30,7 +30,7 @@ export async function getPlatformTenants(): Promise<TenantListItem[]> {
   await requireRootSession()
 
   const tenants = await prisma.tenant.findMany({
-    where: { slug: { not: 'platform-root' } },
+    where: { slug: { not: PLATFORM_TENANT_SLUG } },
     include: { usuarios: { select: { id: true } } },
     orderBy: { nombre: 'asc' },
   })
@@ -58,14 +58,18 @@ export async function createTenant(input: { nombre: string; slug: string }) {
     return await prisma.$transaction(async (tx) => {
       const tenantId = randomUUID()
       const roleId = randomUUID()
-      const tenantPermissionRecords = TENANT_PERMISSION_NAMES.map((permissionName) => ({
-        id: randomUUID(),
-        tenantId,
-        nombre: permissionName,
-        descripcion: `Permite ${permissionName.replace(/_/g, ' ')}`,
-        activo: true,
-        esPermisoSistema: SYSTEM_HIDDEN_PERMISSION_NAMES.has(permissionName),
-      }))
+      const globalPermissions = await tx.permiso.findMany({
+        where: {
+          tenant: { slug: PLATFORM_TENANT_SLUG },
+          nombre: { in: [...TENANT_PERMISSION_NAMES] },
+          activo: true,
+        },
+      })
+
+      if (globalPermissions.length !== TENANT_PERMISSION_NAMES.length) {
+        throw new Error('Faltan permisos globales. Ejecuta la semilla de la plataforma.')
+      }
+
       const createdTenant = await tx.tenant.create({
         data: {
           id: tenantId,
@@ -75,9 +79,6 @@ export async function createTenant(input: { nombre: string; slug: string }) {
         },
       })
 
-      await tx.permiso.createMany({
-        data: tenantPermissionRecords,
-      })
 
       await tx.rol.create({
         data: {
@@ -90,7 +91,7 @@ export async function createTenant(input: { nombre: string; slug: string }) {
       })
 
       await tx.rolPermiso.createMany({
-        data: tenantPermissionRecords.map((permiso) => ({
+        data: globalPermissions.map((permiso) => ({
           id: randomUUID(),
           tenantId,
           rolId: roleId,

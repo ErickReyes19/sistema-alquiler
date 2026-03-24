@@ -1,3 +1,7 @@
+import { TipoUsuario } from "@/lib/generated/prisma"
+
+export const PLATFORM_TENANT_SLUG = "platform-root"
+
 export const ROOT_PERMISSION_NAMES = [
   'ver_tenants',
   'crear_tenant',
@@ -43,6 +47,13 @@ export const TENANT_PERMISSION_NAMES = [
   'editar_mantenimiento',
 ] as const
 
-export const SYSTEM_HIDDEN_PERMISSION_NAMES = new Set<string>([
+export const SYSTEM_HIDDEN_PERMISSION_NAMES = new Set<string>(ROOT_PERMISSION_NAMES)
+
+export const ALL_PERMISSION_NAMES = [
   ...ROOT_PERMISSION_NAMES,
-])
+  ...TENANT_PERMISSION_NAMES,
+] as const
+
+export function getAllowedPermissionNamesByUserType(tipoUsuario: TipoUsuario): readonly string[] {
+  return tipoUsuario === TipoUsuario.ROOT ? ALL_PERMISSION_NAMES : TENANT_PERMISSION_NAMES
+}

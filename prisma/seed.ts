@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import bcrypt from "bcryptjs";
 
 import { PrismaClient, TipoUsuario } from "../lib/generated/prisma";
-import { ROOT_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "../lib/platform-permissions";
+import { PLATFORM_TENANT_SLUG, ROOT_PERMISSION_NAMES, TENANT_PERMISSION_NAMES } from "../lib/platform-permissions";
 
 const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
 export const prisma = globalForPrisma.prisma ?? new PrismaClient();
@@ -15,7 +15,7 @@ async function main() {
   const passwordRoot = await bcrypt.hash("root.123", 10);
 
   const platformTenant = await prisma.tenant.upsert({
-    where: { slug: "platform-root" },
+    where: { slug: PLATFORM_TENANT_SLUG },
     update: {
       nombre: "Plataforma",
       activo: true,
@@ -23,7 +23,7 @@ async function main() {
     create: {
       id: randomUUID(),
       nombre: "Plataforma",
-      slug: "platform-root",
+      slug: PLATFORM_TENANT_SLUG,
       activo: true,
     },
   });
@@ -46,7 +46,7 @@ async function main() {
       nombre,
       descripcion: `Permite ${nombre.replace(/_/g, " ")}`,
       activo: true,
-      esPermisoSistema: true,
+      esPermisoSistema: false,
     })),
     skipDuplicates: true,
   });
@@ -64,6 +64,18 @@ async function main() {
     )
   );
   console.log("✅ Permisos root verificados sin duplicados");
+
+  await prisma.permiso.updateMany({
+    where: {
+      tenantId: platformTenant.id,
+      nombre: { in: [...TENANT_PERMISSION_NAMES] },
+    },
+    data: {
+      activo: true,
+      esPermisoSistema: false,
+    },
+  });
+  console.log("✅ Permisos de tenant globales verificados sin duplicados");
 
   const rolRoot = await prisma.rol.upsert({
     where: { tenantId_nombre: { tenantId: platformTenant.id, nombre: "root" } },
