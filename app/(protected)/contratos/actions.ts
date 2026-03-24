@@ -114,7 +114,7 @@ function normalizeInventoryItems(items: string[]) {
   return items.map((item) => item.trim()).filter(Boolean);
 }
 
-function normalizeDepositDeductions(items?: { concepto: string; monto: number }[]) {
+function normalizeSettlementItems(items?: { concepto: string; monto: number; tipo: "SUMA" | "RESTA" }[]) {
   if (!Array.isArray(items)) {
     return [];
   }
@@ -123,6 +123,7 @@ function normalizeDepositDeductions(items?: { concepto: string; monto: number }[
     .map((item) => ({
       concepto: item.concepto.trim(),
       monto: Number(item.monto),
+      tipo: item.tipo === "SUMA" ? "SUMA" : "RESTA",
     }))
     .filter((item) => item.concepto.length > 0 && Number.isFinite(item.monto) && item.monto > 0)
     .map((item) => ({
@@ -261,12 +262,13 @@ function mapEntrega(
     return null;
   }
 
-  const deduccionesDeposito =
+  const ajustesLiquidacion =
     deposito?.movimientos
-      .filter((movimiento) => movimiento.tipo === "APLICADO_DANOS")
+      .filter((movimiento) => movimiento.tipo === "APLICADO_DANOS" || movimiento.tipo === "AJUSTE")
       .map((movimiento) => ({
-        concepto: movimiento.descripcion?.trim() || "Deducción por daños",
+        concepto: (movimiento.descripcion?.replace(/^SUMA:\s*/, "").trim()) || "Ajuste de liquidación",
         monto: toNumber(movimiento.monto),
+        tipo: movimiento.tipo === "AJUSTE" ? ("SUMA" as const) : ("RESTA" as const),
       })) ?? [];
 
   return {
@@ -275,7 +277,7 @@ function mapEntrega(
     estadoInmueble: entrega.estadoInmueble,
     cargosDanos: toNumber(entrega.cargosDanos),
     saldoPendiente: toNumber(entrega.saldoPendiente),
-    deduccionesDeposito,
+    ajustesLiquidacion,
     motivoCancelacion: entrega.motivoCancelacion ?? undefined,
     observaciones: entrega.observaciones ?? undefined,
   };
@@ -880,9 +882,15 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
 
   await prisma.$transaction(async (tx) => {
     const deposito = contrato.depositoGarantia;
-    const deduccionesDeposito = normalizeDepositDeductions(input.deduccionesDeposito);
-    const cargosDanos = deduccionesDeposito.length
-      ? deduccionesDeposito.reduce((accumulator, item) => accumulator + item.monto, 0)
+    const ajustesLiquidacion = normalizeSettlementItems(input.ajustesLiquidacion);
+    const totalRestas = ajustesLiquidacion
+      .filter((item) => item.tipo === "RESTA")
+      .reduce((accumulator, item) => accumulator + item.monto, 0);
+    const totalSumas = ajustesLiquidacion
+      .filter((item) => item.tipo === "SUMA")
+      .reduce((accumulator, item) => accumulator + item.monto, 0);
+    const cargosDanos = ajustesLiquidacion.length
+      ? totalRestas
       : Number(input.cargosDanos);
     const saldoPendiente = Number(input.saldoPendiente);
     const depositoDevuelto = Number(input.depositoDevuelto);
@@ -930,8 +938,9 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
       });
 
       let saldoDisponibleDeducciones = aplicadoDanos;
-      const movimientosDanos = deduccionesDeposito.length
-        ? deduccionesDeposito
+      const movimientosDanos = ajustesLiquidacion.length
+        ? ajustesLiquidacion
+            .filter((item) => item.tipo === "RESTA")
             .map((deduccion) => {
               const montoAplicadoItem = Math.min(deduccion.monto, saldoDisponibleDeducciones);
               saldoDisponibleDeducciones = Number(Math.max(saldoDisponibleDeducciones - montoAplicadoItem, 0).toFixed(2));
@@ -959,6 +968,16 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
             }]
           : []);
 
+      const movimientosSumas = ajustesLiquidacion
+        .filter((item) => item.tipo === "SUMA")
+        .map((item) => ({
+          tenantId,
+          fecha: new Date(input.fechaEntrega),
+          tipo: "AJUSTE" as const,
+          monto: item.monto,
+          descripcion: `SUMA: ${item.concepto}`,
+        }));
+
       await tx.depositoGarantia.update({
         where: { contratoId: input.contratoId },
         data: {
@@ -972,11 +991,12 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
           movimientos: {
             deleteMany: {
               tipo: {
-                in: ["APLICADO_DANOS", "APLICADO_SALDO_PENDIENTE", "DEVOLUCION_PARCIAL", "DEVOLUCION_TOTAL"],
+                in: ["APLICADO_DANOS", "APLICADO_SALDO_PENDIENTE", "DEVOLUCION_PARCIAL", "DEVOLUCION_TOTAL", "AJUSTE"],
               },
             },
             create: [
               ...movimientosDanos,
+              ...movimientosSumas,
               ...(aplicadoSaldo > 0
                 ? [{
                     tenantId,
@@ -992,7 +1012,11 @@ export async function registrarEntregaContrato(input: RegistrarEntregaInput): Pr
                     fecha: new Date(input.fechaEntrega),
                     tipo: tipoDevolucion,
                     monto: devolucion,
-                    descripcion: normalizeOptionalText(input.observacionDeposito) ?? "Devolución liquidada del depósito de garantía.",
+                    descripcion:
+                      normalizeOptionalText(input.observacionDeposito) ??
+                      (totalSumas > 0
+                        ? `Devolución liquidada del depósito de garantía. Sumas adicionales consideradas: ${totalSumas.toFixed(2)}.`
+                        : "Devolución liquidada del depósito de garantía."),
                   }]
                 : []),
             ],
