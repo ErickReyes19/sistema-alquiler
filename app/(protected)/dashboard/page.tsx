@@ -179,11 +179,10 @@ function RentabilidadTable({ items }: { items: DashboardRentabilidadItem[] }) {
   );
 }
 
-function SectionHeader({ title, description }: { title: string; description: string }) {
+function SectionHeader({ title }: { title: string }) {
   return (
     <div className="space-y-1">
       <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-      <p className="text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }
@@ -234,10 +233,7 @@ export default async function DashboardPage() {
       </Card>
 
       <section className="space-y-4">
-        <SectionHeader
-          title="1) Salud operativa"
-          description="Esta sección responde: ¿qué tan estable está la operación de apartamentos hoy?"
-        />
+        <SectionHeader title="1) Salud operativa" />
 
         <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <Card>
@@ -282,10 +278,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="space-y-4">
-        <SectionHeader
-          title="2) Cobranza y caja"
-          description="Indicadores para controlar entrada de dinero y focos de mora del período actual."
-        />
+        <SectionHeader title="2) Cobranza y caja" />
 
         <div className="grid gap-4 xl:grid-cols-4">
           <SummaryCard metric={dashboard.resumen.montoCobradoMes} icon={Receipt} />
@@ -317,10 +310,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="space-y-4">
-        <SectionHeader
-          title="3) Rentabilidad y seguimiento"
-          description="Compará ingreso vs gasto por apartamento y detectá unidades que requieren ajustes."
-        />
+        <SectionHeader title="3) Rentabilidad y seguimiento" />
 
         <div className="grid gap-4 xl:grid-cols-3">
           <SummaryCard metric={dashboard.resumen.gastosMes} icon={Coins} />
