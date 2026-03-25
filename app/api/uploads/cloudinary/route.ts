@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import {
+  deleteAssetFromCloudinary,
   getCloudinaryUploadLimits,
   uploadBufferToCloudinary,
 } from '@/lib/cloudinary';
@@ -76,5 +77,30 @@ export async function POST(request: Request) {
       { error: message },
       { status },
     );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    await getTenantIdFromSession();
+
+    const { publicId } = (await request.json()) as { publicId?: string };
+    if (!publicId) {
+      return NextResponse.json(
+        { error: 'Debes enviar el publicId de la imagen a eliminar.' },
+        { status: 400 },
+      );
+    }
+
+    await deleteAssetFromCloudinary(publicId);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error('Error eliminando imagen de Cloudinary:', error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'No se pudo eliminar la imagen. Inténtalo de nuevo.';
+    const status = message.toLowerCase().includes('sesión') ? 401 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
