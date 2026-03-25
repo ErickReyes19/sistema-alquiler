@@ -19,6 +19,12 @@ export function downloadContratoPdf(contrato: ContratoView) {
   const habitaciones = contrato.apartamento.habitaciones.map(
     (habitacion) => `${habitacion.tipoHabitacionNombre}: ${habitacion.cantidad}`,
   );
+  const activosPorTipo = contrato.apartamento.activos.reduce<Record<string, number>>((acc, activo) => {
+    const key = activo.tipoActivoNombre;
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+  const activos = Object.entries(activosPorTipo).map(([tipoActivo, cantidad]) => `${tipoActivo}: ${cantidad}`);
 
   const clausulas = [
     `La renta mensual pactada es de ${formatCurrency(contrato.montoMensual)} y deberá cancelarse, como fecha límite, el día ${contrato.diaPagoMensual} de cada mes.`,
@@ -45,6 +51,11 @@ export function downloadContratoPdf(contrato: ContratoView) {
         },
         { type: "list", items: habitaciones },
         { type: "list", items: servicios },
+        { type: "heading", text: "Activos del apartamento" },
+        {
+          type: "list",
+          items: activos.length ? activos : ["No hay activos registrados."],
+        },
         { type: "heading", text: "Condiciones contractuales" },
         { type: "list", items: clausulas },
         {

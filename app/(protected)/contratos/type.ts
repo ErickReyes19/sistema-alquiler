@@ -192,6 +192,14 @@ export interface ContratoView {
       incluido: boolean;
       costoAdicional: number;
     }[];
+    activos: {
+      id: string;
+      tipoActivoId: string;
+      tipoActivoNombre: string;
+      tipoHabitacionId?: string | null;
+      tipoHabitacionNombre?: string | null;
+      activo: boolean;
+    }[];
     historialOcupacion: HistorialOcupacionApartamento[];
   };
   reglas: {

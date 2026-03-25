@@ -283,6 +283,23 @@ export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
     cursorY -= 6;
   }
 
+  const activosPorTipo = apartamento.activos.reduce<Record<string, number>>((acc, activo) => {
+    const key = activo.tipoActivoNombre;
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  addLine('Activos', 13, true, [30, 64, 175], 6);
+  const activosListado = Object.entries(activosPorTipo);
+  if (!activosListado.length) {
+    addLine('- No hay activos registrados.', 11, false, [71, 85, 105], 8);
+  } else {
+    for (const [tipoActivo, cantidad] of activosListado) {
+      addLine(`- ${tipoActivo}: ${cantidad}`, 11, false, [31, 41, 55], 4);
+    }
+    cursorY -= 6;
+  }
+
   addLine('Imágenes del apartamento', 13, true, [30, 64, 175], 8);
 
   if (!preparedImages.length) {
