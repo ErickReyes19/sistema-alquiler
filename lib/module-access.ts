@@ -41,6 +41,10 @@ export function resolveModulePermissions(pathname: string): string[] | null {
   if (pathname.startsWith("/mantenimiento/") && pathname.endsWith("/edit")) return ["editar_mantenimiento"];
   if (pathname.startsWith("/mantenimiento")) return ["ver_mantenimientos"];
 
+  if (pathname === "/activos-apartamento/create") return ["crear_activo_apartamento"];
+  if (pathname.startsWith("/activos-apartamento/") && pathname.endsWith("/edit")) return ["editar_activo_apartamento"];
+  if (pathname.startsWith("/activos-apartamento")) return ["ver_activos_apartamento"];
+
   if (pathname.startsWith("/cobranza")) return ["ver_cobranza"];
 
   if (pathname.includes("/recibos/")) {

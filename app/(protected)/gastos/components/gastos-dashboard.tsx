@@ -47,6 +47,7 @@ const operationalBadge = {
 
 const defaultForm: GastoFormInput = {
   apartamentoId: "",
+  apartamentoActivoId: "",
   fecha: format(new Date(), "yyyy-MM-dd"),
   categoria: "MANTENIMIENTO",
   concepto: "",
@@ -71,12 +72,14 @@ function SummaryCard({ title, value, subtitle }: { title: string; value: string;
 
 function GastoFormDialog({
   apartamentos,
+  activosPorApartamento,
   canCreate,
   canEdit,
   editingItem,
   onClose,
 }: {
   apartamentos: GastosModuleData["apartamentos"];
+  activosPorApartamento: GastosModuleData["activosPorApartamento"];
   canCreate: boolean;
   canEdit: boolean;
   editingItem?: GastoListItem | null;
@@ -91,6 +94,7 @@ function GastoFormDialog({
       ? {
           id: editingItem.id,
           apartamentoId: editingItem.apartamentoId,
+          apartamentoActivoId: editingItem.apartamentoActivoId ?? "",
           fecha: format(new Date(editingItem.fecha), "yyyy-MM-dd"),
           categoria: editingItem.categoria,
           concepto: editingItem.concepto,
@@ -110,6 +114,7 @@ function GastoFormDialog({
         ? {
             id: editingItem.id,
             apartamentoId: editingItem.apartamentoId,
+            apartamentoActivoId: editingItem.apartamentoActivoId ?? "",
             fecha: format(new Date(editingItem.fecha), "yyyy-MM-dd"),
             categoria: editingItem.categoria,
             concepto: editingItem.concepto,
@@ -190,7 +195,10 @@ function GastoFormDialog({
         <div className="grid gap-4 py-2">
           <div className="grid gap-2">
             <Label>Apartamento</Label>
-            <Select value={form.apartamentoId} onValueChange={(value) => setForm((current) => ({ ...current, apartamentoId: value }))}>
+            <Select
+              value={form.apartamentoId}
+              onValueChange={(value) => setForm((current) => ({ ...current, apartamentoId: value, apartamentoActivoId: "" }))}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Seleccione un apartamento" />
               </SelectTrigger>
@@ -200,6 +208,28 @@ function GastoFormDialog({
                     Apartamento {apartamento.numero}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label>Activo / mueble (opcional)</Label>
+            <Select
+              value={form.apartamentoActivoId || "none"}
+              onValueChange={(value) => setForm((current) => ({ ...current, apartamentoActivoId: value === "none" ? "" : value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccione un activo puntual" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Sin activo específico</SelectItem>
+                {activosPorApartamento
+                  .filter((item) => item.apartamentoId === form.apartamentoId && item.activo)
+                  .map((activo) => (
+                    <SelectItem key={activo.id} value={activo.id}>
+                      {activo.label}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -282,7 +312,12 @@ export function GastosDashboard({ data, canCreate, canEdit }: { data: GastosModu
             Corte del mes de {data.metadata.mesActual}. Aquí compara ingresos del mes contra egresos reales registrados por apartamento.
           </p>
         </div>
-        <GastoFormDialog apartamentos={data.apartamentos} canCreate={canCreate} canEdit={canEdit} />
+        <GastoFormDialog
+          apartamentos={data.apartamentos}
+          activosPorApartamento={data.activosPorApartamento}
+          canCreate={canCreate}
+          canEdit={canEdit}
+        />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -403,6 +438,9 @@ export function GastosDashboard({ data, canCreate, canEdit }: { data: GastosModu
                     {item.extraordinario && <Badge variant="destructive">Extraordinario</Badge>}
                   </div>
                   <p className="text-sm text-muted-foreground">{item.concepto}</p>
+                  {item.apartamentoActivoLabel && (
+                    <p className="text-xs text-muted-foreground">Activo: {item.apartamentoActivoLabel}</p>
+                  )}
                   {item.descripcion && <p className="text-xs text-muted-foreground">{item.descripcion}</p>}
                   <p className="text-xs text-muted-foreground">
                     {format(new Date(item.fecha), "dd 'de' MMMM yyyy", { locale: es })}
@@ -412,6 +450,7 @@ export function GastosDashboard({ data, canCreate, canEdit }: { data: GastosModu
                   <span className="text-lg font-semibold">{currencyFormatter.format(item.monto)}</span>
                   <GastoFormDialog
                     apartamentos={data.apartamentos}
+                    activosPorApartamento={data.activosPorApartamento}
                     canCreate={canCreate}
                     canEdit={canEdit}
                     editingItem={item}
