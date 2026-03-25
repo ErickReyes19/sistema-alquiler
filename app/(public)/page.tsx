@@ -6,10 +6,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { getSession } from "@/auth"
+import { redirect } from "next/navigation"
 import { Suspense } from 'react'
 import Login from "./components/formLogin"
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await getSession()
+  if (session) {
+    redirect("/dashboard")
+  }
+
   return (
     <Card className="w-full max-w-md mx-auto bg-gray-800 text-white border-gray-700 shadow-lg">
       <CardHeader className="space-y-1">
