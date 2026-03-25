@@ -49,6 +49,12 @@ const contratoViewInclude = {
           servicio: true,
         },
       },
+      activos: {
+        include: {
+          tipoActivo: true,
+          tipoHabitacion: true,
+        },
+      },
     },
   },
   renovaciones: {
@@ -706,6 +712,14 @@ export async function getContratoByIdView(id: string): Promise<ContratoView | nu
           servicioNombre: servicio.servicio.nombre,
           incluido: servicio.incluido,
           costoAdicional: toNumber(servicio.costoAdicional),
+        })),
+        activos: contrato.apartamento.activos.map((activo) => ({
+          id: activo.id,
+          tipoActivoId: activo.tipoActivoId,
+          tipoActivoNombre: activo.tipoActivo.nombre,
+          tipoHabitacionId: activo.tipoHabitacionId,
+          tipoHabitacionNombre: activo.tipoHabitacion?.nombre ?? null,
+          activo: activo.activo,
         })),
         historialOcupacion,
       },
