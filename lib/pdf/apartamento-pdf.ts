@@ -36,11 +36,42 @@ const sanitizeText = (text: string) =>
     .replace(/[\u201C\u201D]/g, '"')
     .replace(/[•·]/g, '-');
 
-const escapePdfText = (text: string) =>
-  sanitizeText(text)
-    .replaceAll('\\', '\\\\')
-    .replaceAll('(', '\\(')
-    .replaceAll(')', '\\)');
+const escapePdfText = (text: string) => {
+  const safe = sanitizeText(text);
+  let encoded = '';
+
+  for (const char of safe) {
+    if (char === '\\') {
+      encoded += '\\\\';
+      continue;
+    }
+
+    if (char === '(') {
+      encoded += '\\(';
+      continue;
+    }
+
+    if (char === ')') {
+      encoded += '\\)';
+      continue;
+    }
+
+    const code = char.charCodeAt(0);
+    if (code >= 32 && code <= 126) {
+      encoded += char;
+      continue;
+    }
+
+    if (code <= 255) {
+      encoded += `\\${code.toString(8).padStart(3, '0')}`;
+      continue;
+    }
+
+    encoded += '?';
+  }
+
+  return encoded;
+};
 
 const estimateTextWidth = (text: string, size: number) => sanitizeText(text).length * size * 0.49;
 
