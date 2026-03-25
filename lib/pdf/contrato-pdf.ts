@@ -1,59 +1,64 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { ContratoView } from "@/app/(protected)/contratos/type";
-import { downloadPdf } from "./simple-pdf";
+import { downloadDocumentPdf } from "./document-pdf";
 
 const formatDate = (date: string | null) =>
-  date ? format(new Date(date), "dd/MM/yyyy", { locale: es }) : "No definida";
+  date ? format(new Date(date), "dd/MM/yyyy", { locale: es }) : "por tiempo indefinido";
 
 const formatCurrency = (amount: number) =>
   `L ${new Intl.NumberFormat("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
 
 export function downloadContratoPdf(contrato: ContratoView) {
-  const lines: string[] = [
-    "@title CONTRATO DE ARRENDAMIENTO",
-    `@meta Contrato #${contrato.id} | Estado: ${contrato.activo ? "ACTIVO" : "INACTIVO"} | Generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
+  const fechaGeneracion = format(new Date(), "dd/MM/yyyy HH:mm", { locale: es });
+  const servicios = contrato.apartamento.servicios.map((servicio) => {
+    const base = `${servicio.servicioNombre}: ${servicio.incluido ? "incluido" : "no incluido"}`;
+    return servicio.costoAdicional > 0 ? `${base} (cargo adicional ${formatCurrency(servicio.costoAdicional)})` : base;
+  });
 
-    "@section Parte arrendataria",
-    `@row Nombre || ${contrato.inquilino}`,
-    `@row Identidad || ${contrato.inquiliniIdentidad}`,
+  const habitaciones = contrato.apartamento.habitaciones.map(
+    (habitacion) => `${habitacion.tipoHabitacionNombre}: ${habitacion.cantidad}`,
+  );
 
-    "@section Inmueble arrendado",
-    `@row Apartamento || #${contrato.apartamento.numero}`,
-    `@row Dirección || ${contrato.apartamento.direccion ?? "Sin dirección registrada"}`,
-
-    "@section Vigencia y condiciones económicas",
-    `@row Fecha inicio || ${formatDate(contrato.fechaInicio)}`,
-    `@row Fecha fin || ${formatDate(contrato.fechaFin)}`,
-    `@row Renta mensual || ${formatCurrency(contrato.montoMensual)}`,
-    `@row Día de pago || ${contrato.diaPagoMensual}`,
-    `@row Preaviso || ${contrato.preavisoDias} días`,
-
-    "@section Habitaciones incluidas",
-    ...contrato.apartamento.habitaciones.map(
-      (h) => `@row ${h.tipoHabitacionNombre} || Cantidad: ${h.cantidad}`,
-    ),
-
-    "@section Servicios del apartamento",
-    ...contrato.apartamento.servicios.map(
-      (s) =>
-        `@row ${s.servicioNombre} || ${s.incluido ? "Incluido" : "No incluido"}${s.costoAdicional > 0 ? ` | Costo adicional: ${formatCurrency(s.costoAdicional)}` : ""}`,
-    ),
-
-    "@section Cláusulas legales",
-    `@legal 1. La renta mensual de ${formatCurrency(contrato.montoMensual)} debe pagarse dentro del plazo establecido.`,
-    `@legal 2. El inmueble será solo para uso habitacional, prohibido subarrendar sin autorización.`,
-    `@legal 3. Terminación anticipada requiere preaviso de ${contrato.preavisoDias} días.`,
-    ...contrato.reglas.map(
-      (r, i) => `@legal ${i + 4}. ${r.nombre}. ${r.descripcion || "Cumplimiento obligatorio."}`,
-    ),
-
-    "@section Firmas",
-    `@row Arrendador || ____________________________`,
-    `@row Arrendatario || ____________________________`,
-
-    `@note Generado automáticamente el ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
+  const clausulas = [
+    `La renta mensual pactada es de ${formatCurrency(contrato.montoMensual)} y deberá cancelarse, como fecha límite, el día ${contrato.diaPagoMensual} de cada mes.`,
+    `El arrendamiento inicia el ${formatDate(contrato.fechaInicio)} y finaliza el ${formatDate(contrato.fechaFin)}.`,
+    `La terminación anticipada por cualquiera de las partes deberá notificarse con al menos ${contrato.preavisoDias} días de antelación.`,
+    "El inmueble se destina exclusivamente a uso habitacional y no podrá subarrendarse sin autorización previa y escrita.",
+    ...contrato.reglas.map((regla) => `${regla.nombre}: ${regla.descripcion || "de cumplimiento obligatorio durante toda la vigencia contractual."}`),
   ];
 
-  downloadPdf(lines, `contrato-${contrato.id}.pdf`);
+  downloadDocumentPdf(
+    {
+      title: "Contrato de arrendamiento de vivienda",
+      subtitle: `Contrato #${contrato.id} - ${contrato.activo ? "Vigente" : "No vigente"}`,
+      metadataLine: `Emitido el ${fechaGeneracion}`,
+      blocks: [
+        {
+          type: "paragraph",
+          text: `Entre la parte arrendadora y la parte arrendataria ${contrato.inquilino}, con identidad ${contrato.inquiliniIdentidad}, se deja formalizado el presente acuerdo para el uso y goce del inmueble apartamento #${contrato.apartamento.numero}, ubicado en ${contrato.apartamento.direccion ?? "dirección no registrada"}.`,
+        },
+        { type: "heading", text: "Descripción del inmueble" },
+        {
+          type: "paragraph",
+          text: "El inmueble se entrega en condiciones aptas para habitación y con las características físicas y de servicios detalladas a continuación.",
+        },
+        { type: "list", items: habitaciones },
+        { type: "list", items: servicios },
+        { type: "heading", text: "Condiciones contractuales" },
+        { type: "list", items: clausulas },
+        {
+          type: "paragraph",
+          text: "Las partes manifiestan que han leído y comprendido el contenido del presente documento, aceptando de forma libre sus términos, obligaciones y derechos derivados de la relación arrendaticia.",
+        },
+        {
+          type: "signature",
+          leftLabel: "Arrendador",
+          rightLabel: "Arrendatario",
+        },
+      ],
+      footer: "Este documento fue generado digitalmente por el sistema de gestión de alquileres y puede imprimirse para firma física.",
+    },
+    `contrato-${contrato.id}.pdf`,
+  );
 }
