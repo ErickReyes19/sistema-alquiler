@@ -7,12 +7,12 @@ const formatDate = (date: string | null) =>
   date ? format(new Date(date), "dd/MM/yyyy", { locale: es }) : "No definida";
 
 const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat("es-HN", { style: "currency", currency: "HNL" }).format(amount);
+  `L ${new Intl.NumberFormat("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
 
 export function downloadContratoPdf(contrato: ContratoView) {
   const lines: string[] = [
     "@title CONTRATO DE ARRENDAMIENTO",
-    `@meta Contrato #${contrato.id} • Estado: ${contrato.activo ? "ACTIVO" : "INACTIVO"} • Generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
+    `@meta Contrato #${contrato.id} | Estado: ${contrato.activo ? "ACTIVO" : "INACTIVO"} | Generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
 
     "@section Parte arrendataria",
     `@row Nombre || ${contrato.inquilino}`,
@@ -37,7 +37,7 @@ export function downloadContratoPdf(contrato: ContratoView) {
     "@section Servicios del apartamento",
     ...contrato.apartamento.servicios.map(
       (s) =>
-        `@row ${s.servicioNombre} || ${s.incluido ? "Incluido" : "No incluido"}${s.costoAdicional > 0 ? ` • Costo adicional: ${formatCurrency(s.costoAdicional)}` : ""}`,
+        `@row ${s.servicioNombre} || ${s.incluido ? "Incluido" : "No incluido"}${s.costoAdicional > 0 ? ` | Costo adicional: ${formatCurrency(s.costoAdicional)}` : ""}`,
     ),
 
     "@section Cláusulas legales",

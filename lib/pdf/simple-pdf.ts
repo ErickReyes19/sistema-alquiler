@@ -1,12 +1,12 @@
 const PAGE_WIDTH = 595;
 const PAGE_HEIGHT = 842;
-const LEFT_MARGIN = 40;
-const RIGHT_MARGIN = 40;
-const TOP_MARGIN = 44;
-const BOTTOM_MARGIN = 44;
+const LEFT_MARGIN = 38;
+const RIGHT_MARGIN = 38;
+const TOP_MARGIN = 56;
+const BOTTOM_MARGIN = 52;
 const FONT_SIZE = 11;
-const LINE_HEIGHT = 15;
-const MAX_CHARS_PER_LINE = 92;
+const LINE_HEIGHT = 18;
+const MAX_CHARS_PER_LINE = 84;
 
 type LineKind =
   | "title"
@@ -16,7 +16,10 @@ type LineKind =
   | "body"
   | "empty"
   | "highlight"
-  | "columns";
+  | "columns"
+  | "meta"
+  | "note"
+  | "legal";
 
 type PreparedLine = {
   text: string;
@@ -30,7 +33,9 @@ function sanitizeText(text: string) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\u2018\u2019]/g, "'")
-    .replace(/[\u201C\u201D]/g, '"');
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[•·]/g, "|")
+    .replace(/¢/g, "L");
 }
 
 function escapePdfText(text: string) {
@@ -67,17 +72,21 @@ function wrapLine(line: string, maxChars: number) {
 function lineHeight(line: PreparedLine) {
   switch (line.kind) {
     case "title":
-      return 24;
+      return 36;
+    case "meta":
+      return 23;
     case "subtitle":
-      return 18;
+      return 20;
     case "section":
-      return 19;
+      return 30;
     case "highlight":
-      return 17;
+      return 24;
+    case "legal":
+      return 20;
     case "columns":
-      return 16;
+      return 20;
     case "empty":
-      return 10;
+      return 12;
     default:
       return LINE_HEIGHT;
   }
@@ -86,13 +95,17 @@ function lineHeight(line: PreparedLine) {
 function fontSizeFor(line: PreparedLine) {
   switch (line.kind) {
     case "title":
-      return 17;
+      return 20;
+    case "meta":
+      return 10;
     case "subtitle":
       return 10;
     case "section":
-      return 12;
+      return 13;
     case "highlight":
-      return 11;
+      return 12;
+    case "note":
+      return 10;
     default:
       return FONT_SIZE;
   }
@@ -111,11 +124,11 @@ function parseLine(line: string): PreparedLine {
   if (!line.trim()) return { text: "", kind: "empty" };
 
   if (line.startsWith("@title ")) return { text: line.slice(7).trim(), kind: "title" };
-  if (line.startsWith("@meta ")) return { text: line.slice(6).trim(), kind: "subtitle" };
+  if (line.startsWith("@meta ")) return { text: line.slice(6).trim(), kind: "meta" };
   if (line.startsWith("@section ")) return { text: line.slice(9).trim(), kind: "section" };
   if (line.startsWith("@highlight ")) return { text: line.slice(11).trim(), kind: "highlight" };
-  if (line.startsWith("@legal ")) return { text: line.slice(7).trim(), kind: "body" };
-  if (line.startsWith("@note ")) return { text: line.slice(6).trim(), kind: "subtitle" };
+  if (line.startsWith("@legal ")) return { text: line.slice(7).trim(), kind: "legal" };
+  if (line.startsWith("@note ")) return { text: line.slice(6).trim(), kind: "note" };
 
   if (line.startsWith("@row ")) {
     const row = line.slice(5);
@@ -167,30 +180,71 @@ function splitContent(lines: string[]) {
 
 function renderLine(line: PreparedLine, y: number) {
   const fontSize = fontSizeFor(line);
+  const contentWidth = PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN;
+  const toRgb = (r: number, g: number, b: number) =>
+    `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)}`;
+  const fill = (r: number, g: number, b: number) => `${toRgb(r, g, b)} rg\n`;
 
   if (line.kind === "empty") return "";
   if (line.kind === "separator") {
-    return `0.7 w ${LEFT_MARGIN} ${y} m ${PAGE_WIDTH - RIGHT_MARGIN} ${y} l S\n`;
+    return `${toRgb(203, 213, 225)} RG 0.8 w ${LEFT_MARGIN} ${y} m ${PAGE_WIDTH - RIGHT_MARGIN} ${y} l S\n`;
   }
 
   if (line.kind === "columns" && line.left !== undefined && line.right !== undefined) {
     const left = escapePdfText(line.left);
     const right = escapePdfText(line.right);
     const rightX = PAGE_WIDTH - RIGHT_MARGIN - estimateTextWidth(line.right, FONT_SIZE);
-    return `BT /F1 ${FONT_SIZE} Tf 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (${left}) Tj ET\nBT /F1 ${FONT_SIZE} Tf 1 0 0 1 ${Math.max(
+    return `${fill(248, 250, 252)}${LEFT_MARGIN - 5} ${y - 5} ${contentWidth + 10} 18 re f\n` +
+      `${toRgb(100, 116, 139)} RG 0.2 w ${LEFT_MARGIN - 5} ${y - 5} ${contentWidth + 10} 18 re S\n` +
+      `${fill(15, 23, 42)}BT /F1 ${FONT_SIZE} Tf 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (${left}) Tj ET\n` +
+      `${fill(30, 64, 175)}BT /F1 ${FONT_SIZE} Tf 1 0 0 1 ${Math.max(
       LEFT_MARGIN + 210,
       rightX,
     )} ${y} Tm (${right}) Tj ET\n`;
   }
 
-  const escaped = escapePdfText(line.text);
-  let x = LEFT_MARGIN;
-
-  if (line.kind === "title" || line.kind === "subtitle") {
-    x = xForCentered(line.text, fontSize);
+  if (line.kind === "title") {
+    const x = xForCentered(line.text, fontSize);
+    const escaped = escapePdfText(line.text);
+    return `${fill(30, 64, 175)}${LEFT_MARGIN - 8} ${y - 12} ${contentWidth + 16} 30 re f\n` +
+      `${fill(255, 255, 255)}BT /F1 ${fontSize} Tf 1 0 0 1 ${x} ${y} Tm (${escaped}) Tj ET\n`;
   }
 
-  return `BT /F1 ${fontSize} Tf 1 0 0 1 ${x} ${y} Tm (${escaped}) Tj ET\n`;
+  if (line.kind === "meta") {
+    const x = xForCentered(line.text, fontSize);
+    const escaped = escapePdfText(line.text);
+    return `${fill(51, 65, 85)}BT /F1 ${fontSize} Tf 1 0 0 1 ${x} ${y} Tm (${escaped}) Tj ET\n`;
+  }
+
+  if (line.kind === "section") {
+    const escaped = escapePdfText(line.text.toUpperCase());
+    return `${fill(219, 234, 254)}${LEFT_MARGIN - 6} ${y - 9} ${contentWidth + 12} 22 re f\n` +
+      `${fill(30, 64, 175)}BT /F1 ${fontSize} Tf 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (${escaped}) Tj ET\n`;
+  }
+
+  if (line.kind === "highlight") {
+    const left = escapePdfText("TOTAL");
+    const right = escapePdfText(line.text.replace(/^Total exigible\s*\|\|\s*/i, ""));
+    const rightX = PAGE_WIDTH - RIGHT_MARGIN - estimateTextWidth(right, 13);
+    return `${fill(239, 246, 255)}${LEFT_MARGIN - 5} ${y - 7} ${contentWidth + 10} 22 re f\n` +
+      `${toRgb(30, 64, 175)} RG 1 w ${LEFT_MARGIN - 5} ${y - 7} ${contentWidth + 10} 22 re S\n` +
+      `${fill(30, 64, 175)}BT /F1 11 Tf 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (${left}) Tj ET\n` +
+      `${fill(15, 23, 42)}BT /F1 13 Tf 1 0 0 1 ${Math.max(LEFT_MARGIN + 210, rightX)} ${y} Tm (${right}) Tj ET\n`;
+  }
+
+  if (line.kind === "legal") {
+    const escaped = escapePdfText(line.text);
+    return `${fill(71, 85, 105)}BT /F1 ${fontSize} Tf 1 0 0 1 ${LEFT_MARGIN + 6} ${y} Tm (${escaped}) Tj ET\n`;
+  }
+
+  if (line.kind === "note") {
+    const escaped = escapePdfText(line.text);
+    const x = xForCentered(line.text, fontSize);
+    return `${fill(100, 116, 139)}BT /F1 ${fontSize} Tf 1 0 0 1 ${x} ${y} Tm (${escaped}) Tj ET\n`;
+  }
+
+  const escaped = escapePdfText(line.text);
+  return `${fill(17, 24, 39)}BT /F1 ${fontSize} Tf 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (${escaped}) Tj ET\n`;
 }
 
 function buildPdf(pages: string[]) {

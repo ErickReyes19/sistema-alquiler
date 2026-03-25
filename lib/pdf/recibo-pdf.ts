@@ -4,14 +4,14 @@ import type { ReciboCompleto } from "@/app/(protected)/contratos/[id]/recibos/ty
 import { downloadPdf } from "./simple-pdf";
 
 const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat("es-HN", { style: "currency", currency: "HNL" }).format(amount);
+  `L ${new Intl.NumberFormat("es-HN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
 
 export function downloadReciboPdf(recibo: ReciboCompleto) {
   const totalExigible = recibo.total + recibo.cargoMora;
 
   const lines: string[] = [
     "@title RECIBO DE PAGO",
-    `@meta Recibo #${recibo.id} • Estado: ${recibo.estado.replaceAll("_", " ")} • Generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
+    `@meta Recibo #${recibo.id} | Estado: ${recibo.estado.replaceAll("_", " ")} | Generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
 
     "@section Fechas",
     `@row Fecha de pago || ${format(new Date(recibo.fechaPago), "dd/MM/yyyy", { locale: es })}`,
