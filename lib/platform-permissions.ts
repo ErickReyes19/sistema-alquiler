@@ -43,4 +43,7 @@ export const TENANT_PERMISSION_NAMES = [
   'ver_mantenimientos',
   'crear_mantenimiento',
   'editar_mantenimiento',
+  'ver_activos_apartamento',
+  'crear_activo_apartamento',
+  'editar_activo_apartamento',
 ] as const

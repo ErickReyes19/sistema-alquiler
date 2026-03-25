@@ -44,6 +44,8 @@ model Tenant {
   usuarios              Usuario[]
   gastosApartamento     GastoApartamento[]
   mantenimientos        MantenimientoIncidencia[]
+  tiposActivoApartamento TipoActivoApartamento[]
+  activosApartamento    ApartamentoActivo[]
 }
 
 model Rol {
@@ -104,6 +106,7 @@ model TiposHabitacion {
   activo      Boolean
   tenant      Tenant         @relation(fields: [tenantId], references: [id])
   apartamento Habitaciones[]
+  activos     ApartamentoActivo[]
 
   @@unique([tenantId, nombre])
   @@index([tenantId])
@@ -125,6 +128,7 @@ model Apartamento {
   historialOcupacion   Contratos[]               @relation("ApartamentoHistorialOcupacion")
   gastos               GastoApartamento[]
   mantenimientos       MantenimientoIncidencia[]
+  activos              ApartamentoActivo[]
 
   @@unique([tenantId, numero])
   @@index([tenantId])
@@ -576,24 +580,65 @@ model MovimientoDepositoGarantia {
 }
 
 model GastoApartamento {
-  id             String         @id @default(uuid())
-  tenantId       String
-  apartamentoId  String
-  fecha          DateTime
-  categoria      CategoriaGasto
-  concepto       String
-  descripcion    String?
-  monto          Decimal        @default(0.00)
-  extraordinario Boolean        @default(false)
-  createAt       DateTime       @default(now())
-  updateAt       DateTime       @updatedAt
-  tenant         Tenant         @relation(fields: [tenantId], references: [id])
-  apartamento    Apartamento    @relation(fields: [apartamentoId], references: [id])
+  id                  String             @id @default(uuid())
+  tenantId            String
+  apartamentoId       String
+  apartamentoActivoId String?
+  fecha               DateTime
+  categoria           CategoriaGasto
+  concepto            String
+  descripcion         String?
+  monto               Decimal            @default(0.00)
+  extraordinario      Boolean            @default(false)
+  createAt            DateTime           @default(now())
+  updateAt            DateTime           @updatedAt
+  tenant              Tenant             @relation(fields: [tenantId], references: [id])
+  apartamento         Apartamento        @relation(fields: [apartamentoId], references: [id])
+  apartamentoActivo   ApartamentoActivo? @relation(fields: [apartamentoActivoId], references: [id])
 
   @@index([tenantId])
   @@index([apartamentoId])
+  @@index([apartamentoActivoId])
   @@index([fecha])
   @@index([categoria])
+}
+
+model TipoActivoApartamento {
+  id       String              @id @default(uuid())
+  tenantId String
+  nombre   String
+  createAt DateTime            @default(now())
+  updateAt DateTime            @updatedAt
+  activo   Boolean             @default(true)
+  tenant   Tenant              @relation(fields: [tenantId], references: [id])
+  activos  ApartamentoActivo[]
+
+  @@unique([tenantId, nombre])
+  @@index([tenantId])
+}
+
+model ApartamentoActivo {
+  id               String                @id @default(uuid())
+  tenantId         String
+  apartamentoId    String
+  tipoActivoId     String
+  tipoHabitacionId String?
+  identificador    String
+  descripcion      String?
+  createAt         DateTime              @default(now())
+  updateAt         DateTime              @updatedAt
+  activo           Boolean               @default(true)
+  tenant           Tenant                @relation(fields: [tenantId], references: [id])
+  apartamento      Apartamento           @relation(fields: [apartamentoId], references: [id])
+  tipoActivo       TipoActivoApartamento @relation(fields: [tipoActivoId], references: [id])
+  tipoHabitacion   TiposHabitacion?      @relation(fields: [tipoHabitacionId], references: [id])
+  gastos           GastoApartamento[]
+
+  @@unique([tenantId, apartamentoId, identificador])
+  @@index([tenantId])
+  @@index([apartamentoId])
+  @@index([tipoActivoId])
+  @@index([tipoHabitacionId])
 }
 
 enum CategoriaGasto {
