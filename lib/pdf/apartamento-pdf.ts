@@ -192,29 +192,64 @@ export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
     </html>
   `;
 
-  const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=1024,height=768');
-  if (!printWindow) return;
+  const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=820');
+  if (!printWindow) {
+    alert('Tu navegador bloqueó la ventana de impresión. Habilita pop-ups e inténtalo de nuevo.');
+    return;
+  }
 
   printWindow.document.open();
   printWindow.document.write(html);
   printWindow.document.close();
 
-  const images = Array.from(printWindow.document.images);
-  await Promise.all(
-    images.map(
-      (image) =>
-        new Promise<void>((resolve) => {
-          if (image.complete) {
-            resolve();
-            return;
-          }
-          image.onload = () => resolve();
-          image.onerror = () => resolve();
-        }),
-    ),
-  );
+  const waitForImages = async () => {
+    const images = Array.from(printWindow.document.images);
+    await Promise.all(
+      images.map(
+        (image) =>
+          new Promise<void>((resolve) => {
+            if (image.complete) {
+              resolve();
+              return;
+            }
+            image.onload = () => resolve();
+            image.onerror = () => resolve();
+          }),
+      ),
+    );
+  };
+
+  await waitForImages();
+
+  const toolbar = printWindow.document.createElement('div');
+  toolbar.style.position = 'fixed';
+  toolbar.style.top = '12px';
+  toolbar.style.right = '12px';
+  toolbar.style.zIndex = '99999';
+  toolbar.style.display = 'flex';
+  toolbar.style.gap = '8px';
+  toolbar.style.padding = '8px';
+  toolbar.style.background = 'rgba(255,255,255,0.95)';
+  toolbar.style.border = '1px solid #e2e8f0';
+  toolbar.style.borderRadius = '10px';
+
+  const printButton = printWindow.document.createElement('button');
+  printButton.textContent = 'Descargar / Imprimir PDF';
+  printButton.style.border = 'none';
+  printButton.style.borderRadius = '8px';
+  printButton.style.padding = '8px 12px';
+  printButton.style.background = '#1d4ed8';
+  printButton.style.color = '#fff';
+  printButton.style.cursor = 'pointer';
+  printButton.onclick = () => {
+    printWindow.focus();
+    printWindow.print();
+  };
+  toolbar.appendChild(printButton);
+  printWindow.document.body.appendChild(toolbar);
 
   printWindow.focus();
-  printWindow.print();
-  printWindow.close();
+  setTimeout(() => {
+    printWindow.print();
+  }, 200);
 }
