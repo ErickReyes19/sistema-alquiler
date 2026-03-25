@@ -42,16 +42,46 @@ type PreparedElement = PreparedLine | SignatureRow;
 
 function sanitizeText(text: string) {
   return text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '"')
-    .replace(/[•·]/g, "-")
-    .replace(/¢/g, "L");
+    .replace(/[•·]/g, "-");
 }
 
 function escapePdfText(text: string) {
-  return sanitizeText(text).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  const safe = sanitizeText(text);
+  let encoded = "";
+
+  for (const char of safe) {
+    if (char === "\\") {
+      encoded += "\\\\";
+      continue;
+    }
+
+    if (char === "(") {
+      encoded += "\\(";
+      continue;
+    }
+
+    if (char === ")") {
+      encoded += "\\)";
+      continue;
+    }
+
+    const code = char.charCodeAt(0);
+    if (code >= 32 && code <= 126) {
+      encoded += char;
+      continue;
+    }
+
+    if (code <= 255) {
+      encoded += `\\${code.toString(8).padStart(3, "0")}`;
+      continue;
+    }
+
+    encoded += "?";
+  }
+
+  return encoded;
 }
 
 function estimateTextWidth(text: string, size: number) {
@@ -219,7 +249,7 @@ function renderTextLine(line: PreparedLine, y: number) {
   const fontRef = line.font === "bold" ? "/F2" : "/F1";
 
   const prefix =
-    line.indent === 14 && line.text ? `BT /F1 11 Tf 0.42 0.49 0.65 rg 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (•) Tj ET\n` : "";
+    line.indent === 14 && line.text ? `BT /F1 11 Tf 0.42 0.49 0.65 rg 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (-) Tj ET\n` : "";
 
   return (
     prefix +
