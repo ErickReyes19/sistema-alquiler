@@ -5,7 +5,7 @@ import type { ContratoView } from "@/app/(protected)/contratos/type";
 import { downloadPdf } from "./simple-pdf";
 
 const formatDate = (dateString: string | null) =>
-  dateString ? format(new Date(dateString), "dd 'de' MMMM 'de' yyyy", { locale: es }) : "No definida";
+  dateString ? format(new Date(dateString), "dd/MM/yyyy", { locale: es }) : "No definida";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("es-HN", { style: "currency", currency: "HNL" }).format(amount);
@@ -13,64 +13,49 @@ const formatCurrency = (amount: number) =>
 const SEP = "--------------------------------------------------------------------------------";
 
 export function downloadContratoPdf(contrato: ContratoView) {
-  const reglas =
-    contrato.reglas.length > 0
-      ? contrato.reglas.map(
-          (regla, index) =>
-            `${index + 1}. ${regla.nombre}: ${regla.descripcion ?? "Disposicion de cumplimiento obligatorio para las partes contratantes."}`,
-        )
-      : ["1. El arrendatario y el arrendador se comprometen a cumplir la normativa civil y administrativa aplicable."];
-
   const lines: string[] = [
-    "CONTRATO DE ARRENDAMIENTO DE INMUEBLE HABITACIONAL",
-    "DOCUMENTO PRIVADO CON EFECTOS LEGALES ENTRE LAS PARTES",
+    "CONTRATO DE ARRENDAMIENTO",
+    "Diseno PDF basado en la vista de impresion del contrato",
     SEP,
-    `Codigo de contrato: ${contrato.id}`,
-    `Fecha de emision: ${format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}`,
-    `Estado contractual: ${contrato.activo ? "VIGENTE" : "NO VIGENTE"}`,
+    `Codigo de contrato: #${contrato.id} || Estado: ${contrato.activo ? "ACTIVO" : "INACTIVO"}`,
+    `Documento generado: ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
     "",
-    "I. IDENTIFICACION DE LAS PARTES",
-    `Arrendatario: ${contrato.inquilino}`,
-    `Documento de identidad: ${contrato.inquiliniIdentidad}`,
-    `Inmueble arrendado: Apartamento ${contrato.apartamento.numero}`,
-    `Direccion contractual: ${contrato.apartamento.direccion ?? "Sin direccion registrada"}`,
+    "I. PARTE ARRENDATARIA",
+    `Nombre: ${contrato.inquilino}`,
+    `Identidad: ${contrato.inquiliniIdentidad}`,
     "",
-    "II. PLAZO Y CONDICIONES ECONOMICAS",
-    `Fecha de inicio de vigencia: ${formatDate(contrato.fechaInicio)}`,
-    `Fecha de terminacion de vigencia: ${formatDate(contrato.fechaFin)}`,
-    `Canon de arrendamiento mensual: ${formatCurrency(contrato.montoMensual)}`,
-    `Dia limite de pago mensual: ${contrato.diaPagoMensual}`,
-    `Plazo de preaviso para terminacion: ${contrato.preavisoDias} dias calendario`,
+    "II. INMUEBLE ARRENDADO",
+    `Apartamento: ${contrato.apartamento.numero}`,
+    `Direccion: ${contrato.apartamento.direccion ?? "Sin direccion registrada"}`,
     "",
-    "!! PUNTOS CLAVE DEL CONTRATO",
-    `!! Canon mensual pactado: ${formatCurrency(contrato.montoMensual)}`,
-    `!! Vigencia: ${formatDate(contrato.fechaInicio)} al ${formatDate(contrato.fechaFin)}`,
-    `!! Pago limite de cada mes: dia ${contrato.diaPagoMensual}`,
+    "III. TERMINOS ECONOMICOS Y VIGENCIA",
+    `Fecha de inicio: ${formatDate(contrato.fechaInicio)}`,
+    `Fecha de fin: ${formatDate(contrato.fechaFin)}`,
+    `Renta mensual: ${formatCurrency(contrato.montoMensual)}`,
+    `Dia de pago mensual: ${contrato.diaPagoMensual}`,
+    `Preaviso: ${contrato.preavisoDias} dias calendario`,
     "",
-    "III. ESPECIFICACIONES DEL INMUEBLE",
-    "Habitaciones declaradas:",
-    ...contrato.apartamento.habitaciones.map((item) => `- ${item.tipoHabitacionNombre}: ${item.cantidad}`),
+    "IV. HABITACIONES INCLUIDAS",
+    "Tipo de habitacion || Cantidad",
+    ...contrato.apartamento.habitaciones.map((habitacion) => `${habitacion.tipoHabitacionNombre} || ${habitacion.cantidad}`),
     "",
-    "Servicios asociados:",
+    "V. SERVICIOS DEL APARTAMENTO",
+    "Servicio || Incluido / Costo",
     ...contrato.apartamento.servicios.map(
-      (item) =>
-        `- ${item.servicioNombre}: ${item.incluido ? "Incluido en la renta" : "No incluido"}. Cargo adicional: ${formatCurrency(item.costoAdicional)}`,
+      (servicio) =>
+        `${servicio.servicioNombre} || ${servicio.incluido ? "Si" : "No"} / ${servicio.costoAdicional > 0 ? formatCurrency(servicio.costoAdicional) : "Sin costo"}`,
     ),
     "",
-    "IV. CLAUSULAS Y REGLAMENTO CONTRACTUAL",
-    ...reglas,
+    "VI. CLAUSULAS Y REGLAS APLICABLES",
+    `1. La parte arrendataria pagara la renta mensual de ${formatCurrency(contrato.montoMensual)} dentro de los primeros ${contrato.diaPagoMensual} dias de cada mes.`,
+    "2. El inmueble sera de uso habitacional y no se podra subarrendar sin autorizacion escrita.",
+    `3. En caso de terminacion anticipada se notificara con ${contrato.preavisoDias} dias calendario de antelacion.`,
+    ...contrato.reglas.map(
+      (regla, index) => `${index + 4}. ${regla.nombre}. ${regla.descripcion || "Regla aplicable de cumplimiento obligatorio."}`,
+    ),
     "",
-    "V. DECLARACIONES LEGALES",
-    "1. Las partes manifiestan su consentimiento libre y voluntario sobre el presente contrato.",
-    "2. El incumplimiento de pago, uso indebido del inmueble o infraccion del reglamento faculta a exigir las acciones legales correspondientes.",
-    "3. Cualquier modificacion debera formalizarse por escrito y contar con aceptacion de ambas partes.",
-    "4. Para efectos de notificacion, se tendran como validos los datos consignados en este documento.",
-    "",
-    "VI. ACEPTACION Y FIRMAS",
-    "Con la firma de este documento, las partes aceptan el contenido integro del contrato y su obligatoriedad legal.",
-    "",
-    "Firma Arrendador: _____________________________ || Firma Arrendatario: ____________________________",
-    "Lugar y fecha: ________________________________",
+    "VII. FIRMAS",
+    "Firma del arrendador: ________________________ || Firma del inquilino: ________________________",
     SEP,
     `Documento generado automaticamente el ${format(new Date(), "dd/MM/yyyy HH:mm", { locale: es })}`,
   ];
