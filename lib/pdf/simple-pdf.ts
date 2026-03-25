@@ -56,12 +56,14 @@ function wrapLine(line: string, maxChars: number) {
 
 type PreparedLine = {
   text: string;
-  kind: "title" | "subtitle" | "section" | "separator" | "body" | "empty";
+  kind: "title" | "subtitle" | "section" | "separator" | "body" | "empty" | "highlight" | "columns";
 };
 
 function classifyLine(line: string, index: number): PreparedLine {
   if (!line.trim()) return { text: "", kind: "empty" };
   if (SEP_REGEX.test(line)) return { text: line, kind: "separator" };
+  if (line.includes(" || ")) return { text: line, kind: "columns" };
+  if (line.startsWith("!! ")) return { text: line.replace(/^!!\s*/, ""), kind: "highlight" };
   if (index === 0) return { text: line, kind: "title" };
   if (index === 1) return { text: line, kind: "subtitle" };
   if (SECTION_REGEX.test(line)) return { text: line, kind: "section" };
@@ -90,6 +92,8 @@ function lineHeight(line: PreparedLine) {
   if (line.kind === "title") return 24;
   if (line.kind === "subtitle") return 20;
   if (line.kind === "section") return 19;
+  if (line.kind === "highlight") return 18;
+  if (line.kind === "columns") return 18;
   return LINE_HEIGHT;
 }
 
@@ -186,15 +190,50 @@ export function createSimplePdf(lines: string[]) {
         continue;
       }
 
+      if (line.kind === "columns") {
+        const [left, right] = line.text.split(" || ").map((part) => part.trim());
+        const midPoint = PAGE_WIDTH / 2;
+        contentCommands.push("BT");
+        contentCommands.push("/F1 11 Tf");
+        contentCommands.push(`${MUTED_TEXT} rg`);
+        contentCommands.push(`1 0 0 1 ${LEFT_MARGIN} ${currentY} Tm (${escapePdfText(left ?? "")}) Tj`);
+        contentCommands.push("ET");
+        contentCommands.push("BT");
+        contentCommands.push("/F1 11 Tf");
+        contentCommands.push(`${MUTED_TEXT} rg`);
+        contentCommands.push(`1 0 0 1 ${midPoint + 12} ${currentY} Tm (${escapePdfText(right ?? "")}) Tj`);
+        contentCommands.push("ET");
+        currentY -= lineHeight(line);
+        continue;
+      }
+
       const isCentered = line.kind === "title" || line.kind === "subtitle";
-      const fontSize = line.kind === "title" ? 15 : line.kind === "subtitle" ? 10 : line.kind === "section" ? 12 : FONT_SIZE;
+      const fontSize =
+        line.kind === "title"
+          ? 15
+          : line.kind === "subtitle"
+            ? 10
+            : line.kind === "section"
+              ? 12
+              : line.kind === "highlight"
+                ? 11
+                : FONT_SIZE;
       const fontRef = line.kind === "body" ? "/F1" : "/F2";
       const x = isCentered ? xForCentered(line.text, fontSize) : LEFT_MARGIN;
+
+      if (line.kind === "highlight") {
+        const highlightWidth = PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN;
+        const highlightHeight = 14;
+        contentCommands.push(`${BRAND_SOFT} rg`);
+        contentCommands.push(`${LEFT_MARGIN} ${currentY - 3} ${highlightWidth} ${highlightHeight} re f`);
+      }
 
       contentCommands.push("BT");
       contentCommands.push(`${fontRef} ${fontSize} Tf`);
       contentCommands.push(`${line.kind === "body" ? MUTED_TEXT : BRAND_BLUE} rg`);
-      contentCommands.push(`1 0 0 1 ${x} ${currentY} Tm (${escapePdfText(line.text)}) Tj`);
+      contentCommands.push(
+        `1 0 0 1 ${line.kind === "highlight" ? xForCentered(line.text, fontSize) : x} ${currentY} Tm (${escapePdfText(line.text)}) Tj`,
+      );
       contentCommands.push("ET");
 
       currentY -= lineHeight(line);
