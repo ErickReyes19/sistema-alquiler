@@ -326,12 +326,22 @@ export function createSimplePdf(lines: string[]) {
 }
 
 export function downloadPdf(lines: string[], filename: string) {
+  if (typeof window === "undefined") return;
+
   const bytes = createSimplePdf(lines);
   const blob = new Blob([bytes], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
+
   link.href = url;
   link.download = filename;
+  link.style.display = "none";
+
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(url);
+
+  window.setTimeout(() => {
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, 1000);
 }
