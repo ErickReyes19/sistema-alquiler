@@ -3,268 +3,300 @@ import { es } from 'date-fns/locale';
 
 import type { ApartamentoView } from '@/app/(protected)/apartamentos/type';
 
+const PAGE_WIDTH = 595;
+const PAGE_HEIGHT = 842;
+const LEFT_MARGIN = 50;
+const RIGHT_MARGIN = 50;
+const TOP_MARGIN = 60;
+const BOTTOM_MARGIN = 50;
+const CONTENT_WIDTH = PAGE_WIDTH - LEFT_MARGIN - RIGHT_MARGIN;
+const IMAGE_GAP = 12;
+
+type PreparedImage = {
+  name: string;
+  width: number;
+  height: number;
+  jpegHex: string;
+};
+
+type Page = {
+  content: string;
+  imageNames: string[];
+};
+
 const formatCurrency = (amount: number) =>
   `L ${new Intl.NumberFormat('es-HN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount)}`;
 
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+const sanitizeText = (text: string) =>
+  text
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[•·]/g, '-');
+
+const escapePdfText = (text: string) =>
+  sanitizeText(text)
+    .replaceAll('\\', '\\\\')
+    .replaceAll('(', '\\(')
+    .replaceAll(')', '\\)');
+
+const estimateTextWidth = (text: string, size: number) => sanitizeText(text).length * size * 0.49;
+
+const wrapText = (text: string, maxWidth: number, size: number) => {
+  const safe = sanitizeText(text).trim();
+  if (!safe) return [''];
+
+  const words = safe.split(/\s+/);
+  const lines: string[] = [];
+  let current = '';
+
+  for (const word of words) {
+    const next = current ? `${current} ${word}` : word;
+    if (estimateTextWidth(next, size) <= maxWidth) {
+      current = next;
+      continue;
+    }
+    if (!current) {
+      lines.push(word);
+      continue;
+    }
+    lines.push(current);
+    current = word;
+  }
+
+  if (current) lines.push(current);
+  return lines;
+};
+
+const numberColor = (r: number, g: number, b: number) => `${(r / 255).toFixed(3)} ${(g / 255).toFixed(3)} ${(b / 255).toFixed(3)}`;
+
+const textLine = (text: string, x: number, y: number, size = 11, bold = false, color: [number, number, number] = [31, 41, 55]) => {
+  const escaped = escapePdfText(text);
+  const font = bold ? '/F2' : '/F1';
+  return `BT ${font} ${size} Tf ${numberColor(color[0], color[1], color[2])} rg 1 0 0 1 ${x} ${y} Tm (${escaped}) Tj ET\n`;
+};
+
+const uint8ToHex = (bytes: Uint8Array) => Array.from(bytes, (value) => value.toString(16).padStart(2, '0')).join('');
+
+const toJpegBytes = (dataUrl: string) => {
+  const base64 = dataUrl.split(',')[1] ?? '';
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+};
+
+const convertImageToJpeg = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('No se pudo cargar la imagen');
+
+  const blob = await response.blob();
+  const bitmap = await createImageBitmap(blob);
+  const maxWidth = 1200;
+  const scale = bitmap.width > maxWidth ? maxWidth / bitmap.width : 1;
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('No se pudo procesar la imagen');
+
+  context.fillStyle = '#ffffff';
+  context.fillRect(0, 0, width, height);
+  context.drawImage(bitmap, 0, 0, width, height);
+
+  const jpegUrl = canvas.toDataURL('image/jpeg', 0.86);
+  return {
+    width,
+    height,
+    jpegHex: `${uint8ToHex(toJpegBytes(jpegUrl))}>`,
+  };
+};
+
+const buildPdf = (pages: Page[], images: PreparedImage[]) => {
+  const objects: string[] = [];
+  const addObject = (value: string) => {
+    objects.push(value);
+    return objects.length;
+  };
+
+  const regularFontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  const boldFontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+  const imageObjectIds = new Map<string, number>();
+  for (const image of images) {
+    const imageId = addObject(
+      `<< /Type /XObject /Subtype /Image /Width ${image.width} /Height ${image.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter [/ASCIIHexDecode /DCTDecode] /Length ${image.jpegHex.length} >>\nstream\n${image.jpegHex}\nendstream`,
+    );
+    imageObjectIds.set(image.name, imageId);
+  }
+
+  const pageIds: number[] = [];
+  for (const page of pages) {
+    const contentId = addObject(`<< /Length ${page.content.length} >>\nstream\n${page.content}endstream`);
+    const imageResource = page.imageNames.length
+      ? `/XObject << ${page.imageNames.map((name) => `/${name} ${imageObjectIds.get(name)} 0 R`).join(' ')} >>`
+      : '';
+
+    const resource = `<< /Font << /F1 ${regularFontId} 0 R /F2 ${boldFontId} 0 R >> ${imageResource} >>`;
+    const pageId = addObject(
+      `<< /Type /Page /Parent 0 0 R /MediaBox [0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}] /Resources ${resource} /Contents ${contentId} 0 R >>`,
+    );
+    pageIds.push(pageId);
+  }
+
+  const pagesId = addObject(`<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(' ')}] /Count ${pageIds.length} >>`);
+  for (const pageId of pageIds) {
+    objects[pageId - 1] = objects[pageId - 1].replace('/Parent 0 0 R', `/Parent ${pagesId} 0 R`);
+  }
+  const catalogId = addObject(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+
+  let pdf = '%PDF-1.4\n';
+  const offsets: number[] = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  for (let index = 1; index <= objects.length; index += 1) {
+    pdf += `${offsets[index].toString().padStart(10, '0')} 00000 n \n`;
+  }
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  return new TextEncoder().encode(pdf);
+};
 
 export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
   const fechaGeneracion = format(new Date(), 'dd/MM/yyyy HH:mm', { locale: es });
-  const imagenesConFuente = await Promise.all(
-    (apartamento.imagenes ?? []).map(async (imagen) => {
-      try {
-        const response = await fetch(imagen.url);
-        if (!response.ok) {
-          throw new Error('No se pudo obtener la imagen');
+
+  const preparedImages = (
+    await Promise.all(
+      (apartamento.imagenes ?? []).map(async (image, index) => {
+        try {
+          const converted = await convertImageToJpeg(image.url);
+          return {
+            name: `Im${index + 1}`,
+            width: converted.width,
+            height: converted.height,
+            jpegHex: converted.jpegHex,
+          } as PreparedImage;
+        } catch {
+          return null;
         }
+      }),
+    )
+  ).filter((image): image is PreparedImage => image !== null);
 
-        const blob = await response.blob();
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(String(reader.result ?? ''));
-          reader.onerror = () => reject(new Error('No se pudo procesar la imagen'));
-          reader.readAsDataURL(blob);
-        });
+  const pages: Page[] = [{ content: '', imageNames: [] }];
+  let pageIndex = 0;
+  let cursorY = PAGE_HEIGHT - TOP_MARGIN;
 
-        return { ...imagen, src: dataUrl || imagen.url };
-      } catch {
-        return { ...imagen, src: imagen.url };
-      }
-    }),
-  );
+  const ensureSpace = (required: number) => {
+    if (cursorY - required >= BOTTOM_MARGIN) return;
+    pages.push({ content: '', imageNames: [] });
+    pageIndex += 1;
+    cursorY = PAGE_HEIGHT - TOP_MARGIN;
+  };
 
-  const habitacionesHtml = apartamento.habitaciones.length
-    ? apartamento.habitaciones
-        .map(
-          (habitacion) => `
-          <tr>
-            <td>${escapeHtml(habitacion.tipoHabitacionNombre)}</td>
-            <td>${habitacion.cantidad}</td>
-            <td>${habitacion.activo ? 'Activa' : 'Inactiva'}</td>
-          </tr>`,
-        )
-        .join('')
-    : `<tr><td colspan="3" class="empty">No hay habitaciones registradas.</td></tr>`;
+  const addLine = (text: string, size = 11, bold = false, color: [number, number, number] = [31, 41, 55], marginBottom = 6) => {
+    ensureSpace(size + marginBottom + 6);
+    cursorY -= size;
+    pages[pageIndex].content += textLine(text, LEFT_MARGIN, cursorY, size, bold, color);
+    cursorY -= marginBottom;
+  };
 
-  const serviciosHtml = apartamento.servicios.length
-    ? apartamento.servicios
-        .map(
-          (servicio) => `
-          <tr>
-            <td>${escapeHtml(servicio.servicioNombre)}</td>
-            <td>${servicio.incluido ? 'Incluido' : 'No incluido'}</td>
-            <td>${servicio.costoAdicional > 0 ? formatCurrency(servicio.costoAdicional) : '-'}</td>
-            <td>${servicio.clave ? escapeHtml(servicio.clave) : '-'}</td>
-          </tr>`,
-        )
-        .join('')
-    : `<tr><td colspan="4" class="empty">No hay servicios registrados.</td></tr>`;
+  const addParagraph = (text: string, size = 11, marginBottom = 8) => {
+    const lines = wrapText(text, CONTENT_WIDTH, size);
+    for (const line of lines) {
+      addLine(line, size, false, [31, 41, 55], 2);
+    }
+    cursorY -= marginBottom;
+  };
 
-  const imagenesHtml = imagenesConFuente.length
-    ? imagenesConFuente
-        .map(
-          (imagen, index) => `
-          <figure class="image-card">
-            <img src="${escapeHtml(imagen.src)}" alt="Imagen ${index + 1} del apartamento ${escapeHtml(apartamento.numero)}" />
-            <figcaption>${imagen.originalFilename ? escapeHtml(imagen.originalFilename) : `Imagen ${index + 1}`}</figcaption>
-          </figure>`,
-        )
-        .join('')
-    : '<p class="empty">No hay imágenes registradas.</p>';
+  addLine('Ficha Informativa de Apartamento', 20, true, [29, 78, 216], 10);
+  addLine(`Apartamento #${apartamento.numero}`, 12, true, [30, 64, 175], 6);
+  addLine(`Dirección: ${apartamento.direccion ?? 'No registrada'}`, 11, false, [51, 65, 85], 4);
+  addLine(`Documento generado: ${fechaGeneracion}`, 10, false, [100, 116, 139], 12);
 
-  const html = `
-    <!DOCTYPE html>
-    <html lang="es">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Ficha Apartamento ${escapeHtml(apartamento.numero)}</title>
-        <style>
-          @page { size: A4; margin: 18mm; }
-          * { box-sizing: border-box; }
-          body {
-            font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-            color: #111827;
-            font-size: 12px;
-            line-height: 1.5;
-          }
-          .header {
-            border: 1px solid #dbeafe;
-            background: linear-gradient(135deg, #eff6ff, #f8fafc);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 18px;
-          }
-          .title { margin: 0; font-size: 24px; color: #1d4ed8; }
-          .subtitle { margin: 6px 0 0; color: #334155; }
-          .meta { margin-top: 6px; color: #64748b; font-size: 11px; }
-          .section { margin-top: 20px; page-break-inside: avoid; }
-          .section h2 {
-            font-size: 15px;
-            color: #1e40af;
-            border-bottom: 1px solid #dbeafe;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-          }
-          .table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-            border-radius: 8px;
-          }
-          .table th,
-          .table td {
-            border: 1px solid #e2e8f0;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-          }
-          .table th {
-            background-color: #f8fafc;
-            color: #0f172a;
-            font-weight: 600;
-          }
-          .empty { color: #64748b; text-align: center; padding: 14px; }
-          .gallery {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-          }
-          .image-card {
-            margin: 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #fff;
-            break-inside: avoid;
-          }
-          .image-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-            background: #f8fafc;
-          }
-          .image-card figcaption {
-            padding: 6px 8px;
-            color: #475569;
-            font-size: 10px;
-            border-top: 1px solid #e2e8f0;
-          }
-          .footer {
-            margin-top: 18px;
-            color: #64748b;
-            font-size: 10px;
-            text-align: center;
-          }
-        </style>
-      </head>
-      <body>
-        <header class="header">
-          <h1 class="title">Ficha Informativa de Apartamento</h1>
-          <p class="subtitle">Apartamento #${escapeHtml(apartamento.numero)}</p>
-          <p class="subtitle">Dirección: ${escapeHtml(apartamento.direccion ?? 'No registrada')}</p>
-          <p class="meta">Documento generado: ${fechaGeneracion}</p>
-        </header>
-
-        <section class="section">
-          <h2>Habitaciones</h2>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Tipo</th>
-                <th>Cantidad</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>${habitacionesHtml}</tbody>
-          </table>
-        </section>
-
-        <section class="section">
-          <h2>Servicios</h2>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Servicio</th>
-                <th>Incluido</th>
-                <th>Costo adicional</th>
-                <th>Clave</th>
-              </tr>
-            </thead>
-            <tbody>${serviciosHtml}</tbody>
-          </table>
-        </section>
-
-        <section class="section">
-          <h2>Imágenes del apartamento</h2>
-          <div class="gallery">${imagenesHtml}</div>
-        </section>
-
-        <p class="footer">Ficha para compartir con potenciales inquilinos.</p>
-      </body>
-    </html>
-  `;
-
-  const printFrame = document.createElement('iframe');
-  printFrame.style.position = 'fixed';
-  printFrame.style.right = '0';
-  printFrame.style.bottom = '0';
-  printFrame.style.width = '0';
-  printFrame.style.height = '0';
-  printFrame.style.border = '0';
-  printFrame.style.visibility = 'hidden';
-  document.body.appendChild(printFrame);
-
-  const printWindow = printFrame.contentWindow;
-  if (!printWindow) {
-    printFrame.remove();
-    alert('No fue posible iniciar la impresión del PDF.');
-    return;
+  addLine('Habitaciones', 13, true, [30, 64, 175], 6);
+  if (!apartamento.habitaciones.length) {
+    addLine('- No hay habitaciones registradas.', 11, false, [71, 85, 105], 8);
+  } else {
+    for (const habitacion of apartamento.habitaciones) {
+      addLine(`- ${habitacion.tipoHabitacionNombre}: ${habitacion.cantidad}`, 11, false, [31, 41, 55], 4);
+    }
+    cursorY -= 4;
   }
 
-  printWindow.document.open();
-  printWindow.document.write(html);
-  printWindow.document.close();
+  addLine('Servicios', 13, true, [30, 64, 175], 6);
+  if (!apartamento.servicios.length) {
+    addLine('- No hay servicios registrados.', 11, false, [71, 85, 105], 8);
+  } else {
+    for (const servicio of apartamento.servicios) {
+      addLine(
+        `- ${servicio.servicioNombre}: ${servicio.incluido ? 'Incluido' : 'No incluido'}${servicio.costoAdicional > 0 ? ` | Costo ${formatCurrency(servicio.costoAdicional)}` : ''}`,
+        11,
+        false,
+        [31, 41, 55],
+        4,
+      );
+    }
+    cursorY -= 6;
+  }
 
-  const waitForImages = async () => {
-    const images = Array.from(printWindow.document.images);
-    await Promise.all(
-      images.map(
-        (image) =>
-          new Promise<void>((resolve) => {
-            if (image.complete) {
-              resolve();
-              return;
-            }
-            image.onload = () => resolve();
-            image.onerror = () => resolve();
-          }),
-      ),
-    );
-  };
+  addLine('Imágenes del apartamento', 13, true, [30, 64, 175], 8);
 
-  await waitForImages();
+  if (!preparedImages.length) {
+    addParagraph('No se pudieron incluir imágenes en el PDF o no hay imágenes registradas para este apartamento.', 11, 0);
+  } else {
+    const cellWidth = (CONTENT_WIDTH - IMAGE_GAP) / 2;
+    const maxImageHeight = 160;
+    let column = 0;
 
-  const cleanup = () => {
-    setTimeout(() => {
-      printFrame.remove();
-    }, 800);
-  };
+    for (const image of preparedImages) {
+      const scale = Math.min(cellWidth / image.width, maxImageHeight / image.height, 1);
+      const drawWidth = image.width * scale;
+      const drawHeight = image.height * scale;
+      const blockHeight = drawHeight + 20;
 
-  printWindow.addEventListener('afterprint', cleanup, { once: true });
+      if (column === 0) ensureSpace(blockHeight + 8);
+      if (column === 1 && cursorY - blockHeight < BOTTOM_MARGIN) {
+        pages.push({ content: '', imageNames: [] });
+        pageIndex += 1;
+        cursorY = PAGE_HEIGHT - TOP_MARGIN;
+        column = 0;
+        ensureSpace(blockHeight + 8);
+      }
 
-  printWindow.focus();
-  setTimeout(() => {
-    printWindow.print();
-    setTimeout(cleanup, 2000);
-  }, 200);
+      const x = LEFT_MARGIN + (column === 1 ? cellWidth + IMAGE_GAP : 0) + (cellWidth - drawWidth) / 2;
+      const y = cursorY - drawHeight;
+
+      pages[pageIndex].imageNames.push(image.name);
+      pages[pageIndex].content += `q ${drawWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm /${image.name} Do Q\n`;
+
+      if (column === 1) {
+        cursorY -= blockHeight + 10;
+        column = 0;
+      } else {
+        column = 1;
+      }
+    }
+  }
+
+  const bytes = buildPdf(pages, preparedImages);
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `apartamento-${apartamento.id}.pdf`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
