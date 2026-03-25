@@ -91,6 +91,36 @@ export async function uploadBufferToCloudinary({
   };
 }
 
+export async function deleteAssetFromCloudinary(publicId: string): Promise<void> {
+  const config = getCloudinaryConfig();
+  const timestamp = Math.floor(Date.now() / 1000);
+  const signature = signCloudinaryParams({ public_id: publicId, timestamp }, config.apiSecret);
+
+  const formData = new FormData();
+  formData.append('api_key', config.apiKey);
+  formData.append('timestamp', String(timestamp));
+  formData.append('signature', signature);
+  formData.append('public_id', publicId);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${config.cloudName}/image/destroy`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.error?.message ?? 'No se pudo eliminar la imagen de Cloudinary.');
+  }
+
+  if (data?.result !== 'ok' && data?.result !== 'not found') {
+    throw new Error('Cloudinary no confirmó la eliminación de la imagen.');
+  }
+}
+
 export function getCloudinaryUploadLimits() {
   const config = getCloudinaryConfig();
   return {

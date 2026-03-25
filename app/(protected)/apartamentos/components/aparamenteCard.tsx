@@ -1,6 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -19,9 +20,10 @@ import {
     AirVent,
     BrushCleaning,
     WashingMachine,
+    Download,
 } from "lucide-react"
 import { ApartamentoView } from "../type"
-import { ca } from "date-fns/locale"
+import { downloadApartamentoPdf } from "@/lib/pdf/apartamento-pdf"
 
 
 // Componente para mostrar el ícono correspondiente a cada tipo de habitación
@@ -75,6 +77,10 @@ interface ApartamentoCardProps {
 }
 
 export function ApartamentoCard({ apartamento }: ApartamentoCardProps) {
+    const handleDownloadPdf = () => {
+        downloadApartamentoPdf(apartamento)
+    }
+
     return (
         <Card className="w-full  mx-auto shadow-lg">
             <CardHeader className="pb-2">
@@ -90,10 +96,34 @@ export function ApartamentoCard({ apartamento }: ApartamentoCardProps) {
                         <Badge variant={apartamento.activo ? "outline" : "secondary"}>
                             {apartamento.activo ? "Activo" : "Inactivo"}
                         </Badge>
+                        <Button variant="outline" size="sm" onClick={handleDownloadPdf}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Descargar PDF
+                        </Button>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Imágenes</h3>
+                    <Separator className="my-2" />
+                    {apartamento.imagenes?.length ? (
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {apartamento.imagenes.map((imagen, index) => (
+                                <div key={`${imagen.publicId}-${index}`} className="rounded-md border p-2">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={imagen.url}
+                                        alt={`Imagen del apartamento ${apartamento.numero} #${index + 1}`}
+                                        className="h-44 w-full rounded-md object-cover"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-muted-foreground">No hay imágenes registradas.</p>
+                    )}
+                </div>
                 <div>
                     <h3 className="text-lg font-semibold mb-2">Habitaciones</h3>
                     <Separator className="my-2" />
