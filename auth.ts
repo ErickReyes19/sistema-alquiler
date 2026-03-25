@@ -39,7 +39,7 @@ export async function encrypt(payload: UsuarioSesion) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("1 h from now")
+        .setExpirationTime("4 h from now")
         .sign(key);
 }
 
@@ -186,7 +186,7 @@ function buildSessionPayload(user: UsuarioConRol): UsuarioSesion {
         tenantId: user.tenantId,
         tenantSlug: user.tenant.slug,
         tipoUsuario: user.tipoUsuario,
-        exp: Math.floor(Date.now() / 1000) + 3600,
+        exp: Math.floor(Date.now() / 1000) + 4 * 60 * 60,
         iss: "your-issuer",
         aud: "your-audience",
     };
