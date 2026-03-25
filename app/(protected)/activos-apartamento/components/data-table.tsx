@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
         />
         <Link href={`/activos-apartamento/create`} className="w-full md:w-auto">
           <Button className="w-full md:w-auto flex items-center gap-2">
-            Nuevo activo
+            Nuevo tipo activo
             <Plus />
           </Button>
         </Link>

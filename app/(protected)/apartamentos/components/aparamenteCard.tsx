@@ -199,6 +199,46 @@ export function ApartamentoCard({ apartamento }: ApartamentoCardProps) {
                         </TableBody>
                     </Table>
                 </div>
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">Activos del apartamento</h3>
+                    <Separator className="my-2" />
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Tipo</TableHead>
+                                <TableHead>Identificador</TableHead>
+                                <TableHead>Habitación</TableHead>
+                                <TableHead>Descripción</TableHead>
+                                <TableHead className="text-right">Estado</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {apartamento.activos.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-sm text-muted-foreground">
+                                        No hay activos registrados para este apartamento.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                apartamento.activos.map((activo) => (
+                                    <TableRow key={activo.id}>
+                                        <TableCell className="font-medium">{activo.tipoActivoNombre}</TableCell>
+                                        <TableCell>{activo.identificador}</TableCell>
+                                        <TableCell>{activo.tipoHabitacionNombre ?? "-"}</TableCell>
+                                        <TableCell>{activo.descripcion ?? "-"}</TableCell>
+                                        <TableCell className="text-right">
+                                            {activo.activo ? (
+                                                <Badge variant="default"><Check className="h-3 w-3 mr-1" /> Activo</Badge>
+                                            ) : (
+                                                <Badge variant="destructive"><X className="h-3 w-3 mr-1" /> Inactivo</Badge>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
             </CardContent>
         </Card>
     )

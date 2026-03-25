@@ -45,6 +45,17 @@ export const ApartamentoServicioSchema = z.object({
 });
 export type ApartamentoServicio = z.infer<typeof ApartamentoServicioSchema>;
 
+export const ApartamentoActivoSchema = z.object({
+  id: z.string().uuid().optional(),
+  apartamentoId: z.string().optional(),
+  tipoActivoId: z.string().uuid({ message: "Debe seleccionar un tipo de activo" }),
+  tipoHabitacionId: z.string().uuid().optional().nullable(),
+  identificador: z.string().min(1, "El identificador es obligatorio"),
+  descripcion: z.string().optional().nullable(),
+  activo: z.boolean().optional(),
+});
+export type ApartamentoActivo = z.infer<typeof ApartamentoActivoSchema>;
+
 //
 // 3) Apartamento (todo junto)
 //
@@ -61,5 +72,6 @@ export const ApartamentoSchema = z.object({
   servicios: z
     .array(ApartamentoServicioSchema)
     .optional(),                         // ← DEFAULT, **sin optional()**
+  activos: z.array(ApartamentoActivoSchema).optional(),
 });
 export type Apartamento = z.infer<typeof ApartamentoSchema>;

@@ -3,32 +3,32 @@ import HeaderComponent from "@/components/HeaderComponent";
 import NoAcceso from "@/components/noAccess";
 import { Armchair } from "lucide-react";
 
-import { getApartamentoActivos } from "./actions";
+import { getTiposActivosApartamento } from "./actions";
+import ActivosListMobile from "./components/activos-list-mobile";
 import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
-import ActivosListMobile from "./components/activos-list-mobile";
 
-export default async function ActivosApartamentoPage() {
+export default async function TiposActivosApartamentoPage() {
   const permisos = await getSessionPermisos();
 
   if (!permisos?.includes("ver_activos_apartamento")) {
     return <NoAcceso />;
   }
 
-  const data = await getApartamentoActivos();
+  const data = await getTiposActivosApartamento();
 
   return (
     <div className="container mx-auto py-2">
       <HeaderComponent
         Icon={Armchair}
-        description="Administre muebles/activos por apartamento y tipo de habitación, con identificadores únicos por unidad."
-        screenName="Activos por apartamento"
+        description="Aquí solo se administran tipos de activos. La asignación por identificador se hace en cada apartamento."
+        screenName="Tipos de activos"
       />
       <div className="hidden md:block">
         <DataTable columns={columns} data={data} />
       </div>
       <div className="block md:hidden">
-        <ActivosListMobile activos={data} />
+        <ActivosListMobile tipos={data} />
       </div>
     </div>
   );

@@ -598,6 +598,7 @@ model GastoApartamento {
 
   @@index([tenantId])
   @@index([apartamentoId])
+  @@index([apartamentoId, apartamentoActivoId])
   @@index([apartamentoActivoId])
   @@index([fecha])
   @@index([categoria])
@@ -637,6 +638,7 @@ model ApartamentoActivo {
   @@unique([tenantId, apartamentoId, identificador])
   @@index([tenantId])
   @@index([apartamentoId])
+  @@index([apartamentoId, activo])
   @@index([tipoActivoId])
   @@index([tipoHabitacionId])
 }

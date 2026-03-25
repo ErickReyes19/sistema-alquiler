@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, CheckCircleIcon, MoreHorizontal, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -13,25 +13,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { ApartamentoActivoItem } from "../type";
+import { TipoActivoApartamento } from "../type";
 
-export const columns: ColumnDef<ApartamentoActivoItem>[] = [
+export const columns: ColumnDef<TipoActivoApartamento>[] = [
   {
-    accessorKey: "apartamentoNumero",
+    accessorKey: "nombre",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Apartamento <ArrowUpDown className="ml-2 h-4 w-4" />
+        Nombre <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
-  { accessorKey: "tipoActivoNombre", header: "Tipo activo" },
-  { accessorKey: "tipoHabitacionNombre", header: "Tipo habitación" },
-  { accessorKey: "identificador", header: "Identificador" },
-  { accessorKey: "descripcion", header: "Descripción" },
   {
     accessorKey: "activo",
     header: "Estado",
-    cell: ({ row }) => (row.original.activo ? "Activo" : "Inactivo"),
+    cell: ({ row }) =>
+      row.original.activo ? (
+        <div className="flex gap-2"><CheckCircleIcon className="text-green-600" /> Activo</div>
+      ) : (
+        <div className="flex gap-2"><XCircleIcon className="text-red-600" /> Inactivo</div>
+      ),
   },
   {
     id: "actions",

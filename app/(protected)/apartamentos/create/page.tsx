@@ -4,8 +4,8 @@ import HeaderComponent from "@/components/HeaderComponent";
 import { PlusCircle } from "lucide-react";
 import NoAcceso from "@/components/noAccess"; // Componente de acceso restringido
 import ApartamentoForm  from "../components/Formulario"; // Asegúrate de tener este componente
-import { getTiposHabitacion, getTiposHabitacionActivos } from "../../tipo-habitacion/actions";
-import { getServiciosActivos } from "../actions";
+import { getTiposHabitacionActivos } from "../../tipo-habitacion/actions";
+import { getServiciosActivos, getTiposActivosActivos } from "../actions";
 
 export default async function CreateApartamentoPage() {
   // Verifica la sesión y redirige si no hay permisos
@@ -24,6 +24,7 @@ export default async function CreateApartamentoPage() {
   };
   const tipoHabitaciones = await getTiposHabitacionActivos(); // Asegúrate de tener esta función para obtener los tipos de habitaciones
   const serviciosActivos = await getServiciosActivos(); // Asegúrate de tener esta función para obtener los tipos de habitaciones
+  const tiposActivos = await getTiposActivosActivos();
 
   return (
     <div>
@@ -35,6 +36,7 @@ export default async function CreateApartamentoPage() {
       <ApartamentoForm tipoHabitaciones={tipoHabitaciones}
       initialData={initialData}isUpdate={false}
       serviciosDisponibles={serviciosActivos}
+      tiposActivosDisponibles={tiposActivos}
       />
     </div>
   );
