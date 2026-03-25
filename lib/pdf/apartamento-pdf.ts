@@ -19,6 +19,28 @@ const escapeHtml = (value: string) =>
 
 export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
   const fechaGeneracion = format(new Date(), 'dd/MM/yyyy HH:mm', { locale: es });
+  const imagenesConFuente = await Promise.all(
+    (apartamento.imagenes ?? []).map(async (imagen) => {
+      try {
+        const response = await fetch(imagen.url);
+        if (!response.ok) {
+          throw new Error('No se pudo obtener la imagen');
+        }
+
+        const blob = await response.blob();
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(String(reader.result ?? ''));
+          reader.onerror = () => reject(new Error('No se pudo procesar la imagen'));
+          reader.readAsDataURL(blob);
+        });
+
+        return { ...imagen, src: dataUrl || imagen.url };
+      } catch {
+        return { ...imagen, src: imagen.url };
+      }
+    }),
+  );
 
   const habitacionesHtml = apartamento.habitaciones.length
     ? apartamento.habitaciones
@@ -47,12 +69,12 @@ export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
         .join('')
     : `<tr><td colspan="4" class="empty">No hay servicios registrados.</td></tr>`;
 
-  const imagenesHtml = apartamento.imagenes?.length
-    ? apartamento.imagenes
+  const imagenesHtml = imagenesConFuente.length
+    ? imagenesConFuente
         .map(
           (imagen, index) => `
           <figure class="image-card">
-            <img src="${escapeHtml(imagen.url)}" alt="Imagen ${index + 1} del apartamento ${escapeHtml(apartamento.numero)}" />
+            <img src="${escapeHtml(imagen.src)}" alt="Imagen ${index + 1} del apartamento ${escapeHtml(apartamento.numero)}" />
             <figcaption>${imagen.originalFilename ? escapeHtml(imagen.originalFilename) : `Imagen ${index + 1}`}</figcaption>
           </figure>`,
         )
@@ -192,9 +214,20 @@ export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
     </html>
   `;
 
-  const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=820');
+  const printFrame = document.createElement('iframe');
+  printFrame.style.position = 'fixed';
+  printFrame.style.right = '0';
+  printFrame.style.bottom = '0';
+  printFrame.style.width = '0';
+  printFrame.style.height = '0';
+  printFrame.style.border = '0';
+  printFrame.style.visibility = 'hidden';
+  document.body.appendChild(printFrame);
+
+  const printWindow = printFrame.contentWindow;
   if (!printWindow) {
-    alert('Tu navegador bloqueó la ventana de impresión. Habilita pop-ups e inténtalo de nuevo.');
+    printFrame.remove();
+    alert('No fue posible iniciar la impresión del PDF.');
     return;
   }
 
@@ -221,35 +254,17 @@ export async function downloadApartamentoPdf(apartamento: ApartamentoView) {
 
   await waitForImages();
 
-  const toolbar = printWindow.document.createElement('div');
-  toolbar.style.position = 'fixed';
-  toolbar.style.top = '12px';
-  toolbar.style.right = '12px';
-  toolbar.style.zIndex = '99999';
-  toolbar.style.display = 'flex';
-  toolbar.style.gap = '8px';
-  toolbar.style.padding = '8px';
-  toolbar.style.background = 'rgba(255,255,255,0.95)';
-  toolbar.style.border = '1px solid #e2e8f0';
-  toolbar.style.borderRadius = '10px';
-
-  const printButton = printWindow.document.createElement('button');
-  printButton.textContent = 'Descargar / Imprimir PDF';
-  printButton.style.border = 'none';
-  printButton.style.borderRadius = '8px';
-  printButton.style.padding = '8px 12px';
-  printButton.style.background = '#1d4ed8';
-  printButton.style.color = '#fff';
-  printButton.style.cursor = 'pointer';
-  printButton.onclick = () => {
-    printWindow.focus();
-    printWindow.print();
+  const cleanup = () => {
+    setTimeout(() => {
+      printFrame.remove();
+    }, 800);
   };
-  toolbar.appendChild(printButton);
-  printWindow.document.body.appendChild(toolbar);
+
+  printWindow.addEventListener('afterprint', cleanup, { once: true });
 
   printWindow.focus();
   setTimeout(() => {
     printWindow.print();
+    setTimeout(cleanup, 2000);
   }, 200);
 }
