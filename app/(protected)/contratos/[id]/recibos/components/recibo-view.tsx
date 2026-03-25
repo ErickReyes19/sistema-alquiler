@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 import { registrarPagoParcialRecibo, registrarPagoTotalRecibo } from "../actions";
 import { ReciboCompleto } from "../type";
+import { downloadReciboPdf } from "@/lib/pdf/recibo-pdf";
 
 interface ReciboDetalleProps {
   recibo: ReciboCompleto;
@@ -51,7 +52,7 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
     }).format(amount);
 
   const handlePrint = () => {
-    window.location.href = `/recibo/${recibo.id}/imprimir/`;
+    downloadReciboPdf(recibo);
   };
 
   const registrarPagoTotal = () => {
@@ -95,7 +96,7 @@ export function ReciboDetalle({ recibo }: ReciboDetalleProps) {
           <div className="print:hidden flex gap-2">
             <Button variant="outline" size="sm" onClick={handlePrint}>
               <Printer className="mr-2 h-4 w-4" />
-              Imprimir
+              Descargar PDF
             </Button>
           </div>
         </div>

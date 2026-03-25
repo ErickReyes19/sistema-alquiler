@@ -29,6 +29,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { formatLempiras } from "@/lib/utils";
+import { downloadContratoPdf } from "@/lib/pdf/contrato-pdf";
 
 import {
   registrarAjusteRentaContrato,
@@ -186,7 +187,7 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
   };
 
   const handlePrint = () => {
-    window.location.href = `/contrato/${contrato.id}/imprimir`;
+    downloadContratoPdf(contrato);
   };
 
   return (
@@ -204,7 +205,7 @@ export default function ContratoViewComponent({ contrato }: ContratoViewProps) {
             </Badge>
             <Badge variant="outline">{contrato.estadoRenovacion.replaceAll("_", " ")}</Badge>
             <Button variant="outline" size="sm" onClick={handlePrint}>
-              Imprimir
+              Descargar PDF
             </Button>
           </div>
         </div>
