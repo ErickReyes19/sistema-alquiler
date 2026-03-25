@@ -81,6 +81,7 @@ export default function ApartamentoForm({
   const { control, handleSubmit, reset } = form;
   const imagenes = form.watch('imagenes') ?? [];
   const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [isDeletingImageId, setIsDeletingImageId] = useState<string | null>(null);
   const [localPreviews, setLocalPreviews] = useState<string[]>([]);
 
   const uploadImages = async (files: File[]) => {
@@ -114,6 +115,37 @@ export default function ApartamentoForm({
     control,
     name: 'servicios',
   });
+
+  const removeImage = async (publicId: string, index: number) => {
+    setIsDeletingImageId(publicId);
+    try {
+      const response = await fetch('/api/uploads/cloudinary', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publicId }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error ?? 'No se pudo eliminar la imagen.');
+      }
+
+      form.setValue(
+        'imagenes',
+        (form.getValues('imagenes') ?? []).filter((_, imageIndex) => imageIndex !== index),
+        { shouldDirty: true, shouldValidate: true },
+      );
+    } catch (error) {
+      toast({
+        title: 'Error eliminando imagen',
+        description:
+          error instanceof Error ? error.message : 'No se pudo eliminar la imagen.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsDeletingImageId(null);
+    }
+  };
 
   useEffect(() => {
     reset(normalizeInitialData(initialData));
@@ -269,15 +301,10 @@ export default function ApartamentoForm({
                       type="button"
                       variant="destructive"
                       size="sm"
-                      onClick={() =>
-                        form.setValue(
-                          'imagenes',
-                          imagenes.filter((_, imageIndex) => imageIndex !== index),
-                          { shouldDirty: true, shouldValidate: true },
-                        )
-                      }
+                      disabled={isDeletingImageId === imagen.publicId}
+                      onClick={() => removeImage(imagen.publicId, index)}
                     >
-                      Quitar
+                      {isDeletingImageId === imagen.publicId ? 'Eliminando...' : 'Quitar'}
                     </Button>
                   </div>
                 ))}
