@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Building2, ChevronDown, ChevronUp, HandCoins, HouseIcon, LayoutDashboard, LayersIcon, ListOrderedIcon, ReceiptText, Settings, UserCog, UserIcon, Users2, Wrench } from 'lucide-react';
+import { Armchair, Building2, ChevronDown, ChevronUp, HandCoins, HouseIcon, LayoutDashboard, LayersIcon, ListOrderedIcon, ReceiptText, Settings, UserCog, UserIcon, Users2, Wrench } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -86,6 +86,12 @@ const items = [
     url: "/servicios",
     icon: ListOrderedIcon,
     permiso: "ver_servicios",
+  },
+  {
+    title: "Activos apartamento",
+    url: "/activos-apartamento",
+    icon: Armchair,
+    permiso: "ver_activos_apartamento",
   },
   {
     title: "Reglas",

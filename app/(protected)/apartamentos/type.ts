@@ -28,6 +28,16 @@ export type ApartamentoServicio = {
   costoAdicional?: number;
 };
 
+export type ApartamentoActivo = {
+  id?: string;
+  apartamentoId?: string;
+  tipoActivoId: string;
+  tipoHabitacionId?: string | null;
+  identificador: string;
+  descripcion?: string | null;
+  activo?: boolean;
+};
+
 export type ApartamentoView = {
   id: string;
   numero: string;
@@ -49,5 +59,15 @@ export type ApartamentoView = {
     clave?: string | null;
     incluido: boolean;
     costoAdicional: number;
+  }[];
+  activos: {
+    id: string;
+    tipoActivoId: string;
+    tipoActivoNombre: string;
+    tipoHabitacionId?: string | null;
+    tipoHabitacionNombre?: string | null;
+    identificador: string;
+    descripcion?: string | null;
+    activo: boolean;
   }[];
 };

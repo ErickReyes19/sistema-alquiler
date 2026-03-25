@@ -6,6 +6,7 @@ import { normalizeUploadedAssets } from '@/lib/uploaded-asset'
 
 import {
   Apartamento,
+  ApartamentoActivo,
   ApartamentoServicio,
   ApartamentoView,
   Habitacion,
@@ -14,6 +15,7 @@ import {
 const apartamentoInclude = {
   apartamento: true,
   ApartamentoServicios: true,
+  activos: true,
 } as const
 
 const apartamentoViewInclude = {
@@ -25,6 +27,12 @@ const apartamentoViewInclude = {
   ApartamentoServicios: {
     include: {
       servicio: true,
+    },
+  },
+  activos: {
+    include: {
+      tipoActivo: true,
+      tipoHabitacion: true,
     },
   },
 } as const
@@ -59,9 +67,28 @@ const mapApartamentoServicio = (servicio: {
   costoAdicional: Number(servicio.costoAdicional),
 })
 
+const mapApartamentoActivo = (activo: {
+  id: string
+  apartamentoId: string
+  tipoActivoId: string
+  tipoHabitacionId: string | null
+  identificador: string
+  descripcion: string | null
+  activo: boolean
+}): ApartamentoActivo => ({
+  id: activo.id,
+  apartamentoId: activo.apartamentoId,
+  tipoActivoId: activo.tipoActivoId,
+  tipoHabitacionId: activo.tipoHabitacionId,
+  identificador: activo.identificador,
+  descripcion: activo.descripcion,
+  activo: activo.activo,
+})
+
 const mapApartamentoCompleto = (apartamento: any): Apartamento & {
   habitaciones: Habitacion[]
   servicios: ApartamentoServicio[]
+  activos: ApartamentoActivo[]
 } => ({
   id: apartamento.id,
   numero: apartamento.numero,
@@ -71,6 +98,7 @@ const mapApartamentoCompleto = (apartamento: any): Apartamento & {
   activo: apartamento.activo,
   habitaciones: apartamento.apartamento.map(mapHabitacion),
   servicios: apartamento.ApartamentoServicios.map(mapApartamentoServicio),
+  activos: apartamento.activos.map(mapApartamentoActivo),
 })
 
 const buildApartamentoData = (apartamento: Apartamento) => ({
@@ -96,6 +124,16 @@ const buildServiciosCreateData = (tenantId: string, servicios: ApartamentoServic
     clave: servicio.clave?.trim() || null,
     incluido: servicio.incluido ?? true,
     costoAdicional: servicio.costoAdicional ?? 0,
+  }))
+
+const buildActivosCreateData = (tenantId: string, activos: ApartamentoActivo[]) =>
+  activos.map((activo) => ({
+    tenantId,
+    tipoActivoId: activo.tipoActivoId,
+    tipoHabitacionId: activo.tipoHabitacionId || null,
+    identificador: activo.identificador.trim(),
+    descripcion: activo.descripcion?.trim() || null,
+    activo: activo.activo ?? true,
   }))
 
 const buildHabitacionesCreateManyData = (
@@ -125,14 +163,31 @@ const buildServiciosCreateManyData = (
     costoAdicional: servicio.costoAdicional ?? 0,
   }))
 
+const buildActivosCreateManyData = (
+  tenantId: string,
+  apartamentoId: string,
+  activos: ApartamentoActivo[],
+) =>
+  activos.map((activo) => ({
+    tenantId,
+    apartamentoId,
+    tipoActivoId: activo.tipoActivoId,
+    tipoHabitacionId: activo.tipoHabitacionId || null,
+    identificador: activo.identificador.trim(),
+    descripcion: activo.descripcion?.trim() || null,
+    activo: activo.activo ?? true,
+  }))
+
 export async function postApartamentoCompleto({
   apartamento,
   habitaciones,
   servicios,
+  activos,
 }: {
   apartamento: Apartamento
   habitaciones: Habitacion[]
   servicios: ApartamentoServicio[]
+  activos: ApartamentoActivo[]
 }): Promise<boolean> {
   try {
     const tenantId = await getTenantIdFromSession()
@@ -146,6 +201,11 @@ export async function postApartamentoCompleto({
         ApartamentoServicios: servicios.length
           ? {
               create: buildServiciosCreateData(tenantId, servicios),
+            }
+          : undefined,
+        activos: activos.length
+          ? {
+              create: buildActivosCreateData(tenantId, activos),
             }
           : undefined,
       },
@@ -162,10 +222,12 @@ export async function putApartamentoCompleto({
   apartamento,
   habitaciones,
   servicios,
+  activos,
 }: {
   apartamento: Apartamento
   habitaciones: Habitacion[]
   servicios: ApartamentoServicio[]
+  activos: ApartamentoActivo[]
 }): Promise<boolean> {
   if (!apartamento.id) {
     throw new Error('El ID del apartamento es obligatorio para actualizar.')
@@ -178,6 +240,9 @@ export async function putApartamentoCompleto({
         where: { apartamentoId: apartamento.id!, tenantId },
       })
       await tx.habitaciones.deleteMany({
+        where: { apartamentoId: apartamento.id!, tenantId },
+      })
+      await tx.apartamentoActivo.deleteMany({
         where: { apartamentoId: apartamento.id!, tenantId },
       })
 
@@ -205,6 +270,11 @@ export async function putApartamentoCompleto({
           data: buildServiciosCreateManyData(tenantId, apartamento.id!, servicios),
         })
       }
+      if (activos.length) {
+        await tx.apartamentoActivo.createMany({
+          data: buildActivosCreateManyData(tenantId, apartamento.id!, activos),
+        })
+      }
     })
 
     return true
@@ -215,7 +285,7 @@ export async function putApartamentoCompleto({
 }
 
 export async function getApartamentosCompleto(): Promise<
-  (Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] })[]
+  (Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[]; activos: ApartamentoActivo[] })[]
 > {
   try {
     const apartamentos = await prisma.apartamento.findMany({
@@ -248,9 +318,24 @@ export async function getServiciosActivos(): Promise<{ id: string; nombre: strin
   }
 }
 
+export async function getTiposActivosActivos(): Promise<{ id: string; nombre: string }[]> {
+  try {
+    const tipos = await prisma.tipoActivoApartamento.findMany({
+      where: await buildTenantWhere({ activo: true }),
+      orderBy: { nombre: 'asc' },
+      select: { id: true, nombre: true },
+    })
+
+    return tipos
+  } catch (error) {
+    console.error('Error al obtener tipos de activos:', error)
+    return []
+  }
+}
+
 export async function getApartamentoCompletoById(
   id: string,
-): Promise<(Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[] }) | null> {
+): Promise<(Apartamento & { habitaciones: Habitacion[]; servicios: ApartamentoServicio[]; activos: ApartamentoActivo[] }) | null> {
   try {
     const apartamento = await prisma.apartamento.findFirst({
       where: await buildTenantWhere({ id }),
@@ -300,6 +385,16 @@ export async function getApartamentoCompletoConId(
         clave: (servicio as { clave?: string | null }).clave ?? null,
         incluido: servicio.incluido,
         costoAdicional: Number(servicio.costoAdicional),
+      })),
+      activos: apartamento.activos.map((activo) => ({
+        id: activo.id,
+        tipoActivoId: activo.tipoActivoId,
+        tipoActivoNombre: activo.tipoActivo.nombre,
+        tipoHabitacionId: activo.tipoHabitacionId,
+        tipoHabitacionNombre: activo.tipoHabitacion?.nombre ?? null,
+        identificador: activo.identificador,
+        descripcion: activo.descripcion ?? null,
+        activo: activo.activo,
       })),
     }
   } catch (error) {

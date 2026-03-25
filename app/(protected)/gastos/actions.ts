@@ -16,6 +16,7 @@ const categoriaLabelMap = new Map(categoriaOptions.map((item) => [item.value, it
 export type GastoFormInput = {
   id?: string;
   apartamentoId: string;
+  apartamentoActivoId?: string;
   fecha: string;
   categoria: CategoriaGasto;
   concepto: string;
@@ -28,6 +29,8 @@ export type GastoListItem = {
   id: string;
   apartamentoId: string;
   apartamento: string;
+  apartamentoActivoId?: string | null;
+  apartamentoActivoLabel?: string | null;
   fecha: string;
   categoria: CategoriaGasto;
   categoriaLabel: string;
@@ -64,6 +67,12 @@ export type GastosModuleData = {
     fechaCorte: string;
   };
   apartamentos: Array<{ id: string; numero: string; direccion?: string | null }>;
+  activosPorApartamento: Array<{
+    id: string;
+    apartamentoId: string;
+    label: string;
+    activo: boolean;
+  }>;
   rentabilidadPorApartamento: RentabilidadApartamentoItem[];
   gastosRecientes: GastoListItem[];
 };
@@ -96,6 +105,7 @@ function normalizeInput(input: GastoFormInput) {
 
   return {
     apartamentoId: input.apartamentoId,
+    apartamentoActivoId: input.apartamentoActivoId || undefined,
     categoria: input.categoria,
     concepto,
     descripcion,
@@ -110,11 +120,22 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
   const start = startOfMonth(now);
   const end = endOfMonth(now);
 
-  const [apartamentos, contratosActivos, recibosMes, gastosMes, gastosRecientes, mantenimientosAbiertos] = await Promise.all([
+  const [apartamentos, activosApartamento, contratosActivos, recibosMes, gastosMes, gastosRecientes, mantenimientosAbiertos] = await Promise.all([
     prisma.apartamento.findMany({
       where: await buildTenantWhere({ activo: true }),
       orderBy: { numero: "asc" },
       select: { id: true, numero: true, direccion: true, disponible: true },
+    }),
+    prisma.apartamentoActivo.findMany({
+      where: await buildTenantWhere({}),
+      select: {
+        id: true,
+        apartamentoId: true,
+        identificador: true,
+        tipoActivo: { select: { nombre: true } },
+        activo: true,
+      },
+      orderBy: [{ apartamento: { numero: "asc" } }, { identificador: "asc" }],
     }),
     prisma.contratos.findMany({
       where: await buildTenantWhere({ activo: true }),
@@ -141,7 +162,7 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
     }),
     prisma.gastoApartamento.findMany({
       where: await buildTenantWhere({}),
-      include: { apartamento: true },
+      include: { apartamento: true, apartamentoActivo: { include: { tipoActivo: true } } },
       orderBy: [{ fecha: "desc" }, { createAt: "desc" }],
       take: 50,
     }),
@@ -226,11 +247,21 @@ export async function getGastosModuleData(): Promise<GastosModuleData> {
       numero: apartamento.numero,
       direccion: apartamento.direccion,
     })),
+    activosPorApartamento: activosApartamento.map((item) => ({
+      id: item.id,
+      apartamentoId: item.apartamentoId,
+      label: `${item.tipoActivo.nombre} · ${item.identificador}`,
+      activo: item.activo,
+    })),
     rentabilidadPorApartamento,
     gastosRecientes: gastosRecientes.map((gasto) => ({
       id: gasto.id,
       apartamentoId: gasto.apartamentoId,
       apartamento: gasto.apartamento.numero,
+      apartamentoActivoId: gasto.apartamentoActivoId,
+      apartamentoActivoLabel: gasto.apartamentoActivo
+        ? `${gasto.apartamentoActivo.tipoActivo.nombre} · ${gasto.apartamentoActivo.identificador}`
+        : null,
       fecha: gasto.fecha.toISOString(),
       categoria: gasto.categoria,
       categoriaLabel: getCategoriaLabel(gasto.categoria),
@@ -255,6 +286,17 @@ export async function createGasto(input: GastoFormInput) {
     throw new Error("El apartamento seleccionado no existe para este tenant.");
   }
 
+  if (data.apartamentoActivoId) {
+    const activo = await prisma.apartamentoActivo.findFirst({
+      where: { id: data.apartamentoActivoId, tenantId, apartamentoId: data.apartamentoId },
+      select: { id: true },
+    });
+
+    if (!activo) {
+      throw new Error("El activo seleccionado no pertenece al apartamento indicado.");
+    }
+  }
+
   await prisma.gastoApartamento.create({
     data: {
       tenantId,
@@ -276,11 +318,22 @@ export async function updateGasto(input: GastoFormInput) {
 
   const existing = await prisma.gastoApartamento.findFirst({
     where: { id: input.id, tenantId },
-    select: { id: true },
+    select: { id: true, apartamentoId: true },
   });
 
   if (!existing) {
     throw new Error("No se encontró el gasto a editar.");
+  }
+
+  if (data.apartamentoActivoId) {
+    const activo = await prisma.apartamentoActivo.findFirst({
+      where: { id: data.apartamentoActivoId, tenantId, apartamentoId: data.apartamentoId },
+      select: { id: true },
+    });
+
+    if (!activo) {
+      throw new Error("El activo seleccionado no pertenece al apartamento indicado.");
+    }
   }
 
   await prisma.gastoApartamento.update({

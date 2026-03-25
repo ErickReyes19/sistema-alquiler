@@ -37,6 +37,7 @@ type ApartamentoFormValues = z.infer<typeof ApartamentoSchema>;
 interface Props {
   tipoHabitaciones: TipoHabitacion[];
   serviciosDisponibles: Servicio[];
+  tiposActivosDisponibles: { id: string; nombre: string }[];
   initialData?: ApartamentoFormValues;
   isUpdate?: boolean;
 }
@@ -49,6 +50,7 @@ const defaultValues: ApartamentoFormValues = {
   activo: true,
   habitaciones: [],
   servicios: [],
+  activos: [],
 };
 
 const normalizeInitialData = (
@@ -61,12 +63,14 @@ const normalizeInitialData = (
   activo: initialData?.activo ?? true,
   habitaciones: initialData?.habitaciones ?? [],
   servicios: initialData?.servicios ?? [],
+  activos: initialData?.activos ?? [],
   imagenes: initialData?.imagenes ?? [],
 });
 
 export default function ApartamentoForm({
   tipoHabitaciones,
   serviciosDisponibles,
+  tiposActivosDisponibles,
   initialData,
   isUpdate,
 }: Props) {
@@ -115,6 +119,10 @@ export default function ApartamentoForm({
     control,
     name: 'servicios',
   });
+  const { fields: activosFields, append: appendActivo, remove: removeActivo } = useFieldArray({
+    control,
+    name: 'activos',
+  });
 
   const removeImage = async (publicId: string, index: number) => {
     setIsDeletingImageId(publicId);
@@ -156,6 +164,7 @@ export default function ApartamentoForm({
       apartamento: values,
       habitaciones: values.habitaciones,
       servicios: values.servicios ?? [],
+      activos: values.activos ?? [],
     };
 
     if (isUpdate && initialData?.id) {
@@ -505,6 +514,119 @@ export default function ApartamentoForm({
               }
             >
               Añadir Servicio
+            </Button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Activos y muebles</h2>
+          {activosFields.map((field, idx) => (
+            <div key={field.id} className="space-y-4 rounded-lg border p-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={control}
+                  name={`activos.${idx}.tipoActivoId`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de activo</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un tipo de activo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {tiposActivosDisponibles.map((tipo) => (
+                              <SelectItem key={tipo.id} value={tipo.id}>
+                                {tipo.nombre}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`activos.${idx}.tipoHabitacionId`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de habitación (opcional)</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => field.onChange(value === 'none' ? null : value)}
+                          value={field.value ?? 'none'}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="No aplica" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">No aplica</SelectItem>
+                            {tipoHabitaciones.map((tipo) => (
+                              <SelectItem key={tipo.id} value={tipo.id || ''}>
+                                {tipo.nombre}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`activos.${idx}.identificador`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Identificador</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ej. Aire acondicionado 1" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`activos.${idx}.descripcion`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descripción</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Marca, serie o ubicación"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button type="button" variant="destructive" onClick={() => removeActivo(idx)}>
+                  Eliminar activo
+                </Button>
+              </div>
+            </div>
+          ))}
+          <div className="flex justify-end">
+            <Button
+              type="button"
+              onClick={() =>
+                appendActivo({
+                  tipoActivoId: '',
+                  tipoHabitacionId: null,
+                  identificador: '',
+                  descripcion: '',
+                  activo: true,
+                })
+              }
+            >
+              Añadir activo
             </Button>
           </div>
         </div>
