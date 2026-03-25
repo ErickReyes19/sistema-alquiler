@@ -24,7 +24,7 @@ export function downloadReciboPdf(recibo: ReciboCompleto) {
     `Fecha de emision: ${format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: es })}`,
     "",
     "I. DATOS DEL CONTRATO E INQUILINO",
-    `Contrato relacionado: ${recibo.contratoId}`,
+    `Contrato relacionado: ${recibo.contrato.id}`,
     `Inquilino: ${recibo.contrato.inquilino.nombre}`,
     `Identidad: ${recibo.contrato.inquilino.identidad}`,
     `Telefono: ${recibo.contrato.inquilino.numero}`,
