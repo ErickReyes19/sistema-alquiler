@@ -41,11 +41,6 @@ export function downloadReciboPdf(recibo: ReciboCompleto) {
           type: "paragraph",
           text: "Este recibo se emite como constancia administrativa y legal del estado de cuenta del arrendamiento al momento de su expedición. Cualquier ajuste posterior deberá reflejarse en un nuevo documento o en anexos de cobranza debidamente fechados.",
         },
-        {
-          type: "signature",
-          leftLabel: "Administración / Arrendador",
-          rightLabel: "Recibido por arrendatario",
-        },
       ],
       footer: `Canales de contacto del inquilino: ${recibo.contrato.inquilino.numero}${recibo.contrato.inquilino.correo ? ` | ${recibo.contrato.inquilino.correo}` : ""}`,
     },

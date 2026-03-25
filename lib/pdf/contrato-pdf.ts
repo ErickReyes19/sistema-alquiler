@@ -51,6 +51,7 @@ export function downloadContratoPdf(contrato: ContratoView) {
           type: "paragraph",
           text: "Las partes manifiestan que han leído y comprendido el contenido del presente documento, aceptando de forma libre sus términos, obligaciones y derechos derivados de la relación arrendaticia.",
         },
+        { type: "spacer", size: 26 },
         {
           type: "signature",
           leftLabel: "Arrendador",

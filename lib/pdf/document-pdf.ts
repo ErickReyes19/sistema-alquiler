@@ -9,6 +9,7 @@ type PdfBlock =
   | { type: "heading"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[] }
+  | { type: "spacer"; size?: number }
   | { type: "signature"; leftLabel: string; rightLabel: string };
 
 export type PdfDocumentDefinition = {
@@ -119,15 +120,36 @@ function prepareElements(def: PdfDocumentDefinition): PreparedElement[] {
     });
   }
 
+  elements.push({
+    type: "line",
+    text: "",
+    size: 11,
+    font: "regular",
+    color: [31, 41, 55],
+    marginBottom: 8,
+  });
+
   for (const block of def.blocks) {
+    if (block.type === "spacer") {
+      elements.push({
+        type: "line",
+        text: "",
+        size: 10,
+        font: "regular",
+        color: [31, 41, 55],
+        marginBottom: block.size ?? 10,
+      });
+      continue;
+    }
+
     if (block.type === "heading") {
       elements.push({
         type: "line",
         text: block.text,
-        size: 12,
+        size: 13,
         font: "bold",
-        color: [31, 41, 55],
-        marginTop: 12,
+        color: [30, 64, 175],
+        marginTop: 10,
         marginBottom: 4,
       });
       continue;
@@ -196,7 +218,8 @@ function renderTextLine(line: PreparedLine, y: number) {
   const escaped = escapePdfText(line.text);
   const fontRef = line.font === "bold" ? "/F2" : "/F1";
 
-  const prefix = line.indent === 14 && line.text ? `BT /F1 11 Tf 0.42 0.49 0.65 rg 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (-) Tj ET\n` : "";
+  const prefix =
+    line.indent === 14 && line.text ? `BT /F1 11 Tf 0.42 0.49 0.65 rg 1 0 0 1 ${LEFT_MARGIN} ${y} Tm (•) Tj ET\n` : "";
 
   return (
     prefix +
@@ -212,8 +235,8 @@ function renderSignatureRow(row: SignatureRow, y: number) {
   const leftLabel = escapePdfText(row.leftLabel);
   const rightLabel = escapePdfText(row.rightLabel);
 
-  return `${(100 / 255).toFixed(3)} ${(116 / 255).toFixed(3)} ${(139 / 255).toFixed(3)} RG 1 w ${leftX} ${y + 10} m ${leftX + lineWidth} ${y + 10} l S\n` +
-    `${(100 / 255).toFixed(3)} ${(116 / 255).toFixed(3)} ${(139 / 255).toFixed(3)} RG 1 w ${rightX} ${y + 10} m ${rightX + lineWidth} ${y + 10} l S\n` +
+  return `${(59 / 255).toFixed(3)} ${(130 / 255).toFixed(3)} ${(246 / 255).toFixed(3)} RG 1 w ${leftX} ${y + 10} m ${leftX + lineWidth} ${y + 10} l S\n` +
+    `${(59 / 255).toFixed(3)} ${(130 / 255).toFixed(3)} ${(246 / 255).toFixed(3)} RG 1 w ${rightX} ${y + 10} m ${rightX + lineWidth} ${y + 10} l S\n` +
     `BT /F1 10 Tf 0.420 0.455 0.553 rg 1 0 0 1 ${leftX + 8} ${y - 6} Tm (${leftLabel}) Tj ET\n` +
     `BT /F1 10 Tf 0.420 0.455 0.553 rg 1 0 0 1 ${rightX + 8} ${y - 6} Tm (${rightLabel}) Tj ET\n`;
 }
