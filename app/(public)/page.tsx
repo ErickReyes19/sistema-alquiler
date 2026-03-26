@@ -10,7 +10,6 @@ import {
   FileText,
   Handshake,
   ShieldCheck,
-  Sparkles,
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
@@ -89,10 +88,7 @@ export default async function LandingPage() {
     <main className="min-h-screen bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-slate-50/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
         <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold md:text-base">
-            <Sparkles className="h-4 w-4 text-cyan-500" />
-            Sistema de Alquileres
-          </Link>
+          <Link href="/" className="text-sm font-semibold md:text-base">Sistema de Alquileres</Link>
           <div className="flex items-center gap-2">
             <ToggleThemeButton />
             <Button asChild variant="outline" className="border-slate-300 dark:border-slate-700">
