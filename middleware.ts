@@ -32,6 +32,7 @@ async function getSessionPermissions(req: NextRequest): Promise<string[] | null>
 function isPublicPath(pathname: string): boolean {
   return (
     pathname === "/" ||
+    pathname.startsWith("/login") ||
     pathname.startsWith("/reset-password") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -56,7 +57,7 @@ export async function middleware(req: NextRequest) {
   const requiredPermissions = resolveModulePermissions(pathname);
 
   if (requiredPermissions && !sessionCookie) {
-    return NextResponse.redirect(buildRedirectUrl(req, "/"));
+    return NextResponse.redirect(buildRedirectUrl(req, "/login"));
   }
 
   if (!requiredPermissions) {
@@ -66,7 +67,7 @@ export async function middleware(req: NextRequest) {
   const permissions = await getSessionPermissions(req);
 
   if (permissions === null) {
-    return NextResponse.redirect(buildRedirectUrl(req, "/"));
+    return NextResponse.redirect(buildRedirectUrl(req, "/login"));
   }
 
   const hasAccess = requiredPermissions.some((permission) => permissions.includes(permission));
