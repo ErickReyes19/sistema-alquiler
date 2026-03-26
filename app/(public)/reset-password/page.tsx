@@ -1,21 +1,52 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Suspense } from 'react';
-import ResetPassword from './components/form';
+import { getSession } from "@/auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Building2 } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import ResetPassword from "./components/form";
 
-export default async function Page() {
-    return (
-        <Card className="w-full max-w-md mx-auto bg-gray-800 text-white border-gray-700 shadow-lg">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-center">Cambio de contraseña</CardTitle>
-                <CardDescription className="text-center text-gray-400">
-                    Ingrese su nueva contraseña
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Suspense fallback={<div className="text-center text-gray-400">Cargando…</div>}>
-                    <ResetPassword />
-                </Suspense>
-            </CardContent>
+export default async function ResetPasswordPage() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/");
+  }
+
+  return (
+    <main className="grid min-h-screen lg:grid-cols-2">
+      <section className="relative hidden overflow-hidden lg:block">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1600&q=80')",
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-950/60" />
+        <div className="relative flex h-full flex-col justify-end p-10 text-white">
+          <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-wide">
+            <Building2 className="h-4 w-4" />
+            Sistema de alquileres
+          </p>
+          <h1 className="max-w-md text-4xl font-black leading-tight">Protegé tu acceso con una nueva contraseña.</h1>
+          <p className="mt-3 max-w-md text-white/85">
+            Elegí una clave segura para continuar gestionando propiedades, inquilinos y contratos.
+          </p>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-center bg-slate-950 p-6">
+        <Card className="w-full max-w-md border-slate-800 bg-slate-900 text-white shadow-2xl shadow-cyan-950/30">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl font-bold">Cambio de contraseña</CardTitle>
+            <CardDescription className="text-slate-300">Ingresá y confirmá tu nueva contraseña.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Suspense fallback={<div className="text-sm text-slate-400">Cargando formulario…</div>}>
+              <ResetPassword />
+            </Suspense>
+          </CardContent>
         </Card>
-    );
-};
+      </section>
+    </main>
+  );
+}
